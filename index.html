@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orario 5BINF - Tempo Reale</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/table.css">
+    <link rel="stylesheet" href="styles/realtime.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Orario Classe 5BINF</h1>
+            <nav class="main-nav">
+                <a href="index.html" class="active">Orario</a>
+                <a href="materie.html">Materie</a>
+                <a href="calendario.html">Calendario</a>
+                <a href="impostazioni.html">Impostazioni</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="current-info">
+                <div class="time-info">
+                    <div class="current-time" id="currentTime">
+                        <i class="fas fa-clock"></i> <span id="timeDisplay">00:00:00</span>
+                    </div>
+                    <div class="current-day" id="currentDay">
+                        <i class="fas fa-calendar-day"></i> <span id="dayDisplay">Caricamento...</span>
+                    </div>
+                    <div class="current-date" id="currentDate">
+                        <i class="fas fa-calendar"></i> <span id="dateDisplay">-</span>
+                    </div>
+                </div>
+                
+                <div class="lesson-info">
+                    <div class="current-lesson" id="currentLesson">
+                        <strong><i class="fas fa-chalkboard-teacher"></i> Ora attuale:</strong> 
+                        <span id="lessonName">-</span>
+                    </div>
+                    <div class="countdown" id="countdown">
+                        <i class="fas fa-hourglass-half"></i> Fine lezione tra: 
+                        <span id="countdownTimer" class="timer">-</span>
+                    </div>
+                    <div class="next-lesson" id="nextLesson">
+                        <strong><i class="fas fa-forward"></i> Prossima:</strong> 
+                        <span id="nextLessonName">-</span>
+                        <span id="nextLessonTime" class="next-time">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <i class="fas fa-book"></i>
+                    <span class="stat-label">Ore totali:</span>
+                    <span class="stat-value" id="totalHours">36</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-flask"></i>
+                    <span class="stat-label">Laboratori:</span>
+                    <span class="stat-value" id="labHours">12</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span class="stat-label">Materie:</span>
+                    <span class="stat-value" id="totalSubjects">8</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-user-clock"></i>
+                    <span class="stat-label">Ora corrente:</span>
+                    <span class="stat-value" id="currentHourDisplay">-</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-clock"></i> Ora</th>
+                            <th><i class="fas fa-calendar-day"></i> Lunedì</th>
+                            <th><i class="fas fa-calendar-day"></i> Martedì</th>
+                            <th><i class="fas fa-calendar-day"></i> Mercoledì</th>
+                            <th><i class="fas fa-calendar-day"></i> Giovedì</th>
+                            <th><i class="fas fa-calendar-day"></i> Venerdì</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="hour-cell">8:00 - 9:00</td>
+                            <td class="lab">Gestione Progetto OR LAB</td>
+                            <td>Informatica</td>
+                            <td class="lab">Informatica LAB</td>
+                            <td>Lingua Inglese</td>
+                            <td>Scienze Motorie</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">9:00 - 10:00</td>
+                            <td class="lab">Informatica LAB</td>
+                            <td>Sistemi e Reti</td>
+                            <td class="lab">Informatica LAB</td>
+                            <td>Sistemi e Reti</td>
+                            <td>Scienze Motorie</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">10:00 - 11:00</td>
+                            <td>Informatica</td>
+                            <td>Storia</td>
+                            <td>Lingua e Letteratura</td>
+                            <td>Lingua e Letteratura</td>
+                            <td>Tecnologie e prog</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">11:00 - 12:00</td>
+                            <td class="lab">Sistemi e Reti LAB</td>
+                            <td>Lingua Inglese</td>
+                            <td>Matematica e Complementi</td>
+                            <td>Lingua e Letteratura</td>
+                            <td>Lingua e Letteratura</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">12:00 - 13:00</td>
+                            <td class="lab">Sistemi e Reti LAB</td>
+                            <td class="lab">Tecnologie e Progetti LAB</td>
+                            <td class="lab">Gestione Progetto OR LAB</td>
+                            <td>Tecnologie e Progetti</td>
+                            <td>Matematica e Complementi</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">13:00 - 14:00</td>
+                            <td>Storia</td>
+                            <td class="lab">Tecnologie e Progetti LAB</td>
+                            <td class="lab">Gestione Progetto OR LAB</td>
+                            <td>Informatica</td>
+                            <td>Religione Cattolica</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">14:10 - 15:00</td>
+                            <td>Lingua Inglese</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="hour-cell">15:00 - 16:00</td>
+                            <td>Matematica</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color current"></span>
+                    <span><i class="fas fa-play-circle"></i> Lezione in corso</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color next"></span>
+                    <span><i class="fas fa-forward"></i> Prossima lezione</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color lab"></span>
+                    <span><i class="fas fa-flask"></i> Laboratorio</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color break"></span>
+                    <span><i class="fas fa-coffee"></i> Pausa/libero</span>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3><i class="fas fa-bolt"></i> Azioni Rapide</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="showTodaySchedule()">
+                        <i class="fas fa-calendar-day"></i> Oggi
+                    </button>
+                    <button class="action-btn" onclick="toggleLabView()">
+                        <i class="fas fa-flask"></i> Solo LAB
+                    </button>
+                    <button class="action-btn" onclick="exportSchedule()">
+                        <i class="fas fa-download"></i> Esporta
+                    </button>
+                    <button class="action-btn" onclick="printSchedule()">
+                        <i class="fas fa-print"></i> Stampa
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p><i class="fas fa-school"></i> Orario scolastico - 5BINF - A.S. 2023/2024</p>
+            <div class="footer-info">
+                <p class="update-time">
+                    <i class="fas fa-sync-alt"></i> Aggiornato: <span id="lastUpdate">-</span>
+                </p>
+                <p class="server-status">
+                    <i class="fas fa-server"></i> Stato: 
+                    <span id="serverStatus" class="status-online">Online</span>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/realtime.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Script aggiuntivo per funzionalità index.html -->
+    <script>
+        // Funzioni specifiche per index.html
+        function showTodaySchedule() {
+            const today = new Date().getDay();
+            const dayIndex = today === 0 ? 4 : today - 1; // Converti in indice 0-4 (Lun-Ven)
+            
+            // Evidenzia la colonna del giorno
+            const headers = document.querySelectorAll('#scheduleTable th');
+            const cells = document.querySelectorAll('#scheduleTable td');
+            
+            // Rimuovi evidenziazione precedente
+            headers.forEach(h => h.classList.remove('today-header'));
+            cells.forEach(c => c.classList.remove('today-cell'));
+            
+            // Evidenzia oggi (aggiungi 1 perché la prima colonna è "Ora")
+            if (headers[dayIndex + 1]) {
+                headers[dayIndex + 1].classList.add('today-header');
+                
+                // Evidenzia tutte le celle del giorno
+                const rows = document.querySelectorAll('#scheduleTable tbody tr');
+                rows.forEach(row => {
+                    const cell = row.querySelector(`td:nth-child(${dayIndex + 2})`);
+                    if (cell) cell.classList.add('today-cell');
+                });
+            }
+            
+            alert(`Mostrando l'orario di ${headers[dayIndex + 1].textContent}`);
+        }
+        
+        function toggleLabView() {
+            const table = document.getElementById('scheduleTable');
+            table.classList.toggle('lab-only');
+            
+            if (table.classList.contains('lab-only')) {
+                alert('Visualizzazione solo laboratori attivata');
+            } else {
+                alert('Visualizzazione completa attivata');
+            }
+        }
+        
+        function exportSchedule() {
+            const table = document.getElementById('scheduleTable');
+            let csv = [];
+            
+            // Estrai dati dalla tabella
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                const rowData = [];
+                const cols = row.querySelectorAll('th, td');
+                cols.forEach(col => {
+                    rowData.push(col.textContent.trim());
+                });
+                csv.push(rowData.join(','));
+            });
+            
+            // Crea file CSV
+            const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "orario_5binf.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Orario esportato come CSV!');
+        }
+        
+        function printSchedule() {
+            window.print();
+        }
+        
+        // Aggiorna statistiche
+        function updateStats() {
+            // Calcola ore totali (8 ore al giorno × 5 giorni - 4 ore vuote)
+            document.getElementById('totalHours').textContent = '36';
+            
+            // Conta laboratori
+            const labs = document.querySelectorAll('.lab').length;
+            document.getElementById('labHours').textContent = labs;
+            
+            // Conta materie uniche
+            const subjects = new Set();
+            document.querySelectorAll('#scheduleTable td:not(.hour-cell):not(.empty)').forEach(td => {
+                if (td.textContent && td.textContent !== '-') {
+                    subjects.add(td.textContent.replace(/ LAB$/, ''));
+                }
+            });
+            document.getElementById('totalSubjects').textContent = subjects.size;
+            
+            // Aggiorna ora corrente
+            const now = new Date();
+            document.getElementById('currentHourDisplay').textContent = 
+                now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
+        }
+        
+        // Inizializza al caricamento
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            utils.updateLastUpdateTime();
+            
+            // Aggiorna stats ogni minuto
+            setInterval(updateStats, 60000);
+            
+            // Controlla stato server
+            checkServerStatus();
+        });
+        
+        function checkServerStatus() {
+            fetch('api/get_events.php?test=1')
+                .then(response => {
+                    document.getElementById('serverStatus').textContent = 'Online';
+                    document.getElementById('serverStatus').className = 'status-online';
+                })
+                .catch(error => {
+                    document.getElementById('serverStatus').textContent = 'Offline';
+                    document.getElementById('serverStatus').className = 'status-offline';
+                });
+        }
+    </script>
+</body>
+</html>

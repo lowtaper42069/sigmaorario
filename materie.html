@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materie - 5BINF</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Stili per la pagina materie */
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .page-header h1 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Grid materie */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .subject-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .subject-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .subject-title {
+            flex: 1;
+        }
+        
+        .subject-title h3 {
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        
+        .subject-title span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .subject-info {
+            margin-top: var(--spacing-md);
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: var(--text-secondary);
+        }
+        
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .teacher-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        
+        /* Stats overall */
+        .stats-overall {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        
+        /* Orario settimanale */
+        .weekly-schedule {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .schedule-header {
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        .schedule-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .schedule-table th {
+            background: var(--bg-secondary);
+            padding: var(--spacing-md);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .schedule-table td {
+            padding: var(--spacing-md);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .schedule-table tr:nth-child(even) {
+            background: var(--bg-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .subject-header {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-sm);
+            }
+            
+            .schedule-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calendario Scolastico</h1>
+            <nav class="main-nav">
+                <a href="index.html"><i class="fas fa-clock"></i> Orario</a>
+                <a href="materie.html" class="active"><i class="fas fa-book"></i> Materie</a>
+                <a href="calendario.html"><i class="fas fa-calendar"></i> Calendario</a>
+                <a href="impostazioni.html"><i class="fas fa-cog"></i> Impostazioni</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="page-header">
+                <h1>Materie Scolastiche 5BINF</h1>
+                <p>Panoramica completa di tutte le materie, docenti e informazioni relative al corso di studi</p>
+            </div>
+
+            <!-- Statistiche generali -->
+            <div class="stats-overall">
+                <div class="stats-header">
+                    <h2><i class="fas fa-chart-bar"></i> Panoramica Generale</h2>
+                    <span class="current-week">Settimana 12 • A.S. 2023/2024</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalSubjects">10</span>
+                        <span class="stat-label">Materie Totali</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalHours">32</span>
+                        <span class="stat-label">Ore Settimanali</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="labsCount">4</span>
+                        <span class="stat-label">Laboratori</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="teachersCount">8</span>
+                        <span class="stat-label">Docenti</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid delle materie -->
+            <div class="subjects-grid">
+                <!-- Informatica -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(99, 102, 241, 0.2); color: #6366f1;">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Informatica</h3>
+                            <span>Prof. Rossi Mario</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">6 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">3 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verifiche previste:</span>
+                            <span class="info-value">4</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Progetti:</span>
+                            <span class="info-value">1 attivo</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        m.rossi@scuola.it
+                    </div>
+                </div>
+
+                <!-- Sistemi e Reti -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Sistemi e Reti</h3>
+                            <span>Prof. Bianchi Anna</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">5 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">2 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verifiche previste:</span>
+                            <span class="info-value">3</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Progetti:</span>
+                            <span class="info-value">2 attivi</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        a.bianchi@scuola.it
+                    </div>
+                </div>
+
+                <!-- Matematica -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Matematica</h3>
+                            <span>Prof. Verdi Luca</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">4 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verifiche previste:</span>
+                            <span class="info-value">5</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Compiti:</span>
+                            <span class="info-value">Settimanali</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        l.verdi@scuola.it
+                    </div>
+                </div>
+
+                <!-- Lingua e Letteratura -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Lingua e Letteratura</h3>
+                            <span>Prof. Neri Sara</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">5 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verifiche previste:</span>
+                            <span class="info-value">4</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Temi:</span>
+                            <span class="info-value">Mensili</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        s.neri@scuola.it
+                    </div>
+                </div>
+
+                <!-- Lingua Inglese -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Lingua Inglese</h3>
+                            <span>Prof. Smith John</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">3 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verifiche previste:</span>
+                            <span class="info-value">3</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Certificazioni:</span>
+                            <span class="info-value">B2 in corso</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        j.smith@scuola.it
+                    </div>
+                </div>
+
+                <!-- Tecnologie e Progetti -->
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="subject-title">
+                            <h3>Tecnologie e Progetti</h3>
+                            <span>Prof. Gialli Marco</span>
+                        </div>
+                    </div>
+                    <div class="subject-info">
+                        <div class="info-item">
+                            <span class="info-label">Ore settimanali:</span>
+                            <span class="info-value">4 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Laboratori:</span>
+                            <span class="info-value">2 ore</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Progetti attivi:</span>
+                            <span class="info-value">3</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Scadenze:</span>
+                            <span class="info-value">2 imminenti</span>
+                        </div>
+                    </div>
+                    <div class="teacher-badge">
+                        <i class="fas fa-envelope"></i>
+                        m.gialli@scuola.it
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orario settimanale -->
+            <div class="weekly-schedule">
+                <div class="schedule-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Orario Settimanale delle Materie</h2>
+                    <p>Distribuzione delle ore per ogni giorno della settimana</p>
+                </div>
+                <div class="schedule-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ora</th>
+                                <th>Lunedì</th>
+                                <th>Martedì</th>
+                                <th>Mercoledì</th>
+                                <th>Giovedì</th>
+                                <th>Venerdì</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>8:00 - 9:00</td>
+                                <td>Gestione Progetto</td>
+                                <td>Informatica</td>
+                                <td>Informatica LAB</td>
+                                <td>Lingua Inglese</td>
+                                <td>Scienze Motorie</td>
+                            </tr>
+                            <tr>
+                                <td>9:00 - 10:00</td>
+                                <td>Informatica LAB</td>
+                                <td>Sistemi e Reti</td>
+                                <td>Informatica LAB</td>
+                                <td>Sistemi e Reti</td>
+                                <td>Scienze Motorie</td>
+                            </tr>
+                            <tr>
+                                <td>10:00 - 11:00</td>
+                                <td>Informatica</td>
+                                <td>Storia</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Tecnologie e Progetti</td>
+                            </tr>
+                            <tr>
+                                <td>11:00 - 12:00</td>
+                                <td>Sistemi e Reti LAB</td>
+                                <td>Lingua Inglese</td>
+                                <td>Matematica</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Lingua e Letteratura</td>
+                            </tr>
+                            <tr>
+                                <td>12:00 - 13:00</td>
+                                <td>Sistemi e Reti LAB</td>
+                                <td>Tecnologie e Progetti LAB</td>
+                                <td>Gestione Progetto LAB</td>
+                                <td>Tecnologie e Progetti</td>
+                                <td>Matematica</td>
+                            </tr>
+                            <tr>
+                                <td>13:00 - 14:00</td>
+                                <td>Storia</td>
+                                <td>Tecnologie e Progetti LAB</td>
+                                <td>Gestione Progetto LAB</td>
+                                <td>Informatica</td>
+                                <td>Religione Cattolica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Materie 5BINF • A.S. 2023/2024</p>
+            <p class="update-time">Aggiornato: <span id="lastUpdate">-</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Script semplice per aggiornare la data
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('lastUpdate').textContent = now.toLocaleDateString('it-IT', options);
+        });
+    </script>
+</body>
+</html>

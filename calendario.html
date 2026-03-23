@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - 5BINF</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/calendario-simple.css">
+    <link rel="stylesheet" href="styles/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Stili aggiuntivi per il nuovo layout */
+        .calendar-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        @media (max-width: 1024px) {
+            .calendar-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calendar-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .calendar-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .events-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .sidebar-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-section h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .important-dates {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .important-date {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .important-date:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(5px);
+        }
+
+        .date-badge {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .date-info {
+            flex: 1;
+        }
+
+        .date-info strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .date-info span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .calendar-controls {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .month-selector h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .calendar-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .calendar-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .day-header {
+            padding: var(--spacing-sm);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .day-header:last-child {
+            border-right: none;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            min-height: 500px;
+        }
+
+        /* Modal stili */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            animation: slideIn 0.3s;
+        }
+
+        .modal-header {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: var(--bg-secondary);
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: var(--spacing-md);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        /* Form stili */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Color picker */
+        .color-picker {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: 8px;
+        }
+
+        .color-picker input[type="radio"] {
+            display: none;
+        }
+
+        .color-picker label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .color-picker input[type="radio"]:checked + label {
+            transform: scale(1.2);
+            border-color: white;
+            box-shadow: 0 0 0 2px var(--accent-primary);
+        }
+
+        /* Footer migliorato */
+        footer {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .footer-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .update-time {
+            margin-top: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .update-time strong {
+            color: var(--text-primary);
+        }
+
+        /* Animazioni */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Calendar day stili */
+        .calendar-day {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px;
+            min-height: 100px;
+            position: relative;
+            background: var(--bg-card);
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .calendar-day:nth-child(7n) {
+            border-right: none;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+            background: var(--bg-secondary);
+        }
+
+        .calendar-day.today {
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .day-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            text-align: right;
+        }
+
+        .calendar-day.today .day-number {
+            background: var(--success);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+        }
+
+        /* Events in calendar */
+        .day-events {
+            margin-top: 4px;
+        }
+
+        .event {
+            font-size: 0.75rem;
+            padding: 3px 6px;
+            margin-bottom: 3px;
+            border-radius: 4px;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .event:hover {
+            transform: translateX(2px);
+            opacity: 0.9;
+        }
+
+        .event-delete {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            font-size: 8px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .event:hover .event-delete {
+            opacity: 1;
+        }
+
+        .event-delete:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calendario Scolastico</h1>
+            <nav class="main-nav">
+                <a href="index.html"><i class="fas fa-clock"></i> Orario</a>
+                <a href="materie.html"><i class="fas fa-book"></i> Materie</a>
+                <a href="calendario.html" class="active"><i class="fas fa-calendar"></i> Calendario</a>
+                <a href="impostazioni.html"><i class="fas fa-cog"></i> Impostazioni</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="calendar-controls">
+                <div class="month-selector">
+                    <button id="prevMonth" class="btn-icon" title="Mese precedente">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 id="currentMonth">Caricamento...</h2>
+                    <button id="nextMonth" class="btn-icon" title="Mese successivo">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="calendar-actions">
+                    <button id="todayBtn" class="btn btn-primary">
+                        <i class="fas fa-calendar-day"></i> Oggi
+                    </button>
+                    <button id="exportBtn" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Esporta
+                    </button>
+                    <button id="addEventBtn" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Aggiungi Evento
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats veloci -->
+            <div class="calendar-stats">
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="stat-number" id="totalEvents">0</span>
+                    <span class="stat-label">Eventi totali</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-bell"></i>
+                    <span class="stat-number" id="upcomingEventsCount">0</span>
+                    <span class="stat-label">Eventi imminenti</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-signature"></i>
+                    <span class="stat-number" id="verificheCount">0</span>
+                    <span class="stat-label">Verifiche</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-flask"></i>
+                    <span class="stat-number" id="labCount">0</span>
+                    <span class="stat-label">Laboratori</span>
+                </div>
+            </div>
+
+            <div class="calendar-layout">
+                <div class="calendar-main">
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="day-header">Lunedì</div>
+                            <div class="day-header">Martedì</div>
+                            <div class="day-header">Mercoledì</div>
+                            <div class="day-header">Giovedì</div>
+                            <div class="day-header">Venerdì</div>
+                            <div class="day-header">Sabato</div>
+                            <div class="day-header">Domenica</div>
+                        </div>
+                        
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendario generato dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="events-sidebar">
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-bell"></i> Eventi Imminenti</h3>
+                        <div class="events-list" id="upcomingEvents">
+                            <div class="no-events">
+                                <i class="fas fa-calendar-plus"></i>
+                                <p>Nessun evento imminente</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-star"></i> Date Importanti</h3>
+                        <div class="important-dates" id="importantDates">
+                            <div class="important-date">
+                                <div class="date-badge">15 Nov</div>
+                                <div class="date-info">
+                                    <strong>Scadenza Progetto</strong>
+                                    <span>Informatica</span>
+                                </div>
+                            </div>
+                            <div class="important-date">
+                                <div class="date-badge">20 Nov</div>
+                                <div class="date-info">
+                                    <strong>Verifica Sistemi</strong>
+                                    <span>Sistemi e Reti</span>
+                                </div>
+                            </div>
+                            <div class="important-date">
+                                <div class="date-badge">25 Nov</div>
+                                <div class="date-info">
+                                    <strong>Laboratorio</strong>
+                                    <span>Tecnologie e Progetti</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-cog"></i> Azioni Rapide</h3>
+                        <div class="quick-actions">
+                            <button id="printBtn" class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;">
+                                <i class="fas fa-print"></i> Stampa Calendario
+                            </button>
+                            <button id="clearFilters" class="btn btn-secondary" style="width: 100%;">
+                                <i class="fas fa-filter"></i> Pulisci Filtri
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Evento -->
+            <div id="eventModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-calendar-plus"></i> Nuovo Evento</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="eventForm">
+                            <div class="form-group">
+                                <label for="eventTitle"><i class="fas fa-heading"></i> Titolo *</label>
+                                <input type="text" id="eventTitle" placeholder="Es: Verifica di Matematica" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="eventDate"><i class="fas fa-calendar"></i> Data *</label>
+                                    <input type="date" id="eventDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="eventTime"><i class="fas fa-clock"></i> Ora</label>
+                                    <input type="time" id="eventTime">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventType"><i class="fas fa-tag"></i> Tipo</label>
+                                <select id="eventType">
+                                    <option value="verifica">Verifica</option>
+                                    <option value="compito">Compito</option>
+                                    <option value="progetto">Progetto</option>
+                                    <option value="laboratorio">Laboratorio</option>
+                                    <option value="riunione">Riunione</option>
+                                    <option value="altro">Altro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventSubject"><i class="fas fa-book"></i> Materia</label>
+                                <select id="eventSubject">
+                                    <option value="">Nessuna materia specifica</option>
+                                    <option value="informatica">Informatica</option>
+                                    <option value="sistemi">Sistemi e Reti</option>
+                                    <option value="matematica">Matematica</option>
+                                    <option value="italiano">Lingua e Letteratura</option>
+                                    <option value="inglese">Lingua Inglese</option>
+                                    <option value="tecnologie">Tecnologie e Progetti</option>
+                                    <option value="storia">Storia</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventDescription"><i class="fas fa-align-left"></i> Note</label>
+                                <textarea id="eventDescription" rows="3" placeholder="Note aggiuntive..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-palette"></i> Colore</label>
+                                <div class="color-picker">
+                                    <input type="radio" name="eventColor" value="#6366f1" id="color1" checked>
+                                    <label for="color1" style="background-color: #6366f1;" title="Blu"></label>
+                                    
+                                    <input type="radio" name="eventColor" value="#22c55e" id="color2">
+                                    <label for="color2" style="background-color: #22c55e;" title="Verde"></label>
+                                    
+                                    <input type="radio" name="eventColor" value="#f59e0b" id="color3">
+                                    <label for="color3" style="background-color: #f59e0b;" title="Arancione"></label>
+                                    
+                                    <input type="radio" name="eventColor" value="#ef4444" id="color4">
+                                    <label for="color4" style="background-color: #ef4444;" title="Rosso"></label>
+                                    
+                                    <input type="radio" name="eventColor" value="#8b5cf6" id="color5">
+                                    <label for="color5" style="background-color: #8b5cf6;" title="Viola"></label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary cancel-btn">Annulla</button>
+                        <button type="button" class="btn btn-success save-btn">Salva Evento</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Calendario scolastico - 5BINF - A.S. 2023/2024</p>
+            <div class="footer-stats">
+                <span><i class="fas fa-sync-alt"></i> Sincronizzato: <strong id="lastSync">-</strong></span>
+                <span><i class="fas fa-calendar-alt"></i> Eventi totali: <strong id="footerEventCount">0</strong></span>
+                <span class="status-online"><i class="fas fa-circle"></i> Online</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/calendario-simple.js"></script>
+    <script>
+        // Aggiungi stili per i bottoni
+        const style = document.createElement('style');
+        style.textContent = `
+            .btn {
+                padding: 10px 16px;
+                border: none;
+                border-radius: var(--radius-md);
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+            }
+            
+            .btn-primary {
+                background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+                color: white;
+            }
+            
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            }
+            
+            .btn-secondary {
+                background: var(--bg-secondary);
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+            }
+            
+            .btn-secondary:hover {
+                background: rgba(99, 102, 241, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .btn-success {
+                background: var(--success);
+                color: white;
+            }
+            
+            .btn-success:hover {
+                background: #16a34a;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            }
+            
+            .status-online {
+                color: var(--success);
+                font-weight: 600;
+            }
+            
+            .status-online i {
+                font-size: 0.8rem;
+                margin-right: 4px;
+            }
+            
+            .no-events {
+                text-align: center;
+                padding: var(--spacing-lg) var(--spacing-md);
+                color: var(--text-secondary);
+            }
+            
+            .no-events i {
+                font-size: 3rem;
+                margin-bottom: var(--spacing-sm);
+                opacity: 0.2;
+            }
+            
+            .no-events p {
+                font-size: 1rem;
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .no-events small {
+                font-size: 0.85rem;
+                opacity: 0.7;
+            }
+            
+            .quick-actions {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+            
+            .quick-actions .btn {
+                justify-content: center;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
