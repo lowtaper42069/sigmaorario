@@ -49,17 +49,18 @@
             display: flex;
             justify-content: center;
             gap: 0.5rem;
-            margin-top: 1.5rem;
             padding: 0.5rem;
             background: var(--cal-header-bg);
             border-radius: 8px;
             border: 1px solid var(--cal-border);
+            max-width: 320px;
+            margin: 1rem auto 0;
         }
 
         .main-nav a {
             color: var(--cal-text-muted);
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.5rem;
             border-radius: 6px;
             font-size: 0.875rem;
             transition: all 0.2s;
@@ -213,9 +214,7 @@
             <h1>Materie Scolastiche</h1>
             <nav class="main-nav">
                 <a href="index.html">Orario</a>
-                <a href="materie.html" class="active">Materie</a>
-                <a href="calendario.html">Calendario</a>
-                <a href="impostazioni.html">Impostazioni</a>
+                <a href="calendario.html" class="active">Calendario</a>
             </nav>
         </header>
 

@@ -44,23 +44,25 @@
             font-weight: 600;
             color: var(--cal-text);
             letter-spacing: -0.02em;
+            margin-bottom: 1rem;
         }
 
         .main-nav {
             display: flex;
             justify-content: center;
             gap: 0.5rem;
-            margin-top: 1.5rem;
             padding: 0.5rem;
             background: var(--cal-header-bg);
             border-radius: 8px;
             border: 1px solid var(--cal-border);
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .main-nav a {
             color: var(--cal-text-muted);
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.5rem;
             border-radius: 6px;
             font-size: 0.875rem;
             transition: all 0.2s;
@@ -169,20 +171,21 @@
 
         .table-wrapper {
             overflow-x: auto;
+            overflow-y: visible;
         }
 
         table {
-            width: 100%;
+            min-width: 600px;
             border-collapse: separate;
             border-spacing: 0;
-            table-layout: fixed;
         }
 
         th, td {
-            padding: 0.75rem;
+            padding: 0.75rem 0.5rem;
             text-align: center;
             border: 1px solid var(--cal-border);
             vertical-align: middle;
+            overflow: hidden;
         }
 
         th {
@@ -198,19 +201,32 @@
             font-size: 0.875rem;
             color: var(--cal-text);
             min-height: 48px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         td:first-child {
             color: var(--cal-text-muted);
             font-size: 0.8rem;
             white-space: nowrap;
-            width: 80px;
+            width: 75px;
+            min-width: 65px;
             background: var(--cal-bg);
         }
 
         th:first-child {
-            width: 80px;
+            width: 75px;
+            min-width: 65px;
             background: var(--cal-bg);
+        }
+
+        td:not(:first-child) {
+            min-width: 90px;
+        }
+
+        th:not(:first-child) {
+            min-width: 90px;
         }
 
         tr:last-child td {
@@ -413,17 +429,23 @@
             }
 
             th, td {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.7rem;
+                padding: 0.4rem 0.2rem;
+                font-size: 0.65rem;
             }
 
             th {
+                font-size: 0.55rem;
+                letter-spacing: 0;
+            }
+
+            td {
                 font-size: 0.6rem;
             }
 
             td:first-child, th:first-child {
-                width: 55px;
-                font-size: 0.65rem;
+                width: 50px;
+                min-width: 50px;
+                font-size: 0.55rem;
             }
 
             td.lab::after {
@@ -452,9 +474,7 @@
             <h1>Orario Scolastico</h1>
             <nav class="main-nav">
                 <a href="index.html" class="active">Orario</a>
-                <a href="materie.html">Materie</a>
                 <a href="calendario.html">Calendario</a>
-                <a href="impostazioni.html">Impostazioni</a>
             </nav>
         </header>
 

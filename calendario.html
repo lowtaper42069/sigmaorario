@@ -4,20 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario - 5BINF</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/calendario-simple.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --cal-bg: #0d1117;
             --cal-header-bg: #161b22;
-            --cal-day-bg: #161b22;
             --cal-border: #30363d;
             --cal-text: #c9d1d9;
             --cal-text-muted: #8b949e;
-            --cal-today-bg: #1f3a1f;
-            --cal-other-month: #21262d;
-            --cal-hover: #1c2128;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,64 +19,104 @@
         body {
             background: var(--cal-bg);
             color: var(--cal-text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.5;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
+        }
+
+        .wip-banner {
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            color: #eab308;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+
+        .wip-banner i {
+            margin-right: 0.5rem;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--cal-border);
         }
 
         header h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--cal-text);
-            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
         }
 
-        header p {
+        .main-nav {
+            display: inline-flex;
+            gap: 0.5rem;
+            padding: 0.4rem;
+            background: var(--cal-header-bg);
+            border-radius: 8px;
+            border: 1px solid var(--cal-border);
+        }
+
+        .main-nav a {
             color: var(--cal-text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
 
-        .calendar-controls {
+        .main-nav a:hover {
+            color: var(--cal-text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .main-nav a.active {
+            color: var(--cal-text);
+            background: #238636;
+        }
+
+        .main-nav .logout-btn {
+            background: rgba(248, 81, 73, 0.1);
+            color: #f85149;
+        }
+
+        .cal-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             background: var(--cal-header-bg);
             border: 1px solid var(--cal-border);
-            border-bottom: none;
             border-radius: 8px 8px 0 0;
         }
 
-        .month-nav {
+        .cal-nav-left {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        .month-nav h2 {
-            font-size: 1.25rem;
+        .cal-nav h2 {
+            font-size: 1.1rem;
             font-weight: 600;
-            min-width: 200px;
+            min-width: 180px;
             text-align: center;
         }
 
         .btn-icon {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 6px;
             background: transparent;
             border: 1px solid var(--cal-border);
@@ -95,32 +129,25 @@
         }
 
         .btn-icon:hover {
-            background: var(--cal-hover);
-            border-color: var(--cal-text-muted);
-        }
-
-        .calendar-actions {
-            display: flex;
-            gap: 0.5rem;
+            background: var(--cal-border);
         }
 
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.75rem;
             border: 1px solid var(--cal-border);
             border-radius: 6px;
             background: transparent;
             color: var(--cal-text);
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             transition: all 0.2s;
         }
 
         .btn:hover {
-            background: var(--cal-hover);
-            border-color: var(--cal-text-muted);
+            background: rgba(255,255,255,0.05);
         }
 
         .btn-primary {
@@ -131,82 +158,88 @@
 
         .btn-primary:hover {
             background: #2ea043;
-            border-color: #2ea043;
         }
 
-        .calendar-grid {
+        .btn-danger {
+            background: #da3633;
+            border-color: #da3633;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #f85149;
+        }
+
+        .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             background: var(--cal-header-bg);
             border: 1px solid var(--cal-border);
+            border-top: none;
             border-radius: 0 0 8px 8px;
             overflow: hidden;
         }
 
-        .calendar-header {
+        .cal-header {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             background: var(--cal-header-bg);
-            border-bottom: 1px solid var(--cal-border);
+            border: 1px solid var(--cal-border);
+            border-bottom: none;
         }
 
-        .day-header {
-            padding: 0.75rem;
+        .cal-day-name {
+            padding: 0.6rem;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--cal-text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-        .calendar-day {
-            min-height: 100px;
-            padding: 0.5rem;
+        .cal-day {
+            min-height: 90px;
+            padding: 0.4rem;
             border-right: 1px solid var(--cal-border);
             border-bottom: 1px solid var(--cal-border);
-            background: var(--cal-day-bg);
+            cursor: pointer;
             transition: background 0.15s;
+            position: relative;
         }
 
-        .calendar-day:nth-child(7n) {
+        .cal-day:nth-child(7n) {
             border-right: none;
         }
 
-        .calendar-day:hover {
-            background: var(--cal-hover);
+        .cal-day:hover {
+            background: rgba(255,255,255,0.03);
         }
 
-        .calendar-day.other-month {
-            background: var(--cal-other-month);
-            opacity: 0.6;
+        .cal-day.other-month {
+            background: rgba(0,0,0,0.2);
+            opacity: 0.5;
         }
 
-        .calendar-day.other-month:hover {
-            opacity: 0.8;
+        .cal-day.today {
+            background: rgba(35, 134, 54, 0.15);
         }
 
-        .calendar-day.today {
-            background: var(--cal-today-bg);
-        }
-
-        .day-number {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--cal-text);
-            margin-bottom: 0.25rem;
-        }
-
-        .calendar-day.today .day-number {
+        .cal-day.today .day-num {
+            background: #238636;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 26px;
-            height: 26px;
-            background: #238636;
-            color: #fff;
-            border-radius: 50%;
-            font-weight: 600;
+        }
+
+        .day-num {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
         }
 
         .day-events {
@@ -215,8 +248,8 @@
             gap: 2px;
         }
 
-        .event {
-            font-size: 0.7rem;
+        .day-event {
+            font-size: 0.65rem;
             padding: 2px 6px;
             border-radius: 3px;
             color: #fff;
@@ -226,196 +259,101 @@
             cursor: pointer;
         }
 
-        .event-delete {
-            display: none;
+        .day-event:hover {
+            opacity: 0.85;
         }
 
-        .event-item {
-            padding: 0.75rem;
-            background: var(--cal-header-bg);
-            border: 1px solid var(--cal-border);
-            border-left: 3px solid #6e7681;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-        }
-
-        .event-item .date {
-            font-size: 0.75rem;
+        .more-events {
+            font-size: 0.6rem;
             color: var(--cal-text-muted);
+            padding: 2px;
         }
 
-        .event-item .title {
-            font-weight: 500;
-            color: var(--cal-text);
-            margin: 0.25rem 0;
-        }
-
-        .event-item .meta {
-            font-size: 0.75rem;
-            color: var(--cal-text-muted);
-        }
-
-        .content-section {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--cal-border);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--cal-text);
-        }
-
-        .section-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--cal-header-bg);
-            border: 1px solid var(--cal-border);
-            border-radius: 8px;
-            padding: 1.25rem;
-        }
-
-        .card h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--cal-text);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card h4 i {
-            color: var(--cal-text-muted);
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--cal-border);
-            font-size: 0.875rem;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-row span:first-child {
-            color: var(--cal-text-muted);
-        }
-
-        .info-row span:last-child {
-            color: var(--cal-text);
-            font-weight: 500;
-        }
-
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .quick-actions .btn {
-            justify-content: center;
-        }
-
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
+            inset: 0;
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
         }
 
         .modal.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .modal-content {
+        .modal-box {
             background: var(--cal-header-bg);
             border: 1px solid var(--cal-border);
             border-radius: 8px;
             width: 90%;
-            max-width: 480px;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--cal-border);
         }
 
         .modal-header h3 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
         }
 
-        .close-modal {
+        .modal-close {
             background: none;
             border: none;
             color: var(--cal-text-muted);
             font-size: 1.25rem;
             cursor: pointer;
-            padding: 0.25rem;
+            padding: 0;
+            line-height: 1;
         }
 
-        .close-modal:hover {
+        .modal-close:hover {
             color: var(--cal-text);
         }
 
         .modal-body {
-            padding: 1.25rem;
+            padding: 1rem;
         }
 
         .modal-footer {
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             border-top: 1px solid var(--cal-border);
             display: flex;
             justify-content: flex-end;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: var(--cal-text-muted);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.625rem 0.75rem;
+            padding: 0.5rem 0.6rem;
             background: var(--cal-bg);
             border: 1px solid var(--cal-border);
             border-radius: 6px;
             color: var(--cal-text);
-            font-size: 0.875rem;
+            font-size: 0.85rem;
         }
 
         .form-group input:focus,
@@ -428,7 +366,7 @@
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .color-picker {
@@ -436,29 +374,67 @@
             gap: 0.5rem;
         }
 
-        .color-picker input[type="radio"] {
+        .color-picker input {
             display: none;
         }
 
         .color-picker label {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
+            margin: 0;
         }
 
-        .color-picker input[type="radio"]:checked + label {
+        .color-picker input:checked + label {
             border-color: #fff;
+            transform: scale(1.1);
+        }
+
+        .event-detail {
+            text-align: center;
+        }
+
+        .event-detail .event-color {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .event-detail h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-detail .event-info {
+            color: var(--cal-text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .event-detail .event-notes {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--cal-bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-align: left;
         }
 
         footer {
-            margin-top: 3rem;
-            padding-top: 1.5rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--cal-border);
             text-align: center;
             color: var(--cal-text-muted);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         @media (max-width: 768px) {
@@ -466,27 +442,28 @@
                 padding: 1rem;
             }
 
-            .calendar-controls {
-                flex-direction: column;
-                gap: 1rem;
+            .cal-nav {
+                flex-wrap: wrap;
+                gap: 0.75rem;
             }
 
-            .month-nav h2 {
-                min-width: 160px;
-                font-size: 1rem;
+            .cal-nav h2 {
+                font-size: 0.95rem;
+                min-width: 140px;
             }
 
-            .calendar-day {
-                min-height: 70px;
+            .cal-day {
+                min-height: 60px;
                 padding: 0.25rem;
             }
 
-            .day-number {
-                font-size: 0.75rem;
+            .day-num {
+                font-size: 0.7rem;
             }
 
-            .event {
-                font-size: 0.65rem;
+            .day-event {
+                font-size: 0.55rem;
+                padding: 1px 3px;
             }
 
             .form-row {
@@ -498,109 +475,83 @@
 <body>
     <div class="container">
         <header>
+            <div class="wip-banner">
+                <i class="fas fa-hard-hat"></i> Work in progress - Eventi salvati solo localmente
+            </div>
             <h1>Calendario Scolastico</h1>
-            <p>5BINF - A.S. 2024/2025</p>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html">Orario</a>
+                <a href="calendario.html" class="active">Calendario</a>
+            </nav>
         </header>
 
-        <main>
-            <div class="calendar-controls">
-                <div class="month-nav">
-                    <button id="prevMonth" class="btn-icon" title="Mese precedente">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <h2 id="currentMonth">Caricamento...</h2>
-                    <button id="nextMonth" class="btn-icon" title="Mese successivo">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                
-                <div class="calendar-actions">
-                    <button id="todayBtn" class="btn">
-                        <i class="fas fa-calendar-day"></i> Oggi
-                    </button>
-                    <button id="addEventBtn" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Aggiungi Evento
-                    </button>
-                </div>
+        <div class="cal-nav">
+            <div class="cal-nav-left">
+                <button class="btn-icon" id="prevMonth" title="Mese precedente">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 id="currentMonth">-</h2>
+                <button class="btn-icon" id="nextMonth" title="Mese successivo">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
-
-            <div class="calendar-header">
-                <div class="day-header">Lun</div>
-                <div class="day-header">Mar</div>
-                <div class="day-header">Mer</div>
-                <div class="day-header">Gio</div>
-                <div class="day-header">Ven</div>
-                <div class="day-header">Sab</div>
-                <div class="day-header">Dom</div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" id="todayBtn">
+                    <i class="fas fa-calendar-day"></i> Oggi
+                </button>
+                <button class="btn btn-primary admin-only" id="addEventBtn" style="display: none;">
+                    <i class="fas fa-plus"></i> Aggiungi
+                </button>
+                <a href="login.html" class="btn guest-only" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Accedi
+                </a>
             </div>
+        </div>
 
-            <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="cal-header">
+            <div class="cal-day-name">Lun</div>
+            <div class="cal-day-name">Mar</div>
+            <div class="cal-day-name">Mer</div>
+            <div class="cal-day-name">Gio</div>
+            <div class="cal-day-name">Ven</div>
+            <div class="cal-day-name">Sab</div>
+            <div class="cal-day-name">Dom</div>
+        </div>
 
-            <div class="content-section">
-                <div class="section-header">
-                    <h3>Informazioni</h3>
-                </div>
-
-                <div class="section-content">
-                    <div class="card">
-                        <h4><i class="fas fa-clock"></i> Statistiche</h4>
-                        <div class="info-row">
-                            <span>Eventi totali</span>
-                            <span id="eventCount">0</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Questo mese</span>
-                            <span id="monthCount">0</span>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h4><i class="fas fa-bolt"></i> Azioni Rapide</h4>
-                        <div class="quick-actions">
-                            <button id="exportBtn" class="btn">
-                                <i class="fas fa-download"></i> Esporta eventi
-                            </button>
-                            <button id="printBtn" class="btn">
-                                <i class="fas fa-print"></i> Stampa calendario
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        <div class="cal-grid" id="calendarGrid"></div>
 
         <footer>
-            <p>Calendario scolastico - Ultimo aggiornamento: <span id="lastSync">-</span></p>
+            <span id="eventCount">0</span> eventi salvati
         </footer>
     </div>
 
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
+    <!-- Modal Aggiungi/Modifica Evento -->
+    <div class="modal" id="eventModal">
+        <div class="modal-box">
             <div class="modal-header">
-                <h3>Nuovo Evento</h3>
-                <button class="close-modal">&times;</button>
+                <h3 id="modalTitle">Nuovo Evento</h3>
+                <button class="modal-close" onclick="closeModal('eventModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="eventForm">
+                    <input type="hidden" id="eventId">
                     <div class="form-group">
-                        <label for="eventTitle">Titolo *</label>
+                        <label>Titolo</label>
                         <input type="text" id="eventTitle" placeholder="Es: Verifica di Matematica" required>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="eventDate">Data *</label>
+                            <label>Data</label>
                             <input type="date" id="eventDate" required>
                         </div>
                         <div class="form-group">
-                            <label for="eventTime">Ora</label>
+                            <label>Ora</label>
                             <input type="time" id="eventTime">
                         </div>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="eventType">Tipo</label>
+                            <label>Tipo</label>
                             <select id="eventType">
                                 <option value="verifica">Verifica</option>
                                 <option value="compito">Compito</option>
@@ -610,53 +561,368 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="eventSubject">Materia</label>
+                            <label>Materia</label>
                             <select id="eventSubject">
-                                <option value="">Nessuna</option>
+                                <option value="">-</option>
                                 <option value="informatica">Informatica</option>
                                 <option value="sistemi">Sistemi e Reti</option>
                                 <option value="matematica">Matematica</option>
                                 <option value="italiano">Italiano</option>
                                 <option value="inglese">Inglese</option>
                                 <option value="storia">Storia</option>
+                                <option value="tedesco">Tedeco</option>
                             </select>
                         </div>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="eventDescription">Note</label>
-                        <textarea id="eventDescription" rows="2" placeholder="Note aggiuntive..."></textarea>
+                        <label>Note</label>
+                        <textarea id="eventNotes" rows="2" placeholder="Note..."></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label>Colore</label>
                         <div class="color-picker">
-                            <input type="radio" name="eventColor" value="#6366f1" id="color1" checked>
-                            <label for="color1" style="background-color: #6366f1;"></label>
-                            
-                            <input type="radio" name="eventColor" value="#22c55e" id="color2">
-                            <label for="color2" style="background-color: #22c55e;"></label>
-                            
-                            <input type="radio" name="eventColor" value="#f59e0b" id="color3">
-                            <label for="color3" style="background-color: #f59e0b;"></label>
-                            
-                            <input type="radio" name="eventColor" value="#ef4444" id="color4">
-                            <label for="color4" style="background-color: #ef4444;"></label>
-                            
-                            <input type="radio" name="eventColor" value="#8b5cf6" id="color5">
-                            <label for="color5" style="background-color: #8b5cf6;"></label>
+                            <input type="radio" name="eventColor" value="#6366f1" id="c1" checked>
+                            <label for="c1" style="background: #6366f1;"></label>
+                            <input type="radio" name="eventColor" value="#22c55e" id="c2">
+                            <label for="c2" style="background: #22c55e;"></label>
+                            <input type="radio" name="eventColor" value="#f59e0b" id="c3">
+                            <label for="c3" style="background: #f59e0b;"></label>
+                            <input type="radio" name="eventColor" value="#ef4444" id="c4">
+                            <label for="c4" style="background: #ef4444;"></label>
+                            <input type="radio" name="eventColor" value="#8b5cf6" id="c5">
+                            <label for="c5" style="background: #8b5cf6;"></label>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn cancel-btn">Annulla</button>
-                <button type="button" class="btn btn-primary save-btn">Salva</button>
+                <button class="btn" onclick="closeModal('eventModal')">Annulla</button>
+                <button class="btn btn-primary" onclick="saveEvent()">Salva</button>
             </div>
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/calendario-simple.js"></script>
+    <!-- Modal Dettagli Evento -->
+    <div class="modal" id="detailModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Dettagli Evento</h3>
+                <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="eventDetailContent"></div>
+            <div class="modal-footer" id="eventDetailFooter"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let events = [];
+
+        const STORAGE_KEY = 'cal_events';
+
+        function loadEvents() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            events = saved ? JSON.parse(saved) : getDefaultEvents();
+            saveEvents();
+        }
+
+        function saveEvents() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+            updateEventCount();
+        }
+
+        function getDefaultEvents() {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = today.getMonth();
+            return [
+                { id: 1, title: 'Verifica di Matematica', date: `${y}-${String(m+1).padStart(2,'0')}-15`, type: 'verifica', subject: 'matematica', color: '#ef4444' },
+                { id: 2, title: 'Laboratorio Informatica', date: `${y}-${String(m+1).padStart(2,'0')}-18`, type: 'laboratorio', subject: 'informatica', color: '#6366f1' },
+                { id: 3, title: 'Consegna Progetto', date: `${y}-${String(m+1).padStart(2,'0')}-20`, type: 'progetto', subject: 'sistemi', color: '#22c55e' },
+            ];
+        }
+
+        function updateEventCount() {
+            document.getElementById('eventCount').textContent = events.length;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            document.getElementById('currentMonth').textContent = 
+                currentDate.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = (firstDay.getDay() + 6) % 7;
+            const totalDays = lastDay.getDate();
+
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            let dayCount = 1;
+            let nextMonthDay = 1;
+
+            for (let i = 0; i < 42; i++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'cal-day';
+
+                if (i < startDay) {
+                    const prevMonthDays = new Date(year, month, 0).getDate();
+                    dayEl.classList.add('other-month');
+                    dayEl.innerHTML = `<div class="day-num">${prevMonthDays - startDay + i + 1}</div>`;
+                } else if (dayCount <= totalDays) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(dayCount).padStart(2,'0')}`;
+                    
+                    if (isCurrentMonth && dayCount === today.getDate()) {
+                        dayEl.classList.add('today');
+                    }
+
+                    dayEl.innerHTML = `<div class="day-num">${dayCount}</div>`;
+                    dayEl.dataset.date = dateStr;
+
+                    const dayEvents = events.filter(e => e.date === dateStr);
+                    if (dayEvents.length > 0) {
+                        const eventsDiv = document.createElement('div');
+                        eventsDiv.className = 'day-events';
+                        
+                        const maxShow = 3;
+                        dayEvents.slice(0, maxShow).forEach(evt => {
+                            const evtEl = document.createElement('div');
+                            evtEl.className = 'day-event';
+                            evtEl.style.background = evt.color;
+                            evtEl.textContent = evt.title;
+                            evtEl.onclick = (e) => {
+                                e.stopPropagation();
+                                showEventDetail(evt);
+                            };
+                            eventsDiv.appendChild(evtEl);
+                        });
+
+                        if (dayEvents.length > maxShow) {
+                            const more = document.createElement('div');
+                            more.className = 'more-events';
+                            more.textContent = `+${dayEvents.length - maxShow} altro`;
+                            eventsDiv.appendChild(more);
+                        }
+
+                        dayEl.appendChild(eventsDiv);
+                    }
+
+                    dayEl.onclick = () => openAddModal(dateStr);
+                    dayCount++;
+                } else {
+                    dayEl.classList.add('other-month');
+                    dayEl.innerHTML = `<div class="day-num">${nextMonthDay}</div>`;
+                    nextMonthDay++;
+                }
+
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function openAddModal(date) {
+            if (!isLoggedIn()) return;
+            
+            document.getElementById('modalTitle').textContent = 'Nuovo Evento';
+            document.getElementById('eventId').value = '';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventDate').value = date || new Date().toISOString().split('T')[0];
+            document.getElementById('eventDetailFooter').innerHTML = '';
+            openModal('eventModal');
+        }
+
+        function showEventDetail(evt) {
+            const icons = {
+                verifica: 'fa-clipboard-check',
+                compito: 'fa-pencil',
+                progetto: 'fa-folder',
+                laboratorio: 'fa-flask',
+                altro: 'fa-calendar'
+            };
+
+            const content = document.getElementById('eventDetailContent');
+            content.innerHTML = `
+                <div class="event-detail">
+                    <div class="event-color" style="background: ${evt.color};">
+                        <i class="fas ${icons[evt.type] || 'fa-calendar'}"></i>
+                    </div>
+                    <h4>${evt.title}</h4>
+                    <div class="event-info">
+                        <i class="fas fa-calendar"></i> ${formatDate(evt.date)}
+                        ${evt.time ? ` alle ${evt.time}` : ''}
+                    </div>
+                    ${evt.subject ? `<div class="event-info"><i class="fas fa-book"></i> ${evt.subject}</div>` : ''}
+                    ${evt.notes ? `<div class="event-notes">${evt.notes}</div>` : ''}
+                </div>
+            `;
+
+            const footer = document.getElementById('eventDetailFooter');
+            if (isLoggedIn()) {
+                footer.innerHTML = `
+                    <button class="btn" onclick="editEvent(${evt.id})"><i class="fas fa-edit"></i> Modifica</button>
+                    <button class="btn btn-danger" onclick="deleteEvent(${evt.id})"><i class="fas fa-trash"></i> Elimina</button>
+                `;
+            } else {
+                footer.innerHTML = '<button class="btn" onclick="closeModal(\'detailModal\')">Chiudi</button>';
+            }
+
+            openModal('detailModal');
+        }
+
+        function editEvent(id) {
+            closeModal('detailModal');
+            const evt = events.find(e => e.id === id);
+            if (!evt) return;
+
+            document.getElementById('modalTitle').textContent = 'Modifica Evento';
+            document.getElementById('eventId').value = evt.id;
+            document.getElementById('eventTitle').value = evt.title;
+            document.getElementById('eventDate').value = evt.date;
+            document.getElementById('eventTime').value = evt.time || '';
+            document.getElementById('eventType').value = evt.type;
+            document.getElementById('eventSubject').value = evt.subject || '';
+            document.getElementById('eventNotes').value = evt.notes || '';
+            document.querySelector(`input[name="eventColor"][value="${evt.color}"]`).checked = true;
+
+            openModal('eventModal');
+        }
+
+        function saveEvent() {
+            const id = document.getElementById('eventId').value;
+            const eventData = {
+                title: document.getElementById('eventTitle').value.trim(),
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                type: document.getElementById('eventType').value,
+                subject: document.getElementById('eventSubject').value,
+                notes: document.getElementById('eventNotes').value.trim(),
+                color: document.querySelector('input[name="eventColor"]:checked').value
+            };
+
+            if (!eventData.title || !eventData.date) return;
+
+            if (id) {
+                const idx = events.findIndex(e => e.id === parseInt(id));
+                if (idx !== -1) {
+                    events[idx] = { ...events[idx], ...eventData };
+                }
+            } else {
+                eventData.id = Date.now();
+                events.push(eventData);
+            }
+
+            saveEvents();
+            closeModal('eventModal');
+            renderCalendar();
+        }
+
+        function deleteEvent(id) {
+            if (!confirm('Eliminare questo evento?')) return;
+            events = events.filter(e => e.id !== id);
+            saveEvents();
+            closeModal('detailModal');
+            renderCalendar();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function isLoggedIn() {
+            return sessionStorage.getItem('loggedIn') === 'true';
+        }
+
+        async function updateAuthUI() {
+            try {
+                const response = await fetch('api/check_auth.php');
+                const data = await response.json();
+
+                if (data.logged_in) {
+                    sessionStorage.setItem('loggedIn', 'true');
+                    sessionStorage.setItem('username', data.user.username);
+                    sessionStorage.setItem('role', data.user.role);
+                } else {
+                    sessionStorage.removeItem('loggedIn');
+                    sessionStorage.removeItem('username');
+                    sessionStorage.removeItem('role');
+                }
+            } catch (err) {
+                // Mantieni stato attuale in caso di errore
+            }
+
+            const loggedIn = isLoggedIn();
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = loggedIn ? 'none' : 'inline-flex';
+            });
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = loggedIn ? 'inline-flex' : 'none';
+            });
+
+            const nav = document.getElementById('mainNav');
+            const existingLogout = nav.querySelector('.logout-btn');
+            if (existingLogout) existingLogout.remove();
+
+            if (loggedIn) {
+                const logout = document.createElement('a');
+                logout.href = '#';
+                logout.className = 'logout-btn';
+                logout.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+                logout.onclick = async (e) => {
+                    e.preventDefault();
+                    try {
+                        await fetch('api/logout.php', { method: 'POST' });
+                    } catch (err) {}
+                    sessionStorage.removeItem('loggedIn');
+                    sessionStorage.removeItem('username');
+                    sessionStorage.removeItem('role');
+                    window.location.reload();
+                };
+                nav.appendChild(logout);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('prevMonth').onclick = () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        };
+
+        document.getElementById('nextMonth').onclick = () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        };
+
+        document.getElementById('todayBtn').onclick = () => {
+            currentDate = new Date();
+            renderCalendar();
+        };
+
+        document.getElementById('addEventBtn').onclick = () => openAddModal();
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal(modal.id);
+            };
+        });
+
+        // Init
+        loadEvents();
+        updateAuthUI();
+        renderCalendar();
+    </script>
 </body>
 </html>

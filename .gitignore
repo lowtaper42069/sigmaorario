@@ -1,0 +1,16 @@
+# File di configurazione locale (NON tracciare!)
+.env
+config.local.php
+register.php  
+# File dati utenti
+data/
+data/*.json
+
+# IDE e OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Log
+*.log
