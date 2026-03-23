@@ -3,16 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orario 5BINF - Tempo Reale</title>
+    <title>Orario - 5BINF</title>
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/table.css">
-    <link rel="stylesheet" href="styles/realtime.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cal-bg: #0d1117;
+            --cal-header-bg: #161b22;
+            --cal-day-bg: #161b22;
+            --cal-border: #30363d;
+            --cal-text: #c9d1d9;
+            --cal-text-muted: #8b949e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--cal-bg);
+            color: var(--cal-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--cal-border);
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--cal-text);
+            letter-spacing: -0.02em;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.5rem;
+            background: var(--cal-header-bg);
+            border-radius: 8px;
+            border: 1px solid var(--cal-border);
+        }
+
+        .main-nav a {
+            color: var(--cal-text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .main-nav a:hover {
+            color: var(--cal-text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .main-nav a.active {
+            color: var(--cal-text);
+            background: #238636;
+        }
+
+        .current-info {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .info-item .label {
+            color: var(--cal-text-muted);
+        }
+
+        .info-item .value {
+            font-weight: 600;
+            color: var(--cal-text);
+        }
+
+        .info-item .value.highlight {
+            color: #238636;
+        }
+
+        .info-item .value::before {
+            content: '•';
+            margin-right: 0.25rem;
+            color: var(--cal-text-muted);
+        }
+
+        .info-item:first-child .value::before {
+            display: none;
+        }
+
+        .schedule-container {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--cal-border);
+        }
+
+        .schedule-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--cal-text);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--cal-text-muted);
+        }
+
+        .btn-primary {
+            background: #238636;
+            border-color: #238636;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+            border-color: #2ea043;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--cal-border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: var(--cal-bg);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--cal-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.875rem;
+            color: var(--cal-text);
+            min-height: 48px;
+        }
+
+        td:first-child {
+            color: var(--cal-text-muted);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            width: 80px;
+            background: var(--cal-bg);
+        }
+
+        th:first-child {
+            width: 80px;
+            background: var(--cal-bg);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td:not(:first-child) {
+            background: rgba(255,255,255,0.03);
+        }
+
+        td.lab {
+            position: relative;
+            background: rgba(240, 136, 62, 0.08);
+        }
+
+        td.lab::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #f0883e;
+        }
+
+        td.lab::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 6px;
+            height: 6px;
+            background: #f0883e;
+            border-radius: 50%;
+        }
+
+        td.empty {
+            color: var(--cal-text-muted);
+            opacity: 0.4;
+            background: var(--cal-bg);
+        }
+
+        td.today {
+            background: rgba(35, 134, 54, 0.15);
+            border: 2px solid #238636;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--cal-border);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--cal-text-muted);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-color.lab {
+            background: #f0883e;
+        }
+
+        .legend-color.today {
+            background: #238636;
+        }
+
+        .section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--cal-border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h4 i {
+            color: var(--cal-text-muted);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--cal-border);
+            font-size: 0.875rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span:first-child {
+            color: var(--cal-text-muted);
+        }
+
+        .info-row span:last-child {
+            color: var(--cal-text);
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quick-actions .btn {
+            justify-content: center;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--cal-border);
+            text-align: center;
+            color: var(--cal-text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            header {
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.25rem;
+            }
+
+            .main-nav {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+                padding: 0.25rem;
+            }
+
+            .main-nav a {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .schedule-header {
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem;
+            }
+
+            .schedule-header h2 {
+                font-size: 0.9rem;
+            }
+
+            .schedule-header .btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.7rem;
+            }
+
+            th {
+                font-size: 0.6rem;
+            }
+
+            td:first-child, th:first-child {
+                width: 55px;
+                font-size: 0.65rem;
+            }
+
+            td.lab::after {
+                display: none;
+            }
+
+            .current-info {
+                gap: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .legend {
+                padding: 0.75rem;
+            }
+
+            .legend-item {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Orario Classe 5BINF</h1>
+            <h1>Orario Scolastico</h1>
             <nav class="main-nav">
                 <a href="index.html" class="active">Orario</a>
                 <a href="materie.html">Materie</a>
@@ -22,318 +459,264 @@
         </header>
 
         <main>
+            <div class="schedule-container">
+                <div class="schedule-header">
+                    <h2><i class="fas fa-calendar-week"></i> Orario Settimanale</h2>
+                    <div>
+                        <button class="btn" onclick="exportSchedule()">
+                            <i class="fas fa-download"></i> Esporta
+                        </button>
+                        <button class="btn" onclick="printSchedule()">
+                            <i class="fas fa-print"></i> Stampa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Ora</th>
+                                <th>Lunedì</th>
+                                <th>Martedì</th>
+                                <th>Mercoledì</th>
+                                <th>Giovedì</th>
+                                <th>Venerdì</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>8:00 - 9:00</td>
+                                <td class="lab">Gestione Progetto LAB</td>
+                                <td>Informatica</td>
+                                <td class="lab">Informatica LAB</td>
+                                <td>Lingua Inglese</td>
+                                <td>Scienze Motorie</td>
+                            </tr>
+                            <tr>
+                                <td>9:00 - 10:00</td>
+                                <td class="lab">Informatica LAB</td>
+                                <td>Sistemi e Reti</td>
+                                <td class="lab">Informatica LAB</td>
+                                <td>Sistemi e Reti</td>
+                                <td>Scienze Motorie</td>
+                            </tr>
+                            <tr>
+                                <td>10:00 - 11:00</td>
+                                <td>Informatica</td>
+                                <td>Storia</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Tecnologie e Progetti</td>
+                            </tr>
+                            <tr>
+                                <td>11:00 - 12:00</td>
+                                <td class="lab">Sistemi e Reti LAB</td>
+                                <td>Lingua Inglese</td>
+                                <td>Matematica</td>
+                                <td>Lingua e Letteratura</td>
+                                <td>Lingua e Letteratura</td>
+                            </tr>
+                            <tr>
+                                <td>12:00 - 13:00</td>
+                                <td class="lab">Sistemi e Reti LAB</td>
+                                <td class="lab">Tecnologie e Progetti LAB</td>
+                                <td class="lab">Gestione Progetto LAB</td>
+                                <td>Tecnologie e Progetti</td>
+                                <td>Matematica</td>
+                            </tr>
+                            <tr>
+                                <td>13:00 - 14:00</td>
+                                <td>Storia</td>
+                                <td class="lab">Tecnologie e Progetti LAB</td>
+                                <td class="lab">Gestione Progetto LAB</td>
+                                <td>Informatica</td>
+                                <td>Religione Cattolica</td>
+                            </tr>
+                            <tr>
+                                <td>14:10 - 15:00</td>
+                                <td>Lingua Inglese</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                            </tr>
+                            <tr>
+                                <td>15:00 - 16:00</td>
+                                <td>Matematica</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                                <td class="empty">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
             <div class="current-info">
-                <div class="time-info">
-                    <div class="current-time" id="currentTime">
-                        <i class="fas fa-clock"></i> <span id="timeDisplay">00:00:00</span>
-                    </div>
-                    <div class="current-day" id="currentDay">
-                        <i class="fas fa-calendar-day"></i> <span id="dayDisplay">Caricamento...</span>
-                    </div>
-                    <div class="current-date" id="currentDate">
-                        <i class="fas fa-calendar"></i> <span id="dateDisplay">-</span>
-                    </div>
+                <div class="info-item">
+                    <span class="label">Ora:</span>
+                    <span class="value" id="currentTime">--:--</span>
                 </div>
-                
-                <div class="lesson-info">
-                    <div class="current-lesson" id="currentLesson">
-                        <strong><i class="fas fa-chalkboard-teacher"></i> Ora attuale:</strong> 
-                        <span id="lessonName">-</span>
-                    </div>
-                    <div class="countdown" id="countdown">
-                        <i class="fas fa-hourglass-half"></i> Fine lezione tra: 
-                        <span id="countdownTimer" class="timer">-</span>
-                    </div>
-                    <div class="next-lesson" id="nextLesson">
-                        <strong><i class="fas fa-forward"></i> Prossima:</strong> 
-                        <span id="nextLessonName">-</span>
-                        <span id="nextLessonTime" class="next-time">-</span>
-                    </div>
+                <div class="info-item">
+                    <span class="label">Giorno:</span>
+                    <span class="value" id="currentDay">-</span>
                 </div>
-            </div>
-
-            <div class="stats-bar">
-                <div class="stat">
-                    <i class="fas fa-book"></i>
-                    <span class="stat-label">Ore totali:</span>
-                    <span class="stat-value" id="totalHours">36</span>
+                <div class="info-item">
+                    <span class="label">Lezione:</span>
+                    <span class="value highlight" id="currentLesson">-</span>
                 </div>
-                <div class="stat">
-                    <i class="fas fa-flask"></i>
-                    <span class="stat-label">Laboratori:</span>
-                    <span class="stat-value" id="labHours">12</span>
+                <div class="info-item">
+                    <span class="label">Prossima:</span>
+                    <span class="value" id="nextLesson">-</span>
                 </div>
-                <div class="stat">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span class="stat-label">Materie:</span>
-                    <span class="stat-value" id="totalSubjects">8</span>
-                </div>
-                <div class="stat">
-                    <i class="fas fa-user-clock"></i>
-                    <span class="stat-label">Ora corrente:</span>
-                    <span class="stat-value" id="currentHourDisplay">-</span>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="scheduleTable">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-clock"></i> Ora</th>
-                            <th><i class="fas fa-calendar-day"></i> Lunedì</th>
-                            <th><i class="fas fa-calendar-day"></i> Martedì</th>
-                            <th><i class="fas fa-calendar-day"></i> Mercoledì</th>
-                            <th><i class="fas fa-calendar-day"></i> Giovedì</th>
-                            <th><i class="fas fa-calendar-day"></i> Venerdì</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="hour-cell">8:00 - 9:00</td>
-                            <td class="lab">Gestione Progetto OR LAB</td>
-                            <td>Informatica</td>
-                            <td class="lab">Informatica LAB</td>
-                            <td>Lingua Inglese</td>
-                            <td>Scienze Motorie</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">9:00 - 10:00</td>
-                            <td class="lab">Informatica LAB</td>
-                            <td>Sistemi e Reti</td>
-                            <td class="lab">Informatica LAB</td>
-                            <td>Sistemi e Reti</td>
-                            <td>Scienze Motorie</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">10:00 - 11:00</td>
-                            <td>Informatica</td>
-                            <td>Storia</td>
-                            <td>Lingua e Letteratura</td>
-                            <td>Lingua e Letteratura</td>
-                            <td>Tecnologie e prog</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">11:00 - 12:00</td>
-                            <td class="lab">Sistemi e Reti LAB</td>
-                            <td>Lingua Inglese</td>
-                            <td>Matematica e Complementi</td>
-                            <td>Lingua e Letteratura</td>
-                            <td>Lingua e Letteratura</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">12:00 - 13:00</td>
-                            <td class="lab">Sistemi e Reti LAB</td>
-                            <td class="lab">Tecnologie e Progetti LAB</td>
-                            <td class="lab">Gestione Progetto OR LAB</td>
-                            <td>Tecnologie e Progetti</td>
-                            <td>Matematica e Complementi</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">13:00 - 14:00</td>
-                            <td>Storia</td>
-                            <td class="lab">Tecnologie e Progetti LAB</td>
-                            <td class="lab">Gestione Progetto OR LAB</td>
-                            <td>Informatica</td>
-                            <td>Religione Cattolica</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">14:10 - 15:00</td>
-                            <td>Lingua Inglese</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                        </tr>
-                        <tr>
-                            <td class="hour-cell">15:00 - 16:00</td>
-                            <td>Matematica</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
 
             <div class="legend">
-                <div class="legend-item">
-                    <span class="legend-color current"></span>
-                    <span><i class="fas fa-play-circle"></i> Lezione in corso</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color next"></span>
-                    <span><i class="fas fa-forward"></i> Prossima lezione</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color lab"></span>
-                    <span><i class="fas fa-flask"></i> Laboratorio</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color break"></span>
-                    <span><i class="fas fa-coffee"></i> Pausa/libero</span>
+                    <div class="legend-item">
+                        <span class="legend-color lab"></span>
+                        <span>Laboratorio</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color today"></span>
+                        <span>Lezione attuale</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="quick-actions">
-                <h3><i class="fas fa-bolt"></i> Azioni Rapide</h3>
-                <div class="action-buttons">
-                    <button class="action-btn" onclick="showTodaySchedule()">
-                        <i class="fas fa-calendar-day"></i> Oggi
-                    </button>
-                    <button class="action-btn" onclick="toggleLabView()">
-                        <i class="fas fa-flask"></i> Solo LAB
-                    </button>
-                    <button class="action-btn" onclick="exportSchedule()">
-                        <i class="fas fa-download"></i> Esporta
-                    </button>
-                    <button class="action-btn" onclick="printSchedule()">
-                        <i class="fas fa-print"></i> Stampa
-                    </button>
+            <div class="section">
+                <div class="section-header">
+                    <h3>Statistiche</h3>
+                </div>
+                <div class="section-content">
+                    <div class="card">
+                        <h4><i class="fas fa-clock"></i> Riepilogo</h4>
+                        <div class="info-row">
+                            <span>Ore settimanali</span>
+                            <span>36</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Laboratori</span>
+                            <span id="labCount">12</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Materie</span>
+                            <span id="subjectCount">8</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4><i class="fas fa-bolt"></i> Azioni</h4>
+                        <div class="quick-actions">
+                            <button class="btn" onclick="showToday()">
+                                <i class="fas fa-calendar-day"></i> Mostra oggi
+                            </button>
+                            <button class="btn" onclick="toggleLabs()">
+                                <i class="fas fa-flask"></i> Solo laboratori
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
 
         <footer>
-            <p><i class="fas fa-school"></i> Orario scolastico - 5BINF - A.S. 2023/2024</p>
-            <div class="footer-info">
-                <p class="update-time">
-                    <i class="fas fa-sync-alt"></i> Aggiornato: <span id="lastUpdate">-</span>
-                </p>
-                <p class="server-status">
-                    <i class="fas fa-server"></i> Stato: 
-                    <span id="serverStatus" class="status-online">Online</span>
-                </p>
-            </div>
+            <p>5BINF - A.S. 2024/2025</p>
         </footer>
     </div>
 
-    <!-- Scripts -->
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/realtime.js"></script>
-    <script src="js/main.js"></script>
-    
-    <!-- Script aggiuntivo per funzionalità index.html -->
     <script>
-        // Funzioni specifiche per index.html
-        function showTodaySchedule() {
+        const schedule = [
+            [
+                ['Gestione Progetto LAB', 'Informatica', 'Informatica', 'Informatica', 'Storia', 'Lingua Inglese', 'Lingua Inglese', 'Matematica'],
+                ['Informatica LAB', 'Sistemi e Reti', 'Storia', 'Sistemi e Reti LAB', 'Lingua Inglese', 'Tecnologie e Progetti LAB', '', ''],
+                ['Informatica LAB', 'Informatica', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Gestione Progetto LAB', '', ''],
+                ['', 'Sistemi e Reti', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Gestione Progetto LAB', '', ''],
+                ['Sistemi e Reti LAB', 'Lingua Inglese', 'Matematica', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Religione Cattolica', '', '']
+            ]
+        ];
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
+            document.getElementById('currentDay').textContent = 
+                now.toLocaleDateString('it-IT', {weekday: 'long'});
+        }
+
+        function getCurrentLesson() {
+            const now = new Date();
+            const day = now.getDay();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            if (day === 0 || day === 6) return null;
+            
+            const dayIndex = day - 1;
+            const timeSlots = [8, 9, 10, 11, 12, 13, 14.17, 15];
+            
+            for (let i = 0; i < timeSlots.length; i++) {
+                if (hours < timeSlots[i] || (hours === timeSlots[i] && minutes < 60)) {
+                    return i > 0 ? i - 1 : 0;
+                }
+            }
+            return null;
+        }
+
+        function showToday() {
             const today = new Date().getDay();
-            const dayIndex = today === 0 ? 4 : today - 1; // Converti in indice 0-4 (Lun-Ven)
-            
-            // Evidenzia la colonna del giorno
+            if (today === 0 || today === 6) {
+                alert('Oggi non ci sono lezioni');
+                return;
+            }
+            const dayIndex = today;
             const headers = document.querySelectorAll('#scheduleTable th');
-            const cells = document.querySelectorAll('#scheduleTable td');
-            
-            // Rimuovi evidenziazione precedente
-            headers.forEach(h => h.classList.remove('today-header'));
-            cells.forEach(c => c.classList.remove('today-cell'));
-            
-            // Evidenzia oggi (aggiungi 1 perché la prima colonna è "Ora")
-            if (headers[dayIndex + 1]) {
-                headers[dayIndex + 1].classList.add('today-header');
-                
-                // Evidenzia tutte le celle del giorno
-                const rows = document.querySelectorAll('#scheduleTable tbody tr');
-                rows.forEach(row => {
-                    const cell = row.querySelector(`td:nth-child(${dayIndex + 2})`);
-                    if (cell) cell.classList.add('today-cell');
-                });
-            }
-            
-            alert(`Mostrando l'orario di ${headers[dayIndex + 1].textContent}`);
+            alert(`Oggi: ${headers[dayIndex].textContent}`);
         }
-        
-        function toggleLabView() {
-            const table = document.getElementById('scheduleTable');
-            table.classList.toggle('lab-only');
-            
-            if (table.classList.contains('lab-only')) {
-                alert('Visualizzazione solo laboratori attivata');
-            } else {
-                alert('Visualizzazione completa attivata');
-            }
+
+        function toggleLabs() {
+            const cells = document.querySelectorAll('td.lab');
+            cells.forEach(cell => {
+                if (cell.style.opacity === '0.3') {
+                    cell.style.opacity = '1';
+                } else {
+                    cell.style.opacity = '0.3';
+                }
+            });
         }
-        
+
         function exportSchedule() {
-            const table = document.getElementById('scheduleTable');
             let csv = [];
-            
-            // Estrai dati dalla tabella
-            const rows = table.querySelectorAll('tr');
+            const rows = document.querySelectorAll('#scheduleTable tr');
             rows.forEach(row => {
                 const rowData = [];
-                const cols = row.querySelectorAll('th, td');
-                cols.forEach(col => {
-                    rowData.push(col.textContent.trim());
+                row.querySelectorAll('th, td').forEach(cell => {
+                    rowData.push(cell.textContent.trim());
                 });
                 csv.push(rowData.join(','));
             });
             
-            // Crea file CSV
-            const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "orario_5binf.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            alert('Orario esportato come CSV!');
+            const blob = new Blob([csv.join('\n')], {type: 'text/csv'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'orario_5binf.csv';
+            a.click();
+            URL.revokeObjectURL(url);
         }
-        
+
         function printSchedule() {
             window.print();
         }
-        
-        // Aggiorna statistiche
-        function updateStats() {
-            // Calcola ore totali (8 ore al giorno × 5 giorni - 4 ore vuote)
-            document.getElementById('totalHours').textContent = '36';
-            
-            // Conta laboratori
-            const labs = document.querySelectorAll('.lab').length;
-            document.getElementById('labHours').textContent = labs;
-            
-            // Conta materie uniche
-            const subjects = new Set();
-            document.querySelectorAll('#scheduleTable td:not(.hour-cell):not(.empty)').forEach(td => {
-                if (td.textContent && td.textContent !== '-') {
-                    subjects.add(td.textContent.replace(/ LAB$/, ''));
-                }
-            });
-            document.getElementById('totalSubjects').textContent = subjects.size;
-            
-            // Aggiorna ora corrente
-            const now = new Date();
-            document.getElementById('currentHourDisplay').textContent = 
-                now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
-        }
-        
-        // Inizializza al caricamento
+
         document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            utils.updateLastUpdateTime();
-            
-            // Aggiorna stats ogni minuto
-            setInterval(updateStats, 60000);
-            
-            // Controlla stato server
-            checkServerStatus();
+            updateTime();
+            setInterval(updateTime, 1000);
         });
-        
-        function checkServerStatus() {
-            fetch('api/get_events.php?test=1')
-                .then(response => {
-                    document.getElementById('serverStatus').textContent = 'Online';
-                    document.getElementById('serverStatus').className = 'status-online';
-                })
-                .catch(error => {
-                    document.getElementById('serverStatus').textContent = 'Offline';
-                    document.getElementById('serverStatus').className = 'status-offline';
-                });
-        }
     </script>
 </body>
 </html>

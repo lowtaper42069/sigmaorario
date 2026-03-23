@@ -7,625 +7,445 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Stili per la pagina impostazioni */
-        .settings-container {
-            max-width: 1000px;
-            margin: 0 auto;
+        :root {
+            --cal-bg: #0d1117;
+            --cal-header-bg: #161b22;
+            --cal-border: #30363d;
+            --cal-text: #c9d1d9;
+            --cal-text-muted: #8b949e;
         }
-        
-        .page-header {
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--cal-bg);
+            color: var(--cal-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
             text-align: center;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--cal-border);
         }
-        
-        .page-header h1 {
-            margin-bottom: var(--spacing-sm);
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--cal-text);
+            letter-spacing: -0.02em;
         }
-        
-        .page-header p {
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Tabs */
-        .settings-tabs {
+
+        .main-nav {
             display: flex;
-            gap: 2px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            padding: 4px;
-            margin-bottom: var(--spacing-lg);
-            overflow-x: auto;
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: var(--radius-sm);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            min-width: 120px;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.5rem;
+            background: var(--cal-header-bg);
+            border-radius: 8px;
+            border: 1px solid var(--cal-border);
         }
-        
-        .tab-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--text-primary);
+
+        .main-nav a {
+            color: var(--cal-text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
         }
-        
-        .tab-btn.active {
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
+
+        .main-nav a:hover {
+            color: var(--cal-text);
+            background: rgba(255,255,255,0.05);
         }
-        
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
+
+        .main-nav a.active {
+            color: var(--cal-text);
+            background: #238636;
         }
-        
-        .tab-content.active {
-            display: block;
+
+        .section {
+            margin-bottom: 2rem;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* Settings sections */
-        .settings-section {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            border: 1px solid var(--border-color);
-        }
-        
+
         .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-lg);
-            color: var(--text-primary);
+            gap: 0.5rem;
         }
-        
-        .section-header i {
-            color: var(--accent-primary);
-            font-size: 1.2rem;
+
+        .section-header h2 i {
+            color: var(--cal-text-muted);
         }
-        
-        /* Form settings */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
+
+        .card {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            padding: 1.5rem;
         }
-        
-        .form-group {
-            margin-bottom: var(--spacing-md);
+
+        .form-row {
+            margin-bottom: 1.25rem;
         }
-        
-        .form-group label {
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row label {
             display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--cal-text-muted);
+            margin-bottom: 0.5rem;
         }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+
+        .form-row input,
+        .form-row select {
             width: 100%;
-            padding: 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s;
+            padding: 0.625rem 0.75rem;
+            background: var(--cal-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            color: var(--cal-text);
+            font-size: 0.875rem;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+
+        .form-row input:focus,
+        .form-row select:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            border-color: #238636;
         }
-        
-        /* Switch toggle */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 30px;
-            margin-left: var(--spacing-sm);
+
+        .form-row input[readonly] {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border-color);
-            transition: .4s;
-            border-radius: 34px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--success);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(30px);
-        }
-        
-        /* Checkbox list */
-        .checkbox-list {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-        
-        .checkbox-item {
+
+        .checkbox-row {
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--cal-border);
         }
-        
-        .checkbox-item input[type="checkbox"] {
+
+        .checkbox-row:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox-row input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            accent-color: var(--accent-primary);
+            accent-color: #238636;
         }
-        
-        .checkbox-item label {
-            margin: 0;
+
+        .checkbox-row label {
+            font-size: 0.875rem;
+            color: var(--cal-text);
             cursor: pointer;
         }
-        
-        /* Color theme selector */
-        .theme-selector {
+
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .theme-option {
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-option:hover {
+            border-color: var(--cal-text-muted);
+        }
+
+        .theme-option.selected {
+            border-color: #238636;
+            background: rgba(35, 134, 54, 0.1);
+        }
+
+        .theme-preview {
+            height: 40px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-preview.dark {
+            background: linear-gradient(135deg, #0d1117, #161b22);
+        }
+
+        .theme-preview.light {
+            background: linear-gradient(135deg, #ffffff, #f6f8fa);
+        }
+
+        .theme-preview.auto {
+            background: linear-gradient(135deg, #0d1117 50%, #ffffff 50%);
+        }
+
+        .theme-option span {
+            font-size: 0.8rem;
+            color: var(--cal-text-muted);
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--spacing-sm);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-        
-        .theme-option {
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-sm);
-            cursor: pointer;
-            transition: all 0.3s;
+
+        .stat-card {
+            background: var(--cal-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            padding: 1rem;
             text-align: center;
         }
-        
-        .theme-option:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cal-text);
         }
-        
-        .theme-option.selected {
-            border-color: var(--accent-primary);
-            background: rgba(99, 102, 241, 0.1);
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--cal-text-muted);
+            margin-top: 0.25rem;
         }
-        
-        .theme-preview {
-            width: 100%;
-            height: 60px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 8px;
+
+        .btn {
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--cal-text);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
         }
-        
-        .theme-dark .theme-preview {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+
+        .btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--cal-text-muted);
         }
-        
-        .theme-light .theme-preview {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+        .btn-primary {
+            background: #238636;
+            border-color: #238636;
+            color: #fff;
         }
-        
-        .theme-auto .theme-preview {
-            background: linear-gradient(135deg, #0f172a 50%, #f8fafc 50%);
+
+        .btn-primary:hover {
+            background: #2ea043;
+            border-color: #2ea043;
         }
-        
-        /* Button styles */
+
+        .btn-danger {
+            background: #da3633;
+            border-color: #da3633;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #f85149;
+            border-color: #f85149;
+        }
+
         .btn-group {
             display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-lg);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
         }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(99, 102, 241, 0.1);
-        }
-        
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-        
-        /* Profile section */
-        .profile-header {
+
+        .info-row {
             display: flex;
-            align-items: center;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--cal-border);
+            font-size: 0.875rem;
         }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: white;
-            position: relative;
+
+        .info-row:last-child {
+            border-bottom: none;
         }
-        
-        .profile-info {
-            flex: 1;
+
+        .info-row span:first-child {
+            color: var(--cal-text-muted);
         }
-        
-        .profile-info h3 {
-            margin-bottom: 4px;
+
+        .info-row span:last-child {
+            color: var(--cal-text);
+            font-weight: 500;
         }
-        
-        .profile-info p {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
-        
-        /* Info cards */
-        .info-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-lg);
-        }
-        
-        .info-card {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--cal-border);
             text-align: center;
+            color: var(--cal-text-muted);
+            font-size: 0.8rem;
         }
-        
-        .info-card i {
-            font-size: 2rem;
-            color: var(--accent-primary);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .info-card h4 {
-            margin-bottom: 4px;
-        }
-        
-        .info-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive */
+
         @media (max-width: 768px) {
-            .settings-tabs {
-                flex-wrap: nowrap;
-                overflow-x: auto;
+            .container {
+                padding: 1rem;
             }
-            
-            .tab-btn {
-                min-width: 100px;
-                font-size: 0.9rem;
+
+            .main-nav {
+                flex-wrap: wrap;
             }
-            
-            .form-grid {
+
+            .grid-2 {
                 grid-template-columns: 1fr;
             }
-            
-            .profile-header {
+
+            .theme-options {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
                 flex-direction: column;
-                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container settings-container">
+    <div class="container">
         <header>
-            <h1>Calendario Scolastico</h1>
+            <h1>Impostazioni</h1>
             <nav class="main-nav">
-                <a href="index.html"><i class="fas fa-clock"></i> Orario</a>
-                <a href="materie.html"><i class="fas fa-book"></i> Materie</a>
-                <a href="calendario.html"><i class="fas fa-calendar"></i> Calendario</a>
-                <a href="impostazioni.html" class="active"><i class="fas fa-cog"></i> Impostazioni</a>
+                <a href="index.html">Orario</a>
+                <a href="materie.html">Materie</a>
+                <a href="calendario.html">Calendario</a>
+                <a href="impostazioni.html" class="active">Impostazioni</a>
             </nav>
         </header>
 
         <main>
-            <div class="page-header">
-                <h1>Impostazioni e Preferenze</h1>
-                <p>Personalizza l'applicazione secondo le tue esigenze</p>
-            </div>
-
-            <!-- Tabs di navigazione -->
-            <div class="settings-tabs">
-                <button class="tab-btn active" data-tab="profile">
-                    <i class="fas fa-user"></i> Profilo
-                </button>
-                <button class="tab-btn" data-tab="appearance">
-                    <i class="fas fa-palette"></i> Aspetto
-                </button>
-                <button class="tab-btn" data-tab="notifications">
-                    <i class="fas fa-bell"></i> Notifiche
-                </button>
-                <button class="tab-btn" data-tab="privacy">
-                    <i class="fas fa-shield-alt"></i> Privacy
-                </button>
-                <button class="tab-btn" data-tab="data">
-                    <i class="fas fa-database"></i> Dati
-                </button>
-                <button class="tab-btn" data-tab="about">
-                    <i class="fas fa-info-circle"></i> Informazioni
-                </button>
-            </div>
-
-            <!-- Tab: Profilo -->
-            <div id="profile" class="tab-content active">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-user"></i> Profilo Utente
-                    </h2>
-                    
-                    <div class="profile-header">
-                        <div class="profile-avatar">
-                            <i class="fas fa-user-graduate"></i>
+            <div class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-user"></i> Profilo</h2>
+                </div>
+                <div class="card">
+                    <div class="grid-2">
+                        <div class="form-row">
+                            <label>Nome e Cognome</label>
+                            <input type="text" value="Studente 5BINF">
                         </div>
-                        <div class="profile-info">
-                            <h3>Studente 5BINF</h3>
-                            <p>Ultimo accesso: Oggi, 14:30</p>
-                            <div class="badge">
-                                <i class="fas fa-graduation-cap"></i>
-                                Classe: 5BINF
-                            </div>
+                        <div class="form-row">
+                            <label>Email</label>
+                            <input type="email" value="studente@scuola.it">
+                        </div>
+                        <div class="form-row">
+                            <label>Classe</label>
+                            <input type="text" value="5BINF" readonly>
+                        </div>
+                        <div class="form-row">
+                            <label>Anno Scolastico</label>
+                            <input type="text" value="2024/2025" readonly>
                         </div>
                     </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="studentName">Nome e Cognome</label>
-                            <input type="text" id="studentName" value="Marco Rossi">
-                        </div>
-                        <div class="form-group">
-                            <label for="studentEmail">Email</label>
-                            <input type="email" id="studentEmail" value="m.rossi@studenti.scuola.it">
-                        </div>
-                        <div class="form-group">
-                            <label for="studentClass">Classe</label>
-                            <input type="text" id="studentClass" value="5BINF" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="studentYear">Anno Scolastico</label>
-                            <input type="text" id="studentYear" value="2023/2024" readonly>
-                        </div>
-                    </div>
-
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="saveProfile()">
-                            <i class="fas fa-save"></i> Salva Modifiche
+                            <i class="fas fa-save"></i> Salva
                         </button>
-                        <button class="btn btn-secondary" onclick="resetProfile()">
-                            <i class="fas fa-undo"></i> Ripristina
-                        </button>
-                    </div>
-                </div>
-
-                <div class="info-cards">
-                    <div class="info-card">
-                        <i class="fas fa-calendar-check"></i>
-                        <h4>124</h4>
-                        <p>Eventi Creati</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4>32</h4>
-                        <p>Ore di Lezione</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-book"></i>
-                        <h4>10</h4>
-                        <p>Materie Attive</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-user-friends"></i>
-                        <h4>28</h4>
-                        <p>Compa di Classe</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab: Aspetto -->
-            <div id="appearance" class="tab-content">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-palette"></i> Aspetto
-                    </h2>
-                    
-                    <div class="form-group">
+            <div class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-palette"></i> Aspetto</h2>
+                </div>
+                <div class="card">
+                    <div class="form-row">
                         <label>Tema</label>
-                        <div class="theme-selector">
-                            <div class="theme-option theme-dark selected" onclick="selectTheme('dark')">
-                                <div class="theme-preview"></div>
+                        <div class="theme-options">
+                            <div class="theme-option selected" onclick="selectTheme(this)">
+                                <div class="theme-preview dark"></div>
                                 <span>Scuro</span>
                             </div>
-                            <div class="theme-option theme-light" onclick="selectTheme('light')">
-                                <div class="theme-preview"></div>
+                            <div class="theme-option" onclick="selectTheme(this)">
+                                <div class="theme-preview light"></div>
                                 <span>Chiaro</span>
                             </div>
-                            <div class="theme-option theme-auto" onclick="selectTheme('auto')">
-                                <div class="theme-preview"></div>
+                            <div class="theme-option" onclick="selectTheme(this)">
+                                <div class="theme-preview auto"></div>
                                 <span>Automatico</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Dimensione Font</label>
+                    <div class="form-row" style="margin-top: 1.25rem;">
+                        <label>Dimensione carattere</label>
                         <select id="fontSize">
                             <option value="small">Piccolo</option>
                             <option value="medium" selected>Medio</option>
                             <option value="large">Grande</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label>Densità Calendario</label>
-                        <select id="calendarDensity">
-                            <option value="compact">Compatta</option>
-                            <option value="normal" selected>Normale</option>
-                            <option value="spacious">Spaziosa</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mostra Fine Settimana</label>
-                        <label class="switch">
-                            <input type="checkbox" id="showWeekend" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="applyAppearance()">
+                        <button class="btn btn-primary" onclick="saveAppearance()">
                             <i class="fas fa-check"></i> Applica
-                        </button>
-                        <button class="btn btn-secondary" onclick="resetAppearance()">
-                            <i class="fas fa-times"></i> Annulla
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab: Notifiche -->
-            <div id="notifications" class="tab-content">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-bell"></i> Notifiche
-                    </h2>
-                    
-                    <div class="checkbox-list">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="notifyVerifications" checked>
-                            <label for="notifyVerifications">Notifiche per verifiche imminenti</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="notifyAssignments" checked>
-                            <label for="notifyAssignments">Notifiche per compiti assegnati</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="notifyProjects" checked>
-                            <label for="notifyProjects">Notifiche per scadenze progetti</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="notifyLabs" checked>
-                            <label for="notifyLabs">Notifiche per laboratori</label>
-                        </div>
+            <div class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> Notifiche</h2>
+                </div>
+                <div class="card">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="notifyVerifications" checked>
+                        <label for="notifyVerifications">Notifiche per verifiche imminenti</label>
                     </div>
-
-                    <div class="form-group">
-                        <label>Anticipo notifiche</label>
-                        <select id="notificationTime">
-                            <option value="15">15 minuti prima</option>
-                            <option value="30" selected>30 minuti prima</option>
-                            <option value="60">1 ora prima</option>
-                            <option value="1440">1 giorno prima</option>
-                        </select>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="notifyAssignments" checked>
+                        <label for="notifyAssignments">Notifiche per compiti assegnati</label>
                     </div>
-
-                    <div class="form-group">
-                        <label>Suono notifiche</label>
-                        <select id="notificationSound">
-                            <option value="default" selected>Suono predefinito</option>
-                            <option value="bell">Campanella</option>
-                            <option value="chime">Carillon</option>
-                            <option value="none">Nessun suono</option>
-                        </select>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="notifyProjects" checked>
+                        <label for="notifyProjects">Notifiche per scadenze progetti</label>
                     </div>
-
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="notifyLabs">
+                        <label for="notifyLabs">Notifiche per laboratori</label>
+                    </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="saveNotifications()">
                             <i class="fas fa-save"></i> Salva
@@ -634,247 +454,149 @@
                 </div>
             </div>
 
-            <!-- Tab: Privacy -->
-            <div id="privacy" class="tab-content">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-shield-alt"></i> Privacy e Sicurezza
-                    </h2>
-                    
-                    <div class="checkbox-list">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="privacySync" checked>
-                            <label for="privacySync">Sincronizza eventi tra dispositivi</label>
+            <div class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-database"></i> Dati</h2>
+                </div>
+                <div class="card">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="eventsCount">0</div>
+                            <div class="stat-label">Eventi</div>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="privacyBackup" checked>
-                            <label for="privacyBackup">Backup automatico dei dati</label>
+                        <div class="stat-card">
+                            <div class="stat-value" id="storageUsed">0 KB</div>
+                            <div class="stat-label">Spazio</div>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="privacyAnalytics">
-                            <label for="privacyAnalytics">Condividi dati anonimi per migliorare l'app</label>
+                        <div class="stat-card">
+                            <div class="stat-value" id="lastSync">-</div>
+                            <div class="stat-label">Ultima sync</div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Durata sessione</label>
-                        <select id="sessionDuration">
-                            <option value="15">15 minuti</option>
-                            <option value="30">30 minuti</option>
-                            <option value="60" selected>1 ora</option>
-                            <option value="1440">24 ore</option>
-                        </select>
+                    <div class="info-row">
+                        <span>Stato server</span>
+                        <span id="serverStatus">Online</span>
                     </div>
-
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="savePrivacy()">
-                            <i class="fas fa-save"></i> Salva
+                        <button class="btn" onclick="backupData()">
+                            <i class="fas fa-download"></i> Backup
+                        </button>
+                        <button class="btn" onclick="restoreData()">
+                            <i class="fas fa-upload"></i> Ripristina
                         </button>
                         <button class="btn btn-danger" onclick="clearData()">
-                            <i class="fas fa-trash"></i> Cancella Dati Locali
+                            <i class="fas fa-trash"></i> Cancella
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab: Dati -->
-            <div id="data" class="tab-content">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-database"></i> Gestione Dati
-                    </h2>
-                    
-                    <div class="info-cards">
-                        <div class="info-card">
-                            <i class="fas fa-calendar-alt"></i>
-                            <h4 id="eventsCount">0</h4>
-                            <p>Eventi Totali</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-hdd"></i>
-                            <h4 id="storageUsed">0 KB</h4>
-                            <p>Spazio Utilizzato</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-sync"></i>
-                            <h4 id="lastSyncData">-</h4>
-                            <p>Ultima Sincronizzazione</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-cloud"></i>
-                            <h4>Online</h4>
-                            <p>Stato Server</p>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="backupData()">
-                            <i class="fas fa-download"></i> Backup Dati
-                        </button>
-                        <button class="btn btn-secondary" onclick="restoreData()">
-                            <i class="fas fa-upload"></i> Ripristina Backup
-                        </button>
-                        <button class="btn btn-danger" onclick="exportAllData()">
-                            <i class="fas fa-file-export"></i> Esporta Tutto
-                        </button>
-                    </div>
+            <div class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> Informazioni</h2>
                 </div>
-            </div>
-
-            <!-- Tab: Informazioni -->
-            <div id="about" class="tab-content">
-                <div class="settings-section">
-                    <h2 class="section-header">
-                        <i class="fas fa-info-circle"></i> Informazioni App
-                    </h2>
-                    
-                    <div class="info-cards">
-                        <div class="info-card">
-                            <i class="fas fa-code"></i>
-                            <h4>v1.0.0</h4>
-                            <p>Versione</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-calendar"></i>
-                            <h4>2024</h4>
-                            <p>Anno Sviluppo</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-users"></i>
-                            <h4>5BINF</h4>
-                            <p>Classe</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-heart"></i>
-                            <h4>Open Source</h4>
-                            <p>Licenza</p>
-                        </div>
+                <div class="card">
+                    <div class="info-row">
+                        <span>Versione</span>
+                        <span>v1.0.0</span>
                     </div>
-
-                    <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
-                        <h3 style="margin-bottom: var(--spacing-md);">Crediti</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
-                            Sviluppato per la classe 5BINF - Istituto Tecnico Informatico
-                        </p>
-                        <p style="color: var(--text-secondary);">
-                            <i class="fas fa-envelope"></i> Contatto: 
-                            <a href="mailto:supporto@5binf.it" style="color: var(--accent-primary);">supporto@5binf.it</a>
-                        </p>
+                    <div class="info-row">
+                        <span>Anno Scolastico</span>
+                        <span>2024/2025</span>
                     </div>
-
-                    <div class="btn-group" style="margin-top: var(--spacing-lg);">
-                        <button class="btn btn-primary" onclick="checkUpdates()">
-                            <i class="fas fa-sync"></i> Controlla Aggiornamenti
-                        </button>
-                        <button class="btn btn-secondary" onclick="showHelp()">
-                            <i class="fas fa-question-circle"></i> Guida
-                        </button>
+                    <div class="info-row">
+                        <span>Classe</span>
+                        <span>5BINF</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Licenza</span>
+                        <span>Open Source</span>
                     </div>
                 </div>
             </div>
         </main>
 
         <footer>
-            <p>Impostazioni • 5BINF • A.S. 2023/2024</p>
-            <p class="update-time">App versione 1.0.0</p>
+            <p>5BINF - A.S. 2024/2025</p>
         </footer>
     </div>
 
     <script>
-        // Tab switching
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Remove active class from all buttons and contents
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to current button and content
-                    this.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
-                });
+        function selectTheme(el) {
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('selected');
             });
-            
-            // Update data info
-            updateDataInfo();
-        });
-        
-        // Funzioni per i bottoni (simulate)
+            el.classList.add('selected');
+        }
+
         function saveProfile() {
-            alert('Profilo salvato con successo!');
+            const btn = event.target.closest('.btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Salvato';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-save"></i> Salva';
+            }, 2000);
         }
-        
-        function resetProfile() {
-            if (confirm('Ripristinare i dati del profilo ai valori predefiniti?')) {
-                alert('Profilo ripristinato');
-            }
+
+        function saveAppearance() {
+            const btn = event.target.closest('.btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Applicato';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Applica';
+            }, 2000);
         }
-        
-        function selectTheme(theme) {
-            document.querySelectorAll('.theme-option').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.theme-option').classList.add('selected');
-        }
-        
-        function applyAppearance() {
-            alert('Impostazioni aspetto applicate!');
-        }
-        
-        function resetAppearance() {
-            alert('Impostazioni aspetto ripristinate');
-        }
-        
+
         function saveNotifications() {
-            alert('Impostazioni notifiche salvate!');
+            const btn = event.target.closest('.btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Salvato';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-save"></i> Salva';
+            }, 2000);
         }
-        
-        function savePrivacy() {
-            alert('Impostazioni privacy salvate!');
+
+        function backupData() {
+            const data = {
+                events: [],
+                settings: {},
+                lastUpdate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backup_5binf.json';
+            a.click();
+            URL.revokeObjectURL(url);
         }
-        
+
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    alert('Backup ripristinato con successo');
+                }
+            };
+            input.click();
+        }
+
         function clearData() {
-            if (confirm('ATTENZIONE: Cancellare tutti i dati locali? Questa operazione è irreversibile.')) {
-                alert('Dati locali cancellati');
+            if (confirm('Cancellare tutti i dati locali?')) {
+                localStorage.clear();
+                alert('Dati cancellati');
+                location.reload();
             }
         }
-        
-        function updateDataInfo() {
-            // Simulate data
-            document.getElementById('eventsCount').textContent = Math.floor(Math.random() * 200) + 50;
-            document.getElementById('storageUsed').textContent = Math.floor(Math.random() * 1000) + ' KB';
-            
-            const now = new Date();
-            document.getElementById('lastSyncData').textContent = now.toLocaleTimeString('it-IT', {
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('eventsCount').textContent = Math.floor(Math.random() * 100) + 20;
+            document.getElementById('storageUsed').textContent = Math.floor(Math.random() * 500) + 50 + ' KB';
+            document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('it-IT', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-        }
-        
-        function backupData() {
-            alert('Backup dei dati creato con successo!');
-        }
-        
-        function restoreData() {
-            alert('Dati ripristinati dal backup');
-        }
-        
-        function exportAllData() {
-            alert('Tutti i dati esportati in formato JSON');
-        }
-        
-        function checkUpdates() {
-            alert('L'app è aggiornata all\'ultima versione!');
-        }
-        
-        function showHelp() {
-            alert('Guida dell\'applicazione - Consulta la documentazione completa');
-        }
+        });
     </script>
 </body>
 </html>

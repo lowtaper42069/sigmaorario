@@ -6,226 +6,332 @@
     <title>Calendario - 5BINF</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/calendario-simple.css">
-    <link rel="stylesheet" href="styles/notifications.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Stili aggiuntivi per il nuovo layout */
-        .calendar-layout {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-md);
+        :root {
+            --cal-bg: #0d1117;
+            --cal-header-bg: #161b22;
+            --cal-day-bg: #161b22;
+            --cal-border: #30363d;
+            --cal-text: #c9d1d9;
+            --cal-text-muted: #8b949e;
+            --cal-today-bg: #1f3a1f;
+            --cal-other-month: #21262d;
+            --cal-hover: #1c2128;
         }
 
-        @media (max-width: 1024px) {
-            .calendar-layout {
-                grid-template-columns: 1fr;
-            }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--cal-bg);
+            color: var(--cal-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
         }
 
-        .calendar-main {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        .calendar-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-md);
-            border: 1px solid var(--border-color);
+        header {
             text-align: center;
-            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--cal-border);
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-primary);
-        }
-
-        .stat-card i {
-            font-size: 2rem;
-            color: var(--accent-primary);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: block;
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: var(--spacing-xs);
-        }
-
-        .events-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
-        }
-
-        .sidebar-section {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-md);
-            border: 1px solid var(--border-color);
-        }
-
-        .sidebar-section h3 {
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-md);
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .important-dates {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-
-        .important-date {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm);
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            transition: all 0.3s ease;
-        }
-
-        .important-date:hover {
-            background: rgba(99, 102, 241, 0.1);
-            transform: translateX(5px);
-        }
-
-        .date-badge {
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
+        header h1 {
+            font-size: 1.75rem;
             font-weight: 600;
-            min-width: 60px;
-            text-align: center;
+            color: var(--cal-text);
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--cal-text-muted);
             font-size: 0.9rem;
-        }
-
-        .date-info {
-            flex: 1;
-        }
-
-        .date-info strong {
-            display: block;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-
-        .date-info span {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
+            margin-top: 0.5rem;
         }
 
         .calendar-controls {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            border: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-md);
+            padding: 1rem 1.5rem;
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
         }
 
-        .month-selector {
+        .month-nav {
             display: flex;
             align-items: center;
-            gap: var(--spacing-md);
+            gap: 1rem;
         }
 
-        .month-selector h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            min-width: 250px;
+        .month-nav h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            min-width: 200px;
             text-align: center;
         }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: transparent;
+            border: 1px solid var(--cal-border);
+            color: var(--cal-text);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .btn-icon:hover {
-            background: var(--accent-primary);
-            color: white;
-            transform: scale(1.1);
+            background: var(--cal-hover);
+            border-color: var(--cal-text-muted);
         }
 
         .calendar-actions {
             display: flex;
-            gap: var(--spacing-sm);
-            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
-        .calendar-container {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--cal-text);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--cal-hover);
+            border-color: var(--cal-text-muted);
+        }
+
+        .btn-primary {
+            background: #238636;
+            border-color: #238636;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+            border-color: #2ea043;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 0 0 8px 8px;
             overflow: hidden;
         }
 
         .calendar-header {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
+            background: var(--cal-header-bg);
+            border-bottom: 1px solid var(--cal-border);
         }
 
         .day-header {
-            padding: var(--spacing-sm);
+            padding: 0.75rem;
             text-align: center;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: var(--text-primary);
-            border-right: 1px solid var(--border-color);
+            color: var(--cal-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .day-header:last-child {
+        .calendar-day {
+            min-height: 100px;
+            padding: 0.5rem;
+            border-right: 1px solid var(--cal-border);
+            border-bottom: 1px solid var(--cal-border);
+            background: var(--cal-day-bg);
+            transition: background 0.15s;
+        }
+
+        .calendar-day:nth-child(7n) {
             border-right: none;
         }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            min-height: 500px;
+        .calendar-day:hover {
+            background: var(--cal-hover);
         }
 
-        /* Modal stili */
+        .calendar-day.other-month {
+            background: var(--cal-other-month);
+            opacity: 0.6;
+        }
+
+        .calendar-day.other-month:hover {
+            opacity: 0.8;
+        }
+
+        .calendar-day.today {
+            background: var(--cal-today-bg);
+        }
+
+        .day-number {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--cal-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-day.today .day-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #238636;
+            color: #fff;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+
+        .day-events {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .event {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .event-delete {
+            display: none;
+        }
+
+        .event-item {
+            padding: 0.75rem;
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-left: 3px solid #6e7681;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-item .date {
+            font-size: 0.75rem;
+            color: var(--cal-text-muted);
+        }
+
+        .event-item .title {
+            font-weight: 500;
+            color: var(--cal-text);
+            margin: 0.25rem 0;
+        }
+
+        .event-item .meta {
+            font-size: 0.75rem;
+            color: var(--cal-text-muted);
+        }
+
+        .content-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--cal-border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--cal-text);
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--cal-text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h4 i {
+            color: var(--cal-text-muted);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--cal-border);
+            font-size: 0.875rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span:first-child {
+            color: var(--cal-text-muted);
+        }
+
+        .info-row span:last-child {
+            color: var(--cal-text);
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quick-actions .btn {
+            justify-content: center;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -234,8 +340,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            animation: fadeIn 0.3s;
+            background: rgba(0, 0, 0, 0.7);
         }
 
         .modal.show {
@@ -245,117 +350,90 @@
         }
 
         .modal-content {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
             width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            animation: slideIn 0.3s;
+            max-width: 480px;
         }
 
         .modal-header {
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--cal-border);
         }
 
         .modal-header h3 {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .close-modal {
             background: none;
             border: none;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
+            color: var(--cal-text-muted);
+            font-size: 1.25rem;
             cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s;
+            padding: 0.25rem;
         }
 
         .close-modal:hover {
-            background: var(--bg-secondary);
-            color: var(--danger);
+            color: var(--cal-text);
         }
 
         .modal-body {
-            padding: var(--spacing-md);
+            padding: 1.25rem;
         }
 
         .modal-footer {
-            padding: var(--spacing-md);
-            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--cal-border);
             display: flex;
             justify-content: flex-end;
-            gap: var(--spacing-sm);
+            gap: 0.75rem;
         }
 
-        /* Form stili */
         .form-group {
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--cal-text-muted);
+            margin-bottom: 0.5rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s;
+            padding: 0.625rem 0.75rem;
+            background: var(--cal-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            color: var(--cal-text);
+            font-size: 0.875rem;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            border-color: #238636;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
+            gap: 1rem;
         }
 
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Color picker */
         .color-picker {
             display: flex;
-            gap: var(--spacing-sm);
-            margin-top: 8px;
+            gap: 0.5rem;
         }
 
         .color-picker input[type="radio"] {
@@ -363,165 +441,57 @@
         }
 
         .color-picker label {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            padding: 0;
-            margin: 0;
-        }
-
-        .color-picker input[type="radio"]:checked + label {
-            transform: scale(1.2);
-            border-color: white;
-            box-shadow: 0 0 0 2px var(--accent-primary);
-        }
-
-        /* Footer migliorato */
-        footer {
-            margin-top: var(--spacing-xl);
-            padding: var(--spacing-md);
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .footer-stats {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-sm);
-            flex-wrap: wrap;
-        }
-
-        .update-time {
-            margin-top: var(--spacing-xs);
-            font-size: 0.9rem;
-        }
-
-        .update-time strong {
-            color: var(--text-primary);
-        }
-
-        /* Animazioni */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Calendar day stili */
-        .calendar-day {
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            padding: 8px;
-            min-height: 100px;
-            position: relative;
-            background: var(--bg-card);
-            transition: all 0.2s ease;
-        }
-
-        .calendar-day:hover {
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-        .calendar-day:nth-child(7n) {
-            border-right: none;
-        }
-
-        .calendar-day.other-month {
-            opacity: 0.4;
-            background: var(--bg-secondary);
-        }
-
-        .calendar-day.today {
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        .day-number {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            text-align: right;
-        }
-
-        .calendar-day.today .day-number {
-            background: var(--success);
-            color: white;
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
-        }
-
-        /* Events in calendar */
-        .day-events {
-            margin-top: 4px;
-        }
-
-        .event {
-            font-size: 0.75rem;
-            padding: 3px 6px;
-            margin-bottom: 3px;
-            border-radius: 4px;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            padding-right: 20px;
+            border: 2px solid transparent;
         }
 
-        .event:hover {
-            transform: translateX(2px);
-            opacity: 0.9;
+        .color-picker input[type="radio"]:checked + label {
+            border-color: #fff;
         }
 
-        .event-delete {
-            position: absolute;
-            top: 2px;
-            right: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            font-size: 8px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            line-height: 1;
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--cal-border);
+            text-align: center;
+            color: var(--cal-text-muted);
+            font-size: 0.8rem;
         }
 
-        .event:hover .event-delete {
-            opacity: 1;
-        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
 
-        .event-delete:hover {
-            background: rgba(255, 255, 255, 0.3);
+            .calendar-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .month-nav h2 {
+                min-width: 160px;
+                font-size: 1rem;
+            }
+
+            .calendar-day {
+                min-height: 70px;
+                padding: 0.25rem;
+            }
+
+            .day-number {
+                font-size: 0.75rem;
+            }
+
+            .event {
+                font-size: 0.65rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -529,17 +499,12 @@
     <div class="container">
         <header>
             <h1>Calendario Scolastico</h1>
-            <nav class="main-nav">
-                <a href="index.html"><i class="fas fa-clock"></i> Orario</a>
-                <a href="materie.html"><i class="fas fa-book"></i> Materie</a>
-                <a href="calendario.html" class="active"><i class="fas fa-calendar"></i> Calendario</a>
-                <a href="impostazioni.html"><i class="fas fa-cog"></i> Impostazioni</a>
-            </nav>
+            <p>5BINF - A.S. 2024/2025</p>
         </header>
 
         <main>
             <div class="calendar-controls">
-                <div class="month-selector">
+                <div class="month-nav">
                     <button id="prevMonth" class="btn-icon" title="Mese precedente">
                         <i class="fas fa-chevron-left"></i>
                     </button>
@@ -550,302 +515,148 @@
                 </div>
                 
                 <div class="calendar-actions">
-                    <button id="todayBtn" class="btn btn-primary">
+                    <button id="todayBtn" class="btn">
                         <i class="fas fa-calendar-day"></i> Oggi
                     </button>
-                    <button id="exportBtn" class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Esporta
-                    </button>
-                    <button id="addEventBtn" class="btn btn-success">
+                    <button id="addEventBtn" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Aggiungi Evento
                     </button>
                 </div>
             </div>
 
-            <!-- Stats veloci -->
-            <div class="calendar-stats">
-                <div class="stat-card">
-                    <i class="fas fa-calendar-check"></i>
-                    <span class="stat-number" id="totalEvents">0</span>
-                    <span class="stat-label">Eventi totali</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-bell"></i>
-                    <span class="stat-number" id="upcomingEventsCount">0</span>
-                    <span class="stat-label">Eventi imminenti</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-file-signature"></i>
-                    <span class="stat-number" id="verificheCount">0</span>
-                    <span class="stat-label">Verifiche</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-flask"></i>
-                    <span class="stat-number" id="labCount">0</span>
-                    <span class="stat-label">Laboratori</span>
-                </div>
+            <div class="calendar-header">
+                <div class="day-header">Lun</div>
+                <div class="day-header">Mar</div>
+                <div class="day-header">Mer</div>
+                <div class="day-header">Gio</div>
+                <div class="day-header">Ven</div>
+                <div class="day-header">Sab</div>
+                <div class="day-header">Dom</div>
             </div>
 
-            <div class="calendar-layout">
-                <div class="calendar-main">
-                    <div class="calendar-container">
-                        <div class="calendar-header">
-                            <div class="day-header">Lunedì</div>
-                            <div class="day-header">Martedì</div>
-                            <div class="day-header">Mercoledì</div>
-                            <div class="day-header">Giovedì</div>
-                            <div class="day-header">Venerdì</div>
-                            <div class="day-header">Sabato</div>
-                            <div class="day-header">Domenica</div>
-                        </div>
-                        
-                        <div class="calendar-grid" id="calendarGrid">
-                            <!-- Calendario generato dinamicamente -->
-                        </div>
-                    </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Informazioni</h3>
                 </div>
 
-                <div class="events-sidebar">
-                    <div class="sidebar-section">
-                        <h3><i class="fas fa-bell"></i> Eventi Imminenti</h3>
-                        <div class="events-list" id="upcomingEvents">
-                            <div class="no-events">
-                                <i class="fas fa-calendar-plus"></i>
-                                <p>Nessun evento imminente</p>
-                            </div>
+                <div class="section-content">
+                    <div class="card">
+                        <h4><i class="fas fa-clock"></i> Statistiche</h4>
+                        <div class="info-row">
+                            <span>Eventi totali</span>
+                            <span id="eventCount">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Questo mese</span>
+                            <span id="monthCount">0</span>
                         </div>
                     </div>
 
-                    <div class="sidebar-section">
-                        <h3><i class="fas fa-star"></i> Date Importanti</h3>
-                        <div class="important-dates" id="importantDates">
-                            <div class="important-date">
-                                <div class="date-badge">15 Nov</div>
-                                <div class="date-info">
-                                    <strong>Scadenza Progetto</strong>
-                                    <span>Informatica</span>
-                                </div>
-                            </div>
-                            <div class="important-date">
-                                <div class="date-badge">20 Nov</div>
-                                <div class="date-info">
-                                    <strong>Verifica Sistemi</strong>
-                                    <span>Sistemi e Reti</span>
-                                </div>
-                            </div>
-                            <div class="important-date">
-                                <div class="date-badge">25 Nov</div>
-                                <div class="date-info">
-                                    <strong>Laboratorio</strong>
-                                    <span>Tecnologie e Progetti</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <h3><i class="fas fa-cog"></i> Azioni Rapide</h3>
+                    <div class="card">
+                        <h4><i class="fas fa-bolt"></i> Azioni Rapide</h4>
                         <div class="quick-actions">
-                            <button id="printBtn" class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;">
-                                <i class="fas fa-print"></i> Stampa Calendario
+                            <button id="exportBtn" class="btn">
+                                <i class="fas fa-download"></i> Esporta eventi
                             </button>
-                            <button id="clearFilters" class="btn btn-secondary" style="width: 100%;">
-                                <i class="fas fa-filter"></i> Pulisci Filtri
+                            <button id="printBtn" class="btn">
+                                <i class="fas fa-print"></i> Stampa calendario
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Evento -->
-            <div id="eventModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3><i class="fas fa-calendar-plus"></i> Nuovo Evento</h3>
-                        <button class="close-modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="eventForm">
-                            <div class="form-group">
-                                <label for="eventTitle"><i class="fas fa-heading"></i> Titolo *</label>
-                                <input type="text" id="eventTitle" placeholder="Es: Verifica di Matematica" required>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="eventDate"><i class="fas fa-calendar"></i> Data *</label>
-                                    <input type="date" id="eventDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="eventTime"><i class="fas fa-clock"></i> Ora</label>
-                                    <input type="time" id="eventTime">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="eventType"><i class="fas fa-tag"></i> Tipo</label>
-                                <select id="eventType">
-                                    <option value="verifica">Verifica</option>
-                                    <option value="compito">Compito</option>
-                                    <option value="progetto">Progetto</option>
-                                    <option value="laboratorio">Laboratorio</option>
-                                    <option value="riunione">Riunione</option>
-                                    <option value="altro">Altro</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="eventSubject"><i class="fas fa-book"></i> Materia</label>
-                                <select id="eventSubject">
-                                    <option value="">Nessuna materia specifica</option>
-                                    <option value="informatica">Informatica</option>
-                                    <option value="sistemi">Sistemi e Reti</option>
-                                    <option value="matematica">Matematica</option>
-                                    <option value="italiano">Lingua e Letteratura</option>
-                                    <option value="inglese">Lingua Inglese</option>
-                                    <option value="tecnologie">Tecnologie e Progetti</option>
-                                    <option value="storia">Storia</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="eventDescription"><i class="fas fa-align-left"></i> Note</label>
-                                <textarea id="eventDescription" rows="3" placeholder="Note aggiuntive..."></textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="fas fa-palette"></i> Colore</label>
-                                <div class="color-picker">
-                                    <input type="radio" name="eventColor" value="#6366f1" id="color1" checked>
-                                    <label for="color1" style="background-color: #6366f1;" title="Blu"></label>
-                                    
-                                    <input type="radio" name="eventColor" value="#22c55e" id="color2">
-                                    <label for="color2" style="background-color: #22c55e;" title="Verde"></label>
-                                    
-                                    <input type="radio" name="eventColor" value="#f59e0b" id="color3">
-                                    <label for="color3" style="background-color: #f59e0b;" title="Arancione"></label>
-                                    
-                                    <input type="radio" name="eventColor" value="#ef4444" id="color4">
-                                    <label for="color4" style="background-color: #ef4444;" title="Rosso"></label>
-                                    
-                                    <input type="radio" name="eventColor" value="#8b5cf6" id="color5">
-                                    <label for="color5" style="background-color: #8b5cf6;" title="Viola"></label>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary cancel-btn">Annulla</button>
-                        <button type="button" class="btn btn-success save-btn">Salva Evento</button>
                     </div>
                 </div>
             </div>
         </main>
 
         <footer>
-            <p>Calendario scolastico - 5BINF - A.S. 2023/2024</p>
-            <div class="footer-stats">
-                <span><i class="fas fa-sync-alt"></i> Sincronizzato: <strong id="lastSync">-</strong></span>
-                <span><i class="fas fa-calendar-alt"></i> Eventi totali: <strong id="footerEventCount">0</strong></span>
-                <span class="status-online"><i class="fas fa-circle"></i> Online</span>
-            </div>
+            <p>Calendario scolastico - Ultimo aggiornamento: <span id="lastSync">-</span></p>
         </footer>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuovo Evento</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label for="eventTitle">Titolo *</label>
+                        <input type="text" id="eventTitle" placeholder="Es: Verifica di Matematica" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventDate">Data *</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">Ora</label>
+                            <input type="time" id="eventTime">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventType">Tipo</label>
+                            <select id="eventType">
+                                <option value="verifica">Verifica</option>
+                                <option value="compito">Compito</option>
+                                <option value="progetto">Progetto</option>
+                                <option value="laboratorio">Laboratorio</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventSubject">Materia</label>
+                            <select id="eventSubject">
+                                <option value="">Nessuna</option>
+                                <option value="informatica">Informatica</option>
+                                <option value="sistemi">Sistemi e Reti</option>
+                                <option value="matematica">Matematica</option>
+                                <option value="italiano">Italiano</option>
+                                <option value="inglese">Inglese</option>
+                                <option value="storia">Storia</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventDescription">Note</label>
+                        <textarea id="eventDescription" rows="2" placeholder="Note aggiuntive..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Colore</label>
+                        <div class="color-picker">
+                            <input type="radio" name="eventColor" value="#6366f1" id="color1" checked>
+                            <label for="color1" style="background-color: #6366f1;"></label>
+                            
+                            <input type="radio" name="eventColor" value="#22c55e" id="color2">
+                            <label for="color2" style="background-color: #22c55e;"></label>
+                            
+                            <input type="radio" name="eventColor" value="#f59e0b" id="color3">
+                            <label for="color3" style="background-color: #f59e0b;"></label>
+                            
+                            <input type="radio" name="eventColor" value="#ef4444" id="color4">
+                            <label for="color4" style="background-color: #ef4444;"></label>
+                            
+                            <input type="radio" name="eventColor" value="#8b5cf6" id="color5">
+                            <label for="color5" style="background-color: #8b5cf6;"></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-btn">Annulla</button>
+                <button type="button" class="btn btn-primary save-btn">Salva</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/api.js"></script>
     <script src="js/calendario-simple.js"></script>
-    <script>
-        // Aggiungi stili per i bottoni
-        const style = document.createElement('style');
-        style.textContent = `
-            .btn {
-                padding: 10px 16px;
-                border: none;
-                border-radius: var(--radius-md);
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 0.9rem;
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.3s ease;
-            }
-            
-            .btn-primary {
-                background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-                color: white;
-            }
-            
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            }
-            
-            .btn-secondary {
-                background: var(--bg-secondary);
-                color: var(--text-primary);
-                border: 1px solid var(--border-color);
-            }
-            
-            .btn-secondary:hover {
-                background: rgba(99, 102, 241, 0.1);
-                transform: translateY(-2px);
-            }
-            
-            .btn-success {
-                background: var(--success);
-                color: white;
-            }
-            
-            .btn-success:hover {
-                background: #16a34a;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            }
-            
-            .status-online {
-                color: var(--success);
-                font-weight: 600;
-            }
-            
-            .status-online i {
-                font-size: 0.8rem;
-                margin-right: 4px;
-            }
-            
-            .no-events {
-                text-align: center;
-                padding: var(--spacing-lg) var(--spacing-md);
-                color: var(--text-secondary);
-            }
-            
-            .no-events i {
-                font-size: 3rem;
-                margin-bottom: var(--spacing-sm);
-                opacity: 0.2;
-            }
-            
-            .no-events p {
-                font-size: 1rem;
-                margin-bottom: var(--spacing-xs);
-            }
-            
-            .no-events small {
-                font-size: 0.85rem;
-                opacity: 0.7;
-            }
-            
-            .quick-actions {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-xs);
-            }
-            
-            .quick-actions .btn {
-                justify-content: center;
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
 </body>
 </html>
