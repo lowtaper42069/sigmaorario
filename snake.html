@@ -104,6 +104,47 @@
         .back-link:hover {
             color: var(--cal-text);
         }
+
+        .dpad {
+            display: none;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 5px;
+            margin-top: 1rem;
+            touch-action: none;
+        }
+
+        .dpad-btn {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 8px;
+            color: var(--cal-text);
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.1s;
+        }
+
+        .dpad-btn:active {
+            background: var(--cal-border);
+        }
+
+        .dpad-up { grid-column: 2; grid-row: 1; }
+        .dpad-left { grid-column: 1; grid-row: 2; }
+        .dpad-center { grid-column: 2; grid-row: 2; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+        .dpad-down { grid-column: 2; grid-row: 3; }
+
+        @media (max-width: 768px) {
+            .dpad {
+                display: grid;
+            }
+            .instructions {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -116,6 +157,13 @@
             <button class="btn secondary" onclick="resetGame()">Reset</button>
         </div>
         <p class="instructions">Usa le frecce direzionali o h/j/k/l (nvim) per muovere il serpente</p>
+        <div class="dpad">
+            <button class="dpad-btn dpad-up" oncontextmenu="return false;" ontouchstart="handleDirection('up')" onclick="handleDirection('up')"><i class="fas fa-chevron-up"></i></button>
+            <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="fas fa-chevron-left"></i></button>
+            <button class="dpad-btn dpad-center"></button>
+            <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="fas fa-chevron-right"></i></button>
+            <button class="dpad-btn dpad-down" oncontextmenu="return false;" ontouchstart="handleDirection('down')" onclick="handleDirection('down')"><i class="fas fa-chevron-down"></i></button>
+        </div>
     </div>
     <a href="index.html" class="back-link">← Torna all'orario</a>
 
@@ -238,6 +286,27 @@
             clearInterval(gameLoop);
             startBtn.textContent = 'Start';
             initGame();
+        }
+
+        function handleDirection(dir) {
+            if (!isRunning) {
+                startGame();
+            }
+            
+            switch (dir) {
+                case 'up':
+                    if (dy !== 1) { dx = 0; dy = -1; }
+                    break;
+                case 'down':
+                    if (dy !== -1) { dx = 0; dy = 1; }
+                    break;
+                case 'left':
+                    if (dx !== 1) { dx = -1; dy = 0; }
+                    break;
+                case 'right':
+                    if (dx !== -1) { dx = 1; dy = 0; }
+                    break;
+            }
         }
 
         document.addEventListener('keydown', (e) => {
