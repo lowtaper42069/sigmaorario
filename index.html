@@ -617,27 +617,10 @@
 
             <div class="section">
                 <div class="section-header">
-                    <h3>Statistiche</h3>
+                    <h3>Azioni</h3>
                 </div>
                 <div class="section-content">
                     <div class="card">
-                        <h4><i class="fas fa-clock"></i> Riepilogo</h4>
-                        <div class="info-row">
-                            <span>Ore settimanali</span>
-                            <span>36</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Laboratori</span>
-                            <span id="labCount">12</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Materie</span>
-                            <span id="subjectCount">8</span>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h4><i class="fas fa-bolt"></i> Azioni</h4>
                         <div class="quick-actions">
                             <button class="btn" onclick="showToday()">
                                 <i class="fas fa-calendar-day"></i> Mostra oggi
@@ -664,8 +647,26 @@
                 alert('Oggi non ci sono lezioni');
                 return;
             }
-            const headers = document.querySelectorAll('#scheduleTable th');
-            alert(`Oggi: ${headers[today].textContent}`);
+            
+            const isHighlighted = document.querySelector('#scheduleTable td.highlighted');
+            
+            if (isHighlighted) {
+                document.querySelectorAll('#scheduleTable td.highlighted').forEach(cell => {
+                    cell.classList.remove('today', 'highlighted');
+                });
+                return;
+            }
+            
+            const dayIndex = today;
+            const rows = document.querySelectorAll('#scheduleTable tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells[dayIndex]) {
+                    cells[dayIndex].classList.add('today', 'highlighted');
+                }
+            });
+            
+            document.querySelector('#scheduleTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function toggleLabs() {
