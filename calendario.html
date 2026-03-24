@@ -622,26 +622,53 @@
 
         const STORAGE_KEY = 'cal_events';
 
-        function loadEvents() {
+        async function loadEvents() {
             const saved = localStorage.getItem(STORAGE_KEY);
             events = saved ? JSON.parse(saved) : getDefaultEvents();
+            
+            if (isLoggedIn()) {
+                await loadFromDB();
+            }
+            
             saveEvents();
         }
 
-        function saveEvents() {
+        async function loadFromDB() {
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) return;
+            
+            const { data, error } = await supabaseClient
+                .from('eventi')
+                .select('*')
+                .order('data', { ascending: true });
+            
+            if (error) {
+                console.error('Errore caricamento eventi:', error);
+                return;
+            }
+            
+            if (data && data.length > 0) {
+                events = data.map(e => ({
+                    id: e.id,
+                    title: e.titolo,
+                    date: e.data,
+                    time: e.ora,
+                    type: e.tipo,
+                    subject: e.materia,
+                    notes: e.note,
+                    color: e.colore,
+                    userId: e.user_id
+                }));
+            }
+        }
+
+        async function saveEvents() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
             updateEventCount();
         }
 
         function getDefaultEvents() {
-            const today = new Date();
-            const y = today.getFullYear();
-            const m = today.getMonth();
-            return [
-                { id: 1, title: 'Verifica di Matematica', date: `${y}-${String(m+1).padStart(2,'0')}-15`, type: 'verifica', subject: 'matematica', color: '#ef4444' },
-                { id: 2, title: 'Laboratorio Informatica', date: `${y}-${String(m+1).padStart(2,'0')}-18`, type: 'laboratorio', subject: 'informatica', color: '#6366f1' },
-                { id: 3, title: 'Consegna Progetto', date: `${y}-${String(m+1).padStart(2,'0')}-20`, type: 'progetto', subject: 'sistemi', color: '#22c55e' },
-            ];
+            return [];
         }
 
         function updateEventCount() {
@@ -794,7 +821,7 @@
             openModal('eventModal');
         }
 
-        function saveEvent() {
+        async function saveEvent() {
             const id = document.getElementById('eventId').value;
             const eventData = {
                 title: document.getElementById('eventTitle').value.trim(),
@@ -808,14 +835,46 @@
 
             if (!eventData.title || !eventData.date) return;
 
+            const userId = sessionStorage.getItem('userId');
+
             if (id) {
                 const idx = events.findIndex(e => e.id === parseInt(id));
                 if (idx !== -1) {
                     events[idx] = { ...events[idx], ...eventData };
+                    
+                    if (isLoggedIn() && userId) {
+                        await supabaseClient
+                            .from('eventi')
+                            .update({
+                                titolo: eventData.title,
+                                data: eventData.date,
+                                ora: eventData.time,
+                                tipo: eventData.type,
+                                materia: eventData.subject,
+                                note: eventData.notes,
+                                colore: eventData.color
+                            })
+                            .eq('id', parseInt(id));
+                    }
                 }
             } else {
                 eventData.id = Date.now();
                 events.push(eventData);
+                
+                if (isLoggedIn() && userId) {
+                    await supabaseClient
+                        .from('eventi')
+                        .insert({
+                            titolo: eventData.title,
+                            data: eventData.date,
+                            ora: eventData.time,
+                            tipo: eventData.type,
+                            materia: eventData.subject,
+                            note: eventData.notes,
+                            colore: eventData.color,
+                            user_id: userId
+                        });
+                }
             }
 
             saveEvents();
@@ -823,8 +882,18 @@
             renderCalendar();
         }
 
-        function deleteEvent(id) {
+        async function deleteEvent(id) {
             if (!confirm('Eliminare questo evento?')) return;
+            
+            const userId = sessionStorage.getItem('userId');
+            
+            if (isLoggedIn() && userId) {
+                await supabaseClient
+                    .from('eventi')
+                    .delete()
+                    .eq('id', id);
+            }
+            
             events = events.filter(e => e.id !== id);
             saveEvents();
             closeModal('detailModal');
@@ -856,6 +925,8 @@
                     sessionStorage.setItem('loggedIn', 'true');
                     sessionStorage.setItem('userId', session.user.id);
                     sessionStorage.setItem('email', session.user.email);
+                    await loadFromDB();
+                    renderCalendar();
                 } else {
                     sessionStorage.removeItem('loggedIn');
                     sessionStorage.removeItem('userId');
