@@ -995,6 +995,15 @@
         loadEvents();
         updateAuthUI();
         renderCalendar();
+
+        // Sync eventi ogni 30 secondi se loggato
+        setInterval(async () => {
+            if (isLoggedIn()) {
+                await loadFromDB();
+                saveEvents();
+                renderCalendar();
+            }
+        }, 30000);
     </script>
 </body>
 </html>
