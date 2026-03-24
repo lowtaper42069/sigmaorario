@@ -1,135 +1,122 @@
-// Funzioni per l'evidenziazione in tempo reale
-const realtime = {
-    currentDayIndex: null,
-    currentHourIndex: null,
+// Orario completo hardcodato
+const ORE = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:10', '15:00'];
+const INIZIO = [8, 9, 10, 11, 12, 13, 14.167, 15];
+
+const ORARIO = {
+    0: ['Gestione Progetto LAB', 'Informatica LAB', 'Informatica', 'Sistemi e Reti LAB', 'Sistemi e Reti LAB', 'Storia', 'Lingua Inglese', 'Matematica'],
+    1: ['Informatica', 'Sistemi e Reti', 'Storia', 'Lingua Inglese', 'Tecnologie e Progetti LAB', 'Tecnologie e Progetti LAB', '', ''],
+    2: ['Informatica LAB', 'Informatica LAB', 'Lingua e Letteratura', 'Matematica', 'Gestione Progetto LAB', 'Gestione Progetto LAB', '', ''],
+    3: ['Lingua Inglese', 'Sistemi e Reti', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Informatica', '', ''],
+    4: ['Scienze Motorie', 'Scienze Motorie', 'Tecnologie e Progetti', 'Lingua e Letteratura', 'Matematica', 'Religione Cattolica', '', '']
+};
+
+const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
+
+function getIndiceGiorno() {
+    const g = new Date().getDay();
+    const m = [-1, 0, 1, 2, 3, 4, -1];
+    return m[g];
+}
+
+function getIndiceOra() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const t = h + m / 60;
     
-    // Inizializza l'evidenziazione
-    init: function() {
-        this.updateCurrentTime();
-        this.highlightCurrentDay();
-        this.highlightCurrentLesson();
-        
-        // Aggiorna ogni secondo
-        setInterval(() => {
-            this.updateCurrentTime();
-            this.highlightCurrentLesson();
-        }, 1000);
-        
-        // Aggiorna l'ora dell'ultimo aggiornamento ogni minuto
-        setInterval(() => {
-            utils.updateLastUpdateTime();
-        }, 60000);
-    },
+    for (let i = 0; i < INIZIO.length; i++) {
+        const fine = (i === 6) ? 15 : INIZIO[i] + 1;
+        if (t >= INIZIO[i] && t < fine) return i;
+    }
+    return -1;
+}
+
+function getProssimaLezione() {
+    const now = new Date();
+    const g = new Date().getDay();
+    const h = now.getHours() + now.getMinutes() / 60;
+    const mappa = [-1, 0, 1, 2, 3, 4, -1];
     
-    // Aggiorna l'ora corrente nell'header
-    updateCurrentTime: function() {
-        const now = new Date();
+    for (let d = 1; d <= 7; d++) {
+        const checkG = (g + d) % 7;
+        if (checkG === 0) continue;
         
-        // Aggiorna l'orologio
-        document.getElementById('currentTime').textContent = utils.formatTime(now);
+        const idx = mappa[checkG];
+        if (idx === -1) continue;
         
-        // Aggiorna il giorno
-        document.getElementById('currentDay').textContent = utils.formatDay(now);
-        
-        // Aggiorna l'ora e giorno corrente per l'evidenziazione
-        this.currentDayIndex = scheduleData.getCurrentDayIndex();
-        this.currentHourIndex = scheduleData.getCurrentHourIndex();
-        
-        // Aggiorna le informazioni della lezione corrente
-        this.updateCurrentLessonInfo();
-    },
-    
-    // Aggiorna le informazioni della lezione corrente
-    updateCurrentLessonInfo: function() {
-        const lessonNameElement = document.getElementById('lessonName');
-        const countdownElement = document.getElementById('countdownTimer');
-        
-        if (this.currentHourIndex !== -1 && this.currentDayIndex !== -1) {
-            const currentLesson = scheduleData.schedule[this.currentDayIndex][this.currentHourIndex];
-            
-            if (currentLesson && currentLesson.trim() !== '') {
-                lessonNameElement.textContent = currentLesson;
-                const timeLeft = utils.calculateTimeToNextLesson(this.currentDayIndex, this.currentHourIndex);
-                
-                if (timeLeft) {
-                    countdownElement.textContent = timeLeft;
-                    document.getElementById('countdown').style.display = 'block';
-                } else {
-                    document.getElementById('countdown').style.display = 'none';
-                }
-            } else {
-                lessonNameElement.textContent = 'Pausa';
-                countdownElement.textContent = '-';
-                document.getElementById('countdown').style.display = 'block';
-            }
-        } else {
-            lessonNameElement.textContent = 'Fuori dall\'orario scolastico';
-            countdownElement.textContent = '-';
-            document.getElementById('countdown').style.display = 'none';
-        }
-    },
-    
-    // Evidenzia il giorno corrente nell'header della tabella
-    highlightCurrentDay: function() {
-        // Rimuovi evidenziazione precedente
-        const dayHeaders = document.querySelectorAll('th:not(:first-child)');
-        dayHeaders.forEach(header => {
-            header.classList.remove('current-day-header');
-        });
-        
-        // Evidenzia il giorno corrente (aggiungi 1 perché la prima colonna è "Ora")
-        if (this.currentDayIndex !== -1) {
-            const currentDayHeader = document.querySelector(`th:nth-child(${this.currentDayIndex + 2})`);
-            if (currentDayHeader) {
-                currentDayHeader.classList.add('current-day-header');
-            }
-        }
-    },
-    
-    // Evidenzia la lezione corrente
-    highlightCurrentLesson: function() {
-        // Rimuovi evidenziazioni precedenti
-        const allCells = document.querySelectorAll('td');
-        allCells.forEach(cell => {
-            cell.classList.remove('current-hour', 'next-hour');
-        });
-        
-        // Evidenzia la lezione corrente
-        if (this.currentHourIndex !== -1 && this.currentDayIndex !== -1) {
-            // Trova la riga dell'ora corrente (aggiungi 1 perché la prima riga è l'header)
-            const row = document.querySelector(`tr:nth-child(${this.currentHourIndex + 2})`);
-            if (row) {
-                // Evidenzia la cella del giorno corrente (aggiungi 2 perché: 1 per l'header, 1 per la colonna "Ora")
-                const currentCell = row.querySelector(`td:nth-child(${this.currentDayIndex + 2})`);
-                if (currentCell) {
-                    currentCell.classList.add('current-hour');
-                }
-            }
-        }
-        
-        // Evidenzia anche la prossima lezione se esiste
-        this.highlightNextLesson();
-    },
-    
-    // Evidenzia la prossima lezione
-    highlightNextLesson: function() {
-        if (this.currentHourIndex !== -1 && this.currentDayIndex !== -1) {
-            const nextHourIndex = this.currentHourIndex + 1;
-            
-            // Controlla se c'è una lezione nell'ora successiva dello stesso giorno
-            if (nextHourIndex < scheduleData.hours.length) {
-                const nextLesson = scheduleData.schedule[this.currentDayIndex][nextHourIndex];
-                
-                if (nextLesson && nextLesson.trim() !== '') {
-                    const row = document.querySelector(`tr:nth-child(${nextHourIndex + 2})`);
-                    if (row) {
-                        const nextCell = row.querySelector(`td:nth-child(${this.currentDayIndex + 2})`);
-                        if (nextCell) {
-                            nextCell.classList.add('next-hour');
-                        }
-                    }
-                }
+        const inizio = d === 1 ? h + 0.5 : 8;
+        for (let i = 0; i < INIZIO.length; i++) {
+            if (d === 1 && INIZIO[i] <= h) continue;
+            const lez = ORARIO[idx][i];
+            if (lez && lez.trim() !== '') {
+                return { lezione: lez, giorno: NOME_GIORNI[idx], ora: ORE[i] };
             }
         }
     }
-};
+    return null;
+}
+
+function aggiornaInfo() {
+    const oraEl = document.getElementById('currentTime');
+    const giornoEl = document.getElementById('currentDay');
+    const lezEl = document.getElementById('currentLesson');
+    const proxEl = document.getElementById('nextLesson');
+    
+    const now = new Date();
+    oraEl.textContent = now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
+    giornoEl.textContent = now.toLocaleDateString('it-IT', {weekday: 'long'});
+    
+    const idxG = getIndiceGiorno();
+    const idxO = getIndiceOra();
+    
+    if (idxG === -1) {
+        const prox = getProssimaLezione();
+        if (prox) {
+            lezEl.textContent = 'Fuori orario';
+            proxEl.textContent = prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')';
+        } else {
+            lezEl.textContent = '-';
+            proxEl.textContent = '-';
+        }
+        return;
+    }
+    
+    const oggi = ORARIO[idxG];
+    
+    if (idxO !== -1) {
+        const lez = oggi[idxO];
+        lezEl.textContent = (lez && lez.trim()) ? lez : 'Pausa';
+        
+        let trovata = false;
+        for (let i = idxO + 1; i < oggi.length; i++) {
+            if (oggi[i] && oggi[i].trim()) {
+                proxEl.textContent = oggi[i];
+                trovata = true;
+                break;
+            }
+        }
+        if (!trovata) {
+            const prox = getProssimaLezione();
+            proxEl.textContent = prox ? prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')' : '-';
+        }
+    } else {
+        lezEl.textContent = 'Fuori orario';
+        let trovata = false;
+        for (let i = 0; i < oggi.length; i++) {
+            if (oggi[i] && oggi[i].trim()) {
+                proxEl.textContent = oggi[i];
+                trovata = true;
+                break;
+            }
+        }
+        if (!trovata) {
+            const prox = getProssimaLezione();
+            proxEl.textContent = prox ? prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')' : '-';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    aggiornaInfo();
+    setInterval(aggiornaInfo, 1000);
+});

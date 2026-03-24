@@ -175,9 +175,10 @@
         }
 
         table {
-            min-width: 600px;
+            width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            table-layout: fixed;
         }
 
         th, td {
@@ -221,12 +222,8 @@
             background: var(--cal-bg);
         }
 
-        td:not(:first-child) {
-            min-width: 90px;
-        }
-
-        th:not(:first-child) {
-            min-width: 90px;
+        td:not(:first-child), th:not(:first-child) {
+            width: 20%;
         }
 
         tr:last-child td {
@@ -647,96 +644,44 @@
         </footer>
     </div>
 
-    <script src="js/data.js"></script>
-    <script src="js/utils.js"></script>
+    <script src="js/realtime.js"></script>
     <script>
-        const schedule = [
-            [
-                ['Gestione Progetto LAB', 'Informatica', 'Informatica', 'Informatica', 'Storia', 'Lingua Inglese', 'Lingua Inglese', 'Matematica'],
-                ['Informatica LAB', 'Sistemi e Reti', 'Storia', 'Sistemi e Reti LAB', 'Lingua Inglese', 'Tecnologie e Progetti LAB', '', ''],
-                ['Informatica LAB', 'Informatica', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Gestione Progetto LAB', '', ''],
-                ['', 'Sistemi e Reti', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Gestione Progetto LAB', '', ''],
-                ['Sistemi e Reti LAB', 'Lingua Inglese', 'Matematica', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Religione Cattolica', '', '']
-            ]
-        ];
-
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('currentTime').textContent = 
-                now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
-            document.getElementById('currentDay').textContent = 
-                now.toLocaleDateString('it-IT', {weekday: 'long'});
-        }
-
-        function getCurrentLesson() {
-            const now = new Date();
-            const day = now.getDay();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            
-            if (day === 0 || day === 6) return null;
-            
-            const dayIndex = day - 1;
-            const timeSlots = [8, 9, 10, 11, 12, 13, 14.17, 15];
-            
-            for (let i = 0; i < timeSlots.length; i++) {
-                if (hours < timeSlots[i] || (hours === timeSlots[i] && minutes < 60)) {
-                    return i > 0 ? i - 1 : 0;
-                }
-            }
-            return null;
-        }
-
         function showToday() {
             const today = new Date().getDay();
             if (today === 0 || today === 6) {
                 alert('Oggi non ci sono lezioni');
                 return;
             }
-            const dayIndex = today;
             const headers = document.querySelectorAll('#scheduleTable th');
-            alert(`Oggi: ${headers[dayIndex].textContent}`);
+            alert(`Oggi: ${headers[today].textContent}`);
         }
 
         function toggleLabs() {
             const cells = document.querySelectorAll('td.lab');
             cells.forEach(cell => {
-                if (cell.style.opacity === '0.3') {
-                    cell.style.opacity = '1';
-                } else {
-                    cell.style.opacity = '0.3';
-                }
+                cell.style.opacity = cell.style.opacity === '0.3' ? '1' : '0.3';
             });
         }
 
         function exportSchedule() {
             let csv = [];
-            const rows = document.querySelectorAll('#scheduleTable tr');
-            rows.forEach(row => {
+            document.querySelectorAll('#scheduleTable tr').forEach(row => {
                 const rowData = [];
                 row.querySelectorAll('th, td').forEach(cell => {
                     rowData.push(cell.textContent.trim());
                 });
                 csv.push(rowData.join(','));
             });
-            
             const blob = new Blob([csv.join('\n')], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(blob);
             a.download = 'orario_5binf.csv';
             a.click();
-            URL.revokeObjectURL(url);
         }
 
         function printSchedule() {
             window.print();
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            updateTime();
-            setInterval(updateTime, 1000);
-        });
     </script>
 </body>
 </html>

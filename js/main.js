@@ -81,32 +81,21 @@ const scheduleData = {
         return map[day];
     },
     
-    // Ottieni l'indice dell'ora corrente
     getCurrentHourIndex: function() {
         const now = new Date();
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
         const currentTime = currentHour + currentMinute / 60;
         
-        // Orari di inizio lezioni in formato decimale
-        const startTimes = [8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.1667, 15.0]; // 14:10 = 14 + 10/60 = 14.1667
+        const startTimes = [8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.1667, 15.0];
         
         for (let i = 0; i < startTimes.length; i++) {
-            let endTime;
-            
-            if (i === 6) {
-                // Lezione speciale: 14:10 - 15:00 (50 minuti)
-                endTime = 15.0;
-            } else {
-                // Lezione normale: 1 ora
-                endTime = startTimes[i] + 1;
-            }
-            
-            if (currentTime >= startTimes[i] && currentTime < endTime) {
+            let endTime = (i === 6) ? 15.0 : startTimes[i] + 1;
+            if (currentTime >= startTimes[i] && currentTime <= endTime) {
                 return i;
             }
         }
         
-        return -1; // Fuori dall'orario scolastico
+        return -1;
     }
 };
