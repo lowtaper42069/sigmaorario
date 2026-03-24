@@ -373,6 +373,51 @@
             justify-content: center;
         }
 
+
+
+        .azioni-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .azioni-left, .azioni-right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .azioni-right {
+            gap: 0.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            background: var(--cal-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 6px;
+            color: var(--cal-text);
+            font-size: 0.875rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #238636;
+        }
+
+        .search-box input::placeholder {
+            color: var(--cal-text-muted);
+        }
+
+        .search-box .btn {
+            padding: 0.5rem 0.75rem;
+        }
+
         footer {
             margin-top: 3rem;
             padding-top: 1.5rem;
@@ -458,6 +503,10 @@
 
             .legend-item {
                 font-size: 0.75rem;
+            }
+
+            .azioni-container {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -617,16 +666,31 @@
 
             <div class="section">
                 <div class="section-header">
-                    <h3>Azioni</h3>
+                    <h3><i class="fas fa-bolt"></i> Azioni</h3>
                 </div>
-                <div class="section-content">
-                    <div class="card">
-                        <div class="quick-actions">
-                            <button class="btn" onclick="showToday()">
-                                <i class="fas fa-calendar-day"></i> Mostra oggi
-                            </button>
-                            <button class="btn" onclick="toggleLabs()">
-                                <i class="fas fa-flask"></i> Solo laboratori
+                <div class="card">
+                    <div class="azioni-container">
+                        <div class="azioni-left">
+                            <span style="font-size: 0.8rem; color: var(--cal-text-muted);">Azioni rapide:</span>
+                            <div class="quick-actions">
+                                <button class="btn" onclick="showToday()">
+                                    <i class="fas fa-calendar-day"></i> Mostra oggi
+                                </button>
+                                <button class="btn" onclick="toggleLabs()">
+                                    <i class="fas fa-flask"></i> Solo laboratori
+                                </button>
+                            </div>
+                        </div>
+                        <div class="azioni-right">
+                            <span style="font-size: 0.8rem; color: var(--cal-text-muted);">Cerca materia:</span>
+                            <div class="search-box">
+                                <input type="text" id="searchMateria" placeholder="Es: Matematica, Informatica...">
+                                <button class="btn" onclick="searchMateria()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <button class="btn" onclick="resetView()" style="margin-top: auto;">
+                                <i class="fas fa-undo"></i> Reset
                             </button>
                         </div>
                     </div>
@@ -674,6 +738,52 @@
             cells.forEach(cell => {
                 cell.style.opacity = cell.style.opacity === '0.3' ? '1' : '0.3';
             });
+        }
+
+        function searchMateria() {
+            const query = document.getElementById('searchMateria').value.trim().toLowerCase();
+            
+            const isHighlighted = document.querySelector('#scheduleTable td.search-highlight');
+            
+            if (isHighlighted) {
+                document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
+                    cell.classList.remove('today', 'search-highlight');
+                });
+            }
+            
+            if (!query) return;
+            
+            const cells = document.querySelectorAll('#scheduleTable td');
+            let found = false;
+            cells.forEach(cell => {
+                const text = cell.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    cell.classList.add('today', 'search-highlight');
+                    found = true;
+                }
+            });
+            
+            if (found) {
+                document.querySelector('#scheduleTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                alert('Nessuna materia trovata');
+            }
+        }
+
+        document.getElementById('searchMateria').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchMateria();
+            }
+        });
+
+        function resetView() {
+            document.querySelectorAll('#scheduleTable td.today, #scheduleTable td.search-highlight').forEach(cell => {
+                cell.classList.remove('today', 'highlighted', 'search-highlight');
+            });
+            document.querySelectorAll('td.lab').forEach(cell => {
+                cell.style.opacity = '1';
+            });
+            document.getElementById('searchMateria').value = '';
         }
 
         function exportSchedule() {
