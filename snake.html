@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake - Sigmaorario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cal-bg: #0d1117;
+            --cal-header-bg: #161b22;
+            --cal-border: #30363d;
+            --cal-text: #e6edf3;
+            --cal-text-muted: #8b949e;
+            --cal-accent: #238636;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--cal-bg);
+            color: var(--cal-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--cal-text);
+        }
+
+        .game-container {
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #gameCanvas {
+            background: #000;
+            border: 2px solid var(--cal-border);
+            border-radius: 4px;
+        }
+
+        .score {
+            font-size: 1.25rem;
+            color: var(--cal-text);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: var(--cal-accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn.secondary {
+            background: var(--cal-border);
+        }
+
+        .instructions {
+            color: var(--cal-text-muted);
+            font-size: 0.8rem;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .back-link {
+            margin-top: 1rem;
+            color: var(--cal-text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            color: var(--cal-text);
+        }
+    </style>
+</head>
+<body>
+    <h1>🐍 Snake</h1>
+    <div class="game-container">
+        <div class="score">Punteggio: <span id="score">0</span></div>
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+        <div class="controls">
+            <button class="btn" id="startBtn" onclick="startGame()">Start</button>
+            <button class="btn secondary" onclick="resetGame()">Reset</button>
+        </div>
+        <p class="instructions">Usa le frecce direzionali o h/j/k/l (nvim) per muovere il serpente</p>
+    </div>
+    <a href="index.html" class="back-link">← Torna all'orario</a>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const startBtn = document.getElementById('startBtn');
+
+        const gridSize = 15;
+        const tileCount = canvas.width / gridSize;
+
+        let snake = [];
+        let food = { x: 10, y: 10 };
+        let dx = 0;
+        let dy = 0;
+        let score = 0;
+        let gameLoop = null;
+        let isRunning = false;
+
+        function initGame() {
+            snake = [
+                { x: 10, y: 10 },
+                { x: 9, y: 10 },
+                { x: 8, y: 10 }
+            ];
+            score = 0;
+            dx = 1;
+            dy = 0;
+            scoreElement.textContent = score;
+            placeFood();
+            draw();
+        }
+
+        function placeFood() {
+            food.x = Math.floor(Math.random() * tileCount);
+            food.y = Math.floor(Math.random() * tileCount);
+            snake.forEach(segment => {
+                if (segment.x === food.x && segment.y === food.y) {
+                    placeFood();
+                }
+            });
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#238636';
+            snake.forEach((segment, index) => {
+                ctx.fillRect(
+                    segment.x * gridSize,
+                    segment.y * gridSize,
+                    gridSize - 2,
+                    gridSize - 2
+                );
+            });
+
+            ctx.fillStyle = '#f85149';
+            ctx.fillRect(
+                food.x * gridSize,
+                food.y * gridSize,
+                gridSize - 2,
+                gridSize - 2
+            );
+        }
+
+        function update() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                gameOver();
+                return;
+            }
+
+            for (let i = 0; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOver();
+                    return;
+                }
+            }
+
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                scoreElement.textContent = score;
+                placeFood();
+            } else {
+                snake.pop();
+            }
+
+            draw();
+        }
+
+        function gameOver() {
+            isRunning = false;
+            clearInterval(gameLoop);
+            startBtn.textContent = 'Start';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f85149';
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2);
+        }
+
+        function startGame() {
+            if (isRunning) {
+                return;
+            }
+            isRunning = true;
+            initGame();
+            startBtn.textContent = 'Pausa';
+            gameLoop = setInterval(update, 100);
+        }
+
+        function resetGame() {
+            isRunning = false;
+            clearInterval(gameLoop);
+            startBtn.textContent = 'Start';
+            initGame();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+
+            if (!isRunning) {
+                if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'k', 'j', 'h', 'l'].includes(key)) {
+                    startGame();
+                    if (key === 'arrowup' || key === 'k') { dx = 0; dy = -1; }
+                    else if (key === 'arrowdown' || key === 'j') { dx = 0; dy = 1; }
+                    else if (key === 'arrowleft' || key === 'h') { dx = -1; dy = 0; }
+                    else if (key === 'arrowright' || key === 'l') { dx = 1; dy = 0; }
+                }
+                return;
+            }
+
+            switch (key) {
+                case 'arrowup':
+                case 'k':
+                    if (dy !== 1) { dx = 0; dy = -1; }
+                    break;
+                case 'arrowdown':
+                case 'j':
+                    if (dy !== -1) { dx = 0; dy = 1; }
+                    break;
+                case 'arrowleft':
+                case 'h':
+                    if (dx !== 1) { dx = -1; dy = 0; }
+                    break;
+                case 'arrowright':
+                case 'l':
+                    if (dx !== -1) { dx = 1; dy = 0; }
+                    break;
+            }
+        });
+
+        initGame();
+    </script>
+</body>
+</html>

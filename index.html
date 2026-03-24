@@ -29,42 +29,39 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0.75rem;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--cal-border);
         }
 
         header h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: var(--cal-text);
             letter-spacing: -0.02em;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .main-nav {
-            display: flex;
-            justify-content: center;
+            display: inline-flex;
             gap: 0.5rem;
             padding: 0.5rem;
             background: var(--cal-header-bg);
             border-radius: 8px;
             border: 1px solid var(--cal-border);
-            max-width: 300px;
-            margin: 0 auto;
         }
 
         .main-nav a {
             color: var(--cal-text-muted);
             text-decoration: none;
-            padding: 0.5rem 1.5rem;
+            padding: 0.4rem 1rem;
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
 
@@ -130,12 +127,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-bottom: 1px solid var(--cal-border);
         }
 
         .schedule-header h2 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
         }
 
@@ -463,12 +460,27 @@
                 font-size: 0.75rem;
             }
         }
+
+        .easter-egg {
+            position: fixed;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.7rem;
+            color: var(--cal-text-muted);
+            opacity: 0.3;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .easter-egg:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Orario Scolastico</h1>
+              <h1>Sigmaorario</h1>
             <nav class="main-nav">
                 <a href="index.html" class="active">Orario</a>
                 <a href="calendario.html">Calendario</a>
@@ -683,6 +695,7 @@
             window.print();
         }
     </script>
+    <a href="snake.html" class="easter-egg">🐍</a>
 </body>
 </html>
  
