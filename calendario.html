@@ -502,6 +502,9 @@
                 <button class="btn btn-primary admin-only" id="addEventBtn" style="display: none;">
                     <i class="fas fa-plus"></i> Aggiungi
                 </button>
+                <button class="btn admin-only" id="syncBtn" style="display: none;" onclick="syncEvents()">
+                    <i class="fas fa-sync-alt"></i> Sync
+                </button>
                 <a href="login.html" class="btn guest-only" id="loginBtn">
                     <i class="fas fa-sign-in-alt"></i> Accedi
                 </a>
@@ -886,17 +889,31 @@
             if (!confirm('Eliminare questo evento?')) return;
             
             const userId = sessionStorage.getItem('userId');
+            const numericId = Number(id);
             
             if (isLoggedIn() && userId) {
-                await supabaseClient
+                const { error } = await supabaseClient
                     .from('eventi')
                     .delete()
-                    .eq('id', id);
+                    .eq('id', numericId);
+                
+                if (error) {
+                    console.error('Errore eliminazione:', error);
+                    alert('Errore nell\'eliminazione');
+                    return;
+                }
             }
             
-            events = events.filter(e => e.id !== id);
+            events = events.filter(e => Number(e.id) !== numericId);
             saveEvents();
             closeModal('detailModal');
+            renderCalendar();
+        }
+
+        async function syncEvents() {
+            if (!isLoggedIn()) return;
+            await loadFromDB();
+            saveEvents();
             renderCalendar();
         }
 
@@ -992,9 +1009,10 @@
         });
 
         // Init
-        loadEvents();
-        updateAuthUI();
-        renderCalendar();
+        updateAuthUI().then(() => {
+            loadEvents();
+            renderCalendar();
+        });
 
         // Sync eventi ogni 30 secondi se loggato
         setInterval(async () => {
