@@ -182,8 +182,8 @@
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required autocomplete="username" placeholder="Inserisci username">
+                    <label for="username">Email</label>
+                    <input type="email" id="username" required autocomplete="email" placeholder="Inserisci email">
                 </div>
 
                 <div class="form-group">
@@ -205,6 +205,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script>
         const form = document.getElementById('loginForm');
         const errorMsg = document.getElementById('errorMsg');
@@ -213,10 +215,10 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
-            if (!username || !password) {
+            if (!email || !password) {
                 errorMsg.textContent = 'Compila tutti i campi';
                 errorMsg.classList.add('show');
                 return;
@@ -227,25 +229,22 @@
             errorMsg.classList.remove('show');
 
             try {
-                const response = await fetch('api/login.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
                 });
 
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    sessionStorage.setItem('loggedIn', 'true');
-                    sessionStorage.setItem('username', data.user.username);
-                    sessionStorage.setItem('role', data.user.role);
-                    window.location.href = 'calendario.html';
-                } else {
-                    errorMsg.textContent = data.error || 'Credenziali non valide';
+                if (error) {
+                    errorMsg.textContent = error.message === 'Invalid login credentials' 
+                        ? 'Credenziali non valide' 
+                        : error.message;
                     errorMsg.classList.add('show');
                     document.getElementById('password').value = '';
+                } else {
+                    sessionStorage.setItem('loggedIn', 'true');
+                    sessionStorage.setItem('userId', data.user.id);
+                    sessionStorage.setItem('email', data.user.email);
+                    window.location.href = 'calendario.html';
                 }
             } catch (err) {
                 errorMsg.textContent = 'Errore di connessione';

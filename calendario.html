@@ -614,6 +614,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script>
         let currentDate = new Date();
         let events = [];
@@ -848,17 +850,16 @@
 
         async function updateAuthUI() {
             try {
-                const response = await fetch('api/check_auth.php');
-                const data = await response.json();
+                const { data: { session } } = await supabaseClient.auth.getSession();
 
-                if (data.logged_in) {
+                if (session) {
                     sessionStorage.setItem('loggedIn', 'true');
-                    sessionStorage.setItem('username', data.user.username);
-                    sessionStorage.setItem('role', data.user.role);
+                    sessionStorage.setItem('userId', session.user.id);
+                    sessionStorage.setItem('email', session.user.email);
                 } else {
                     sessionStorage.removeItem('loggedIn');
-                    sessionStorage.removeItem('username');
-                    sessionStorage.removeItem('role');
+                    sessionStorage.removeItem('userId');
+                    sessionStorage.removeItem('email');
                 }
             } catch (err) {
                 // Mantieni stato attuale in caso di errore
@@ -884,11 +885,11 @@
                 logout.onclick = async (e) => {
                     e.preventDefault();
                     try {
-                        await fetch('api/logout.php', { method: 'POST' });
+                        await supabaseClient.auth.signOut();
                     } catch (err) {}
                     sessionStorage.removeItem('loggedIn');
-                    sessionStorage.removeItem('username');
-                    sessionStorage.removeItem('role');
+                    sessionStorage.removeItem('userId');
+                    sessionStorage.removeItem('email');
                     window.location.reload();
                 };
                 nav.appendChild(logout);
