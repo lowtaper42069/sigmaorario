@@ -1,6 +1,6 @@
-// Orario completo hardcodato
 const ORE = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:10', '15:00'];
 const INIZIO = [8, 9, 10, 11, 12, 13, 14.167, 15];
+const FINE = [9, 10, 11, 12, 13, 14, 15, 16];
 
 const ORARIO = {
     0: ['Gestione Progetto LAB', 'Informatica LAB', 'Informatica', 'Sistemi e Reti LAB', 'Sistemi e Reti LAB', 'Storia', 'Inglese', 'Matematica'],
@@ -12,48 +12,26 @@ const ORARIO = {
 
 const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
 
-function getIndiceGiorno() {
+function getGiornoIndex() {
     const g = new Date().getDay();
-    const m = [-1, 0, 1, 2, 3, 4, -1];
-    return m[g];
+    return [-1, 0, 1, 2, 3, 4, -1][g];
 }
 
-function getIndiceOra() {
-    const now = new Date();
-    const h = now.getHours();
-    const m = now.getMinutes();
+function getUltimaOraIndex(idxG) {
+    if (idxG === 0) return 7;
+    return 5;
+}
+
+function getOraIndex() {
+    const h = new Date().getHours();
+    const m = new Date().getMinutes();
     const t = h + m / 60;
     
     for (let i = 0; i < INIZIO.length; i++) {
-        const fine = (i === 6) ? 15 : INIZIO[i] + 1;
+        const fine = FINE[i];
         if (t >= INIZIO[i] && t < fine) return i;
     }
     return -1;
-}
-
-function getProssimaLezione() {
-    const now = new Date();
-    const g = new Date().getDay();
-    const h = now.getHours() + now.getMinutes() / 60;
-    const mappa = [-1, 0, 1, 2, 3, 4, -1];
-    
-    for (let d = 1; d <= 7; d++) {
-        const checkG = (g + d) % 7;
-        if (checkG === 0) continue;
-        
-        const idx = mappa[checkG];
-        if (idx === -1) continue;
-        
-        const inizio = d === 1 ? h + 0.5 : 8;
-        for (let i = 0; i < INIZIO.length; i++) {
-            if (d === 1 && INIZIO[i] <= h) continue;
-            const lez = ORARIO[idx][i];
-            if (lez && lez.trim() !== '') {
-                return { lezione: lez, giorno: NOME_GIORNI[idx], ora: ORE[i] };
-            }
-        }
-    }
-    return null;
 }
 
 function aggiornaInfo() {
@@ -66,52 +44,58 @@ function aggiornaInfo() {
     oraEl.textContent = now.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
     giornoEl.textContent = now.toLocaleDateString('it-IT', {weekday: 'long'});
     
-    const idxG = getIndiceGiorno();
-    const idxO = getIndiceOra();
+    const idxG = getGiornoIndex();
+    const idxO = getOraIndex();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const ora = h + m / 60;
     
     if (idxG === -1) {
-        const prox = getProssimaLezione();
-        if (prox) {
-            lezEl.textContent = 'Fuori orario';
-            proxEl.textContent = prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')';
-        } else {
-            lezEl.textContent = '-';
-            proxEl.textContent = '-';
-        }
+        lezEl.textContent = '-';
+        proxEl.textContent = 'Nessuna lezione';
         return;
     }
     
     const oggi = ORARIO[idxG];
+    const ultimaOraIdx = getUltimaOraIndex(idxG);
+    const fineLezioni = FINE[ultimaOraIdx];
     
-    if (idxO !== -1) {
-        const lez = oggi[idxO];
-        lezEl.textContent = (lez && lez.trim()) ? lez : 'Pausa';
+    if (ora < 8) {
+        lezEl.textContent = '-';
+        const prima = oggi[0];
+        proxEl.textContent = prima ? prima + ' (8:00)' : '-';
+    } else if (idxO !== -1) {
+        lezEl.textContent = oggi[idxO] || 'Pausa';
         
         let trovata = false;
-        for (let i = idxO + 1; i < oggi.length; i++) {
+        for (let i = idxO + 1; i <= ultimaOraIdx; i++) {
             if (oggi[i] && oggi[i].trim()) {
-                proxEl.textContent = oggi[i];
+                proxEl.textContent = oggi[i] + ' (' + ORE[i] + ')';
                 trovata = true;
                 break;
             }
         }
         if (!trovata) {
-            const prox = getProssimaLezione();
-            proxEl.textContent = prox ? prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')' : '-';
+            proxEl.textContent = '-';
         }
     } else {
-        lezEl.textContent = 'Fuori orario';
+        lezEl.textContent = '-';
+        
+        const prossimoG = (idxG + 1) % 5;
+        const prossimo = ORARIO[prossimoG];
+        const nomeProssimo = NOME_GIORNI[prossimoG];
+        
         let trovata = false;
-        for (let i = 0; i < oggi.length; i++) {
-            if (oggi[i] && oggi[i].trim()) {
-                proxEl.textContent = oggi[i];
+        const prossimaIdx = getUltimaOraIndex(prossimoG);
+        for (let i = 0; i <= prossimaIdx; i++) {
+            if (prossimo[i] && prossimo[i].trim()) {
+                proxEl.textContent = prossimo[i] + ' (' + nomeProssimo + ' ' + ORE[i] + ')';
                 trovata = true;
                 break;
             }
         }
         if (!trovata) {
-            const prox = getProssimaLezione();
-            proxEl.textContent = prox ? prox.lezione + ' (' + prox.giorno + ' ' + prox.ora + ')' : '-';
+            proxEl.textContent = '-';
         }
     }
 }
