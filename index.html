@@ -233,17 +233,6 @@
 
         td.lab {
             position: relative;
-            background: rgba(240, 136, 62, 0.08);
-        }
-
-        td.lab::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #f0883e;
         }
 
         td.lab::after {
@@ -255,6 +244,20 @@
             height: 6px;
             background: #f0883e;
             border-radius: 50%;
+        }
+
+        td.lab.lab-highlight {
+            background: rgba(240, 136, 62, 0.15);
+        }
+
+        td.lab.lab-highlight::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #f0883e;
         }
 
         td.empty {
@@ -568,7 +571,7 @@
                                 <td class="lab">Gestione Progetto LAB</td>
                                 <td>Informatica</td>
                                 <td class="lab">Informatica LAB</td>
-                                <td>Lingua Inglese</td>
+                                <td>Inglese</td>
                                 <td>Scienze Motorie</td>
                             </tr>
                             <tr>
@@ -583,17 +586,17 @@
                                 <td>10:00 - 11:00</td>
                                 <td>Informatica</td>
                                 <td>Storia</td>
-                                <td>Lingua e Letteratura</td>
-                                <td>Lingua e Letteratura</td>
+                                <td>Italiano</td>
+                                <td>Italiano</td>
                                 <td>Tecnologie e Progetti</td>
                             </tr>
                             <tr>
                                 <td>11:00 - 12:00</td>
                                 <td class="lab">Sistemi e Reti LAB</td>
-                                <td>Lingua Inglese</td>
+                                <td>Inglese</td>
                                 <td>Matematica</td>
-                                <td>Lingua e Letteratura</td>
-                                <td>Lingua e Letteratura</td>
+                                <td>Italiano</td>
+                                <td>Italiano</td>
                             </tr>
                             <tr>
                                 <td>12:00 - 13:00</td>
@@ -613,7 +616,7 @@
                             </tr>
                             <tr>
                                 <td>14:10 - 15:00</td>
-                                <td>Lingua Inglese</td>
+                                <td>Inglese</td>
                                 <td class="empty">-</td>
                                 <td class="empty">-</td>
                                 <td class="empty">-</td>
@@ -735,8 +738,13 @@
 
         function toggleLabs() {
             const cells = document.querySelectorAll('td.lab');
+            const isActive = cells[0]?.classList.contains('lab-highlight');
             cells.forEach(cell => {
-                cell.style.opacity = cell.style.opacity === '0.3' ? '1' : '0.3';
+                if (isActive) {
+                    cell.classList.remove('lab-highlight');
+                } else {
+                    cell.classList.add('lab-highlight');
+                }
             });
         }
 
@@ -781,7 +789,7 @@
                 cell.classList.remove('today', 'highlighted', 'search-highlight');
             });
             document.querySelectorAll('td.lab').forEach(cell => {
-                cell.style.opacity = '1';
+                cell.classList.remove('lab-highlight');
             });
             document.getElementById('searchMateria').value = '';
         }

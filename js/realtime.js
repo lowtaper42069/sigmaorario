@@ -3,11 +3,11 @@ const ORE = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:10', '15:00
 const INIZIO = [8, 9, 10, 11, 12, 13, 14.167, 15];
 
 const ORARIO = {
-    0: ['Gestione Progetto LAB', 'Informatica LAB', 'Informatica', 'Sistemi e Reti LAB', 'Sistemi e Reti LAB', 'Storia', 'Lingua Inglese', 'Matematica'],
-    1: ['Informatica', 'Sistemi e Reti', 'Storia', 'Lingua Inglese', 'Tecnologie e Progetti LAB', 'Tecnologie e Progetti LAB', '', ''],
-    2: ['Informatica LAB', 'Informatica LAB', 'Lingua e Letteratura', 'Matematica', 'Gestione Progetto LAB', 'Gestione Progetto LAB', '', ''],
-    3: ['Lingua Inglese', 'Sistemi e Reti', 'Lingua e Letteratura', 'Lingua e Letteratura', 'Tecnologie e Progetti', 'Informatica', '', ''],
-    4: ['Scienze Motorie', 'Scienze Motorie', 'Tecnologie e Progetti', 'Lingua e Letteratura', 'Matematica', 'Religione Cattolica', '', '']
+    0: ['Gestione Progetto LAB', 'Informatica LAB', 'Informatica', 'Sistemi e Reti LAB', 'Sistemi e Reti LAB', 'Storia', 'Inglese', 'Matematica'],
+    1: ['Informatica', 'Sistemi e Reti', 'Storia', 'Inglese', 'Tecnologie e Progetti LAB', 'Tecnologie e Progetti LAB', '', ''],
+    2: ['Informatica LAB', 'Informatica LAB', 'Italiano', 'Matematica', 'Gestione Progetto LAB', 'Gestione Progetto LAB', '', ''],
+    3: ['Inglese', 'Sistemi e Reti', 'Italiano', 'Italiano', 'Tecnologie e Progetti', 'Informatica', '', ''],
+    4: ['Scienze Motorie', 'Scienze Motorie', 'Tecnologie e Progetti', 'Italiano', 'Matematica', 'Religione Cattolica', '', '']
 };
 
 const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
