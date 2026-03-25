@@ -204,6 +204,16 @@
         .dpad-right { grid-column: 3; grid-row: 2; }
         .dpad-down { grid-column: 2; grid-row: 3; }
 
+        .speed-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
         @media (max-width: 768px) {
             .dpad {
                 display: grid;
@@ -222,6 +232,7 @@
         <div class="controls">
             <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
             <button class="btn secondary" onclick="resetGame()">Reset</button>
+            <button class="btn secondary speed-btn" onclick="showSettings()" title="Velocità"><i class="fas fa-tachometer-alt"></i></button>
         </div>
         <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente</p>
         <div class="dpad">
@@ -285,6 +296,11 @@
             settingsMenu.classList.remove('show');
             settingsOverlay.classList.remove('show');
         });
+
+        window.showSettings = function() {
+            settingsMenu.classList.add('show');
+            settingsOverlay.classList.add('show');
+        };
 
         window.setSpeed = function(speed, btn) {
             gameSpeed = speed;
