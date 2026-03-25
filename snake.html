@@ -172,10 +172,26 @@
             color: var(--cal-text);
         }
 
+        .mobile-back {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: var(--cal-text-muted);
+            text-decoration: none;
+            font-size: 1.25rem;
+            opacity: 0.3;
+            z-index: 50;
+        }
+
+        .mobile-back:hover {
+            opacity: 1;
+        }
+
         .dpad {
             display: none;
             grid-template-columns: repeat(3, 50px);
-            grid-template-rows: repeat(3, 50px);
+            grid-template-rows: repeat(2, 50px);
             gap: 5px;
             margin-top: 1rem;
             touch-action: none;
@@ -202,7 +218,7 @@
         .dpad-left { grid-column: 1; grid-row: 2; }
         .dpad-center { grid-column: 2; grid-row: 2; }
         .dpad-right { grid-column: 3; grid-row: 2; }
-        .dpad-down { grid-column: 2; grid-row: 3; }
+        .dpad-down { grid-column: 2; grid-row: 2; }
 
         .speed-btn {
             width: 40px;
@@ -215,11 +231,23 @@
         }
 
         @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            .controls {
+                order: -1;
+            }
             .dpad {
                 display: grid;
             }
             .instructions {
                 display: none;
+            }
+            .back-link {
+                display: none;
+            }
+            .mobile-back {
+                display: block;
             }
         }
     </style>
@@ -238,12 +266,12 @@
         <div class="dpad">
             <button class="dpad-btn dpad-up" oncontextmenu="return false;" ontouchstart="handleDirection('up')" onclick="handleDirection('up')"><i class="fas fa-chevron-up"></i></button>
             <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="fas fa-chevron-left"></i></button>
-            <button class="dpad-btn dpad-center"></button>
-            <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="fas fa-chevron-right"></i></button>
             <button class="dpad-btn dpad-down" oncontextmenu="return false;" ontouchstart="handleDirection('down')" onclick="handleDirection('down')"><i class="fas fa-chevron-down"></i></button>
+            <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
     <a href="index.html" class="back-link">← Torna all'orario</a>
+    <a href="index.html" class="mobile-back"><i class="fas fa-arrow-left"></i></a>
 
     <div class="settings-overlay" id="settingsOverlay"></div>
     <div class="settings-menu" id="settingsMenu">
@@ -271,6 +299,7 @@
         let gameLoop = null;
         let isRunning = false;
         let gameSpeed = 100;
+        let highScore = 0;
 
         let settingsTimer = null;
         const scoreEl = document.getElementById('scoreEl');
@@ -402,12 +431,20 @@
             isRunning = false;
             clearInterval(gameLoop);
             startBtn.textContent = 'Start';
+            if (score > highScore) {
+                highScore = score;
+            }
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#f85149';
             ctx.font = '24px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2);
+            if (highScore > 0) {
+                ctx.font = '14px sans-serif';
+                ctx.fillStyle = '#8b949e';
+                ctx.fillText('Best: ' + highScore, canvas.width / 2, canvas.height / 2 + 30);
+            }
         }
 
         function startGame(saveDirection = false) {
