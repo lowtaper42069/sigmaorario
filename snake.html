@@ -220,6 +220,8 @@
         .dpad-right { grid-column: 3; grid-row: 2; }
         .dpad-down { grid-column: 2; grid-row: 2; }
 
+        .dpad .dpad-center { display: none; }
+
         .speed-btn {
             width: 40px;
             height: 40px;
@@ -249,6 +251,15 @@
             .mobile-back {
                 display: block;
             }
+            .dpad.layout-old {
+                grid-template-columns: repeat(3, 50px);
+                grid-template-rows: repeat(3, 50px);
+            }
+            .dpad.layout-old .dpad-up { grid-column: 2; grid-row: 1; }
+            .dpad.layout-old .dpad-left { grid-column: 1; grid-row: 2; }
+            .dpad.layout-old .dpad-center { grid-column: 2; grid-row: 2; display: flex; }
+            .dpad.layout-old .dpad-right { grid-column: 3; grid-row: 2; }
+            .dpad.layout-old .dpad-down { grid-column: 2; grid-row: 3; }
         }
     </style>
 </head>
@@ -261,6 +272,7 @@
             <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
             <button class="btn secondary" onclick="resetGame()">Reset</button>
             <button class="btn secondary speed-btn" onclick="showSettings()" title="Velocità"><i class="fas fa-tachometer-alt"></i></button>
+            <button class="btn secondary speed-btn" onclick="toggleLayout()" title="Cambia layout"><i class="fas fa-th"></i></button>
         </div>
         <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente</p>
         <div class="dpad">
@@ -268,6 +280,7 @@
             <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="fas fa-chevron-left"></i></button>
             <button class="dpad-btn dpad-down" oncontextmenu="return false;" ontouchstart="handleDirection('down')" onclick="handleDirection('down')"><i class="fas fa-chevron-down"></i></button>
             <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="fas fa-chevron-right"></i></button>
+            <button class="dpad-btn dpad-center" style="display: none;"></button>
         </div>
     </div>
     <a href="index.html" class="back-link">← Torna all'orario</a>
@@ -329,6 +342,11 @@
         window.showSettings = function() {
             settingsMenu.classList.add('show');
             settingsOverlay.classList.add('show');
+        };
+
+        window.toggleLayout = function() {
+            const dpad = document.querySelector('.dpad');
+            dpad.classList.toggle('layout-old');
         };
 
         window.setSpeed = function(speed, btn) {
