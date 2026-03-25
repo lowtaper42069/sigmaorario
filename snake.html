@@ -64,6 +64,68 @@
         .score {
             font-size: 1.25rem;
             color: var(--cal-text);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .settings-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--cal-header-bg);
+            border: 1px solid var(--cal-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .settings-menu.show {
+            display: flex;
+        }
+
+        .settings-menu h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .settings-menu button {
+            background: var(--cal-border);
+            color: var(--cal-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .settings-menu button:hover {
+            background: var(--cal-accent);
+        }
+
+        .settings-menu button.active {
+            background: var(--cal-accent);
+        }
+
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .settings-overlay.show {
+            display: block;
         }
 
         .controls {
@@ -155,7 +217,7 @@
 <body>
     <h1>🐍 Snake</h1>
     <div class="game-container">
-        <div class="score">Punteggio: <span id="score">0</span></div>
+        <div class="score" id="scoreEl" title="Tieni premuto per impostazioni">Punteggio: <span id="score">0</span></div>
         <canvas id="gameCanvas" width="300" height="300"></canvas>
         <div class="controls">
             <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
@@ -171,6 +233,15 @@
         </div>
     </div>
     <a href="index.html" class="back-link">← Torna all'orario</a>
+
+    <div class="settings-overlay" id="settingsOverlay"></div>
+    <div class="settings-menu" id="settingsMenu">
+        <h3>Velocità</h3>
+        <button data-speed="0" onclick="setSpeed(0, this)">Incrementale</button>
+        <button data-speed="100" class="active" onclick="setSpeed(100, this)">Normale</button>
+        <button data-speed="70" onclick="setSpeed(70, this)">Difficile</button>
+        <button data-speed="40" onclick="setSpeed(40, this)">Impossibile</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -188,6 +259,47 @@
         let score = 0;
         let gameLoop = null;
         let isRunning = false;
+        let gameSpeed = 100;
+
+        let settingsTimer = null;
+        const scoreEl = document.getElementById('scoreEl');
+        const settingsMenu = document.getElementById('settingsMenu');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+
+        scoreEl.addEventListener('mousedown', () => {
+            settingsTimer = setTimeout(() => {
+                settingsMenu.classList.add('show');
+                settingsOverlay.classList.add('show');
+            }, 400);
+        });
+
+        scoreEl.addEventListener('mouseup', () => {
+            clearTimeout(settingsTimer);
+        });
+
+        scoreEl.addEventListener('mouseleave', () => {
+            clearTimeout(settingsTimer);
+        });
+
+        settingsOverlay.addEventListener('click', () => {
+            settingsMenu.classList.remove('show');
+            settingsOverlay.classList.remove('show');
+        });
+
+        window.setSpeed = function(speed, btn) {
+            gameSpeed = speed;
+            document.querySelectorAll('.settings-menu button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            settingsMenu.classList.remove('show');
+            settingsOverlay.classList.remove('show');
+            if (isRunning) {
+                clearInterval(gameLoop);
+                const interval = gameSpeed === 0 ? currentSpeed : gameSpeed;
+                gameLoop = setInterval(update, interval);
+            }
+        };
+
+        let currentSpeed = 120;
 
         function initGame() {
             snake = [
@@ -198,6 +310,7 @@
             score = 0;
             dx = 1;
             dy = 0;
+            currentSpeed = gameSpeed === 0 ? 120 : gameSpeed;
             scoreElement.textContent = score;
             placeFood();
             draw();
@@ -257,6 +370,11 @@
                 score += 10;
                 scoreElement.textContent = score;
                 placeFood();
+                if (gameSpeed === 0 && currentSpeed > 30) {
+                    currentSpeed -= 5;
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(update, currentSpeed);
+                }
             } else {
                 snake.pop();
             }
@@ -289,7 +407,8 @@
                 dy = savedDy;
             }
             startBtn.textContent = 'Pausa';
-            gameLoop = setInterval(update, 100);
+            const interval = gameSpeed === 0 ? currentSpeed : gameSpeed;
+            gameLoop = setInterval(update, interval);
         }
 
         function resetGame() {
