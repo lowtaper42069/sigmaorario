@@ -31,6 +31,11 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            overflow: hidden;
+        }
+
+        html {
+            overflow: hidden;
         }
 
         h1 {
@@ -153,10 +158,10 @@
         <div class="score">Punteggio: <span id="score">0</span></div>
         <canvas id="gameCanvas" width="300" height="300"></canvas>
         <div class="controls">
-            <button class="btn" id="startBtn" onclick="startGame()">Start</button>
+            <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
             <button class="btn secondary" onclick="resetGame()">Reset</button>
         </div>
-        <p class="instructions">Usa le frecce direzionali o h/j/k/l (nvim) per muovere il serpente</p>
+        <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente</p>
         <div class="dpad">
             <button class="dpad-btn dpad-up" oncontextmenu="return false;" ontouchstart="handleDirection('up')" onclick="handleDirection('up')"><i class="fas fa-chevron-up"></i></button>
             <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="fas fa-chevron-left"></i></button>
@@ -271,12 +276,18 @@
             ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2);
         }
 
-        function startGame() {
+        function startGame(saveDirection = false) {
             if (isRunning) {
                 return;
             }
             isRunning = true;
+            const savedDx = dx;
+            const savedDy = dy;
             initGame();
+            if (saveDirection && (savedDx !== 0 || savedDy !== 0)) {
+                dx = savedDx;
+                dy = savedDy;
+            }
             startBtn.textContent = 'Pausa';
             gameLoop = setInterval(update, 100);
         }
@@ -290,7 +301,7 @@
 
         function handleDirection(dir) {
             if (!isRunning) {
-                startGame();
+                startGame(true);
             }
             
             switch (dir) {
@@ -311,35 +322,39 @@
 
         document.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase();
+            const code = e.code;
+            const keyCode = e.keyCode;
+
+            const isD = key === 'd' || code === 'KeyD' || keyCode === 68;
+
+            if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', 'k', 'j', 'h', 'l'].includes(key) || ['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(code) || keyCode === 87 || keyCode === 65 || keyCode === 83 || keyCode === 68) {
+                e.preventDefault();
+            }
+
+            const isMoveKey = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', 'k', 'j', 'h', 'l'].includes(key) || ['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(code) || keyCode === 87 || keyCode === 65 || keyCode === 83 || keyCode === 68;
 
             if (!isRunning) {
-                if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'k', 'j', 'h', 'l'].includes(key)) {
-                    startGame();
-                    if (key === 'arrowup' || key === 'k') { dx = 0; dy = -1; }
-                    else if (key === 'arrowdown' || key === 'j') { dx = 0; dy = 1; }
-                    else if (key === 'arrowleft' || key === 'h') { dx = -1; dy = 0; }
-                    else if (key === 'arrowright' || key === 'l') { dx = 1; dy = 0; }
+                if (isMoveKey) {
+                    if (key === 'arrowup' || key === 'k' || key === 'w' || code === 'KeyW' || keyCode === 87) { dx = 0; dy = -1; }
+                    else if (key === 'arrowdown' || key === 'j' || key === 's' || code === 'KeyS' || keyCode === 83) { dx = 0; dy = 1; }
+                    else if (key === 'arrowleft' || key === 'h' || key === 'a' || code === 'KeyA' || keyCode === 65) { dx = -1; dy = 0; }
+                    else if (key === 'arrowright' || key === 'l' || key === 'd' || isD) { dx = 1; dy = 0; }
+                    startGame(true);
                 }
                 return;
             }
 
-            switch (key) {
-                case 'arrowup':
-                case 'k':
-                    if (dy !== 1) { dx = 0; dy = -1; }
-                    break;
-                case 'arrowdown':
-                case 'j':
-                    if (dy !== -1) { dx = 0; dy = 1; }
-                    break;
-                case 'arrowleft':
-                case 'h':
-                    if (dx !== 1) { dx = -1; dy = 0; }
-                    break;
-                case 'arrowright':
-                case 'l':
-                    if (dx !== -1) { dx = 1; dy = 0; }
-                    break;
+            if (key === 'arrowup' || key === 'k' || key === 'w' || code === 'KeyW' || keyCode === 87) {
+                if (dy !== 1) { dx = 0; dy = -1; }
+            }
+            else if (key === 'arrowdown' || key === 'j' || key === 's' || code === 'KeyS' || keyCode === 83) {
+                if (dy !== -1) { dx = 0; dy = 1; }
+            }
+            else if (key === 'arrowleft' || key === 'h' || key === 'a' || code === 'KeyA' || keyCode === 65) {
+                if (dx !== 1) { dx = -1; dy = 0; }
+            }
+            else if (key === 'arrowright' || key === 'l' || key === 'd' || isD) {
+                if (dx !== -1) { dx = 1; dy = 0; }
             }
         });
 
