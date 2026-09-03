@@ -35,6 +35,12 @@ const RAW_SCHEDULE = {
     ],
 };
 
+const SUBJECT_COLORS = [
+    '#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6',
+    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#14b8a6',
+];
+
+let subjectColorMap = {};
 let grid = [];
 
 function timeToSlot(timeStr) {
@@ -55,6 +61,13 @@ function slotToTimeRange(slot) {
     return `${start} - ${end}`;
 }
 
+function getSubjectColor(subject) {
+    if (!subjectColorMap[subject]) {
+        subjectColorMap[subject] = SUBJECT_COLORS[Object.keys(subjectColorMap).length % SUBJECT_COLORS.length];
+    }
+    return subjectColorMap[subject];
+}
+
 function buildGrid() {
     grid = Array.from({ length: TOTAL_SLOTS }, () => Array(5).fill(null));
 
@@ -63,6 +76,7 @@ function buildGrid() {
         for (const lesson of lessons) {
             const startSlot = timeToSlot(lesson.start);
             const endSlot = timeToSlot(lesson.end);
+            const duration = endSlot - startSlot;
             for (let s = startSlot; s < endSlot; s++) {
                 grid[s][day] = {
                     subject: lesson.subject,
@@ -70,6 +84,8 @@ function buildGrid() {
                     link: AUNICA_LINKS[lesson.room] || null,
                     isFirst: s === startSlot,
                     isLast: s === endSlot - 1,
+                    isOnly: duration === 1,
+                    color: getSubjectColor(lesson.subject),
                 };
             }
         }
@@ -89,6 +105,10 @@ function generaOrario() {
         const tr = document.createElement('tr');
         tr.dataset.slot = s;
 
+        if (s % SLOTS_PER_HOUR === 0) {
+            tr.classList.add('hour-separator');
+        }
+
         const tdOra = document.createElement('td');
         tdOra.textContent = slotToTimeRange(s);
         tdOra.classList.add('time-col');
@@ -104,7 +124,28 @@ function generaOrario() {
                 td.textContent = '-';
                 td.classList.add('empty');
             } else {
-                td.textContent = cell.subject;
+                td.style.setProperty('--subject-color', cell.color);
+
+                if (cell.isOnly) {
+                    td.classList.add('block', 'block-only');
+                    td.innerHTML = `
+                        <span class="subject-cell">${cell.subject}</span>
+                        <span class="room-cell">${cell.room || ''}</span>
+                    `;
+                } else if (cell.isFirst) {
+                    td.classList.add('block', 'block-start');
+                    td.innerHTML = `
+                        <span class="subject-cell">${cell.subject}</span>
+                        <span class="room-cell">${cell.room || ''}</span>
+                    `;
+                } else if (cell.isLast) {
+                    td.classList.add('block', 'block-end');
+                    td.textContent = '';
+                } else {
+                    td.classList.add('block', 'block-continue');
+                    td.textContent = '';
+                }
+
                 if (cell.room) {
                     td.dataset.room = cell.room;
                     if (cell.link) {
@@ -112,12 +153,7 @@ function generaOrario() {
                         td.classList.add('has-link');
                     }
                 }
-                if (cell.isFirst) {
-                    td.classList.add('block-start');
-                }
-                if (cell.isLast) {
-                    td.classList.add('block-end');
-                }
+                td.dataset.subject = cell.subject;
             }
             tr.appendChild(td);
         }
