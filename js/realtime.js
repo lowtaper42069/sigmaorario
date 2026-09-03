@@ -213,6 +213,8 @@ function aggiornaInfo() {
     const idxG = getGiornoIndex();
     const currentSlot = getCurrentSlot();
 
+    updateCurrentSlotIndicator(currentSlot);
+
     if (idxG === -1) {
         lezEl.textContent = '-';
         proxEl.textContent = 'Nessuna lezione';
@@ -268,6 +270,40 @@ function aggiornaInfo() {
             }
         }
     }
+}
+
+function updateCurrentSlotIndicator(currentSlot) {
+    document.querySelectorAll('td.time-col.current-slot').forEach(td => td.classList.remove('current-slot'));
+    if (currentSlot >= 0 && currentSlot < TOTAL_SLOTS) {
+        const row = document.querySelector(`#scheduleTable tbody tr[data-slot="${currentSlot}"]`);
+        if (row) {
+            const timeCol = row.querySelector('td.time-col');
+            if (timeCol) timeCol.classList.add('current-slot');
+        }
+    }
+}
+
+function initDensity() {
+    const slider = document.getElementById('densitySlider');
+    if (!slider) return;
+
+    const saved = localStorage.getItem('density');
+    if (saved !== null) {
+        slider.value = saved;
+        applyDensity(saved);
+    }
+
+    slider.addEventListener('input', function () {
+        applyDensity(this.value);
+        localStorage.setItem('density', this.value);
+    });
+}
+
+function applyDensity(value) {
+    const minHeight = 20;
+    const maxHeight = 50;
+    const height = minHeight + (maxHeight - minHeight) * (value / 100);
+    document.documentElement.style.setProperty('--row-min-height', `${height}px`);
 }
 
 function showToday() {
@@ -388,4 +424,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
+
+    initDensity();
 });
