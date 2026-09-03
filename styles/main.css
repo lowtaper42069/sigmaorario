@@ -84,6 +84,9 @@ td.time-col { background: var(--cal-bg); font-size: 0.6rem; color: var(--cal-tex
 td.time-col::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 0; background: var(--cal-green); pointer-events: none; transition: width 0.2s, opacity 0.2s; opacity: 0; }
 td.time-col.current-slot::after { width: 4px; opacity: 1; }
 
+td.time-col.hour-mark { color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
+td.time-col.hour-mark::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: color-mix(in srgb, var(--cal-border) 50%, transparent); transform: translateY(-50%); z-index: -1; }
+
 tr.hour-separator td { border-top: 2px solid #484f58; }
 tr.hour-separator td.time-col { background: var(--cal-header-bg); color: #fff; font-weight: 700; }
 

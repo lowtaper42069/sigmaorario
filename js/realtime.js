@@ -88,6 +88,16 @@ function slotToTimeRange(slot) {
     return `${start} - ${end}`;
 }
 
+function slotToHourLabel(slot) {
+    const totalMinutes = DAY_START * 60 + slot * SLOT_MINUTES;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    if (m === 0) {
+        return `${h.toString().padStart(2, '0')}:00`;
+    }
+    return `:${m.toString().padStart(2, '0')}`;
+}
+
 function getSubjectColor(subject) {
     if (!subjectColorMap[subject]) {
         subjectColorMap[subject] = SUBJECT_COLORS[Object.keys(subjectColorMap).length % SUBJECT_COLORS.length];
@@ -137,8 +147,10 @@ function generaOrario() {
         }
 
         const tdOra = document.createElement('td');
-        tdOra.textContent = slotToTimeRange(s);
+        const isHourMark = s % SLOTS_PER_HOUR === 0;
+        tdOra.textContent = slotToHourLabel(s);
         tdOra.classList.add('time-col');
+        if (isHourMark) tdOra.classList.add('hour-mark');
         tr.appendChild(tdOra);
 
         for (let day = 0; day < 5; day++) {
