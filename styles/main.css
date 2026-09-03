@@ -3,6 +3,7 @@
     --cal-header-bg: #161b22;
     --cal-day-bg: #161b22;
     --cal-border: #30363d;
+    --cal-border-light: #3d444d;
     --cal-text: #c9d1d9;
     --cal-text-muted: #8b949e;
     --cal-green: #238636;
@@ -70,16 +71,39 @@ td.time-col { background: var(--cal-bg); font-size: 0.6rem; color: var(--cal-tex
 tr.hour-separator td { border-top: 2px solid var(--cal-border); }
 tr.hour-separator td.time-col { background: var(--cal-header-bg); }
 
-td.block { border-left: none; border-right: none; }
-td.block:first-of-type { border-left: 1px solid var(--cal-border); }
-td.block:last-of-type { border-right: 1px solid var(--cal-border); }
-td.block-start { border-top: 2px solid var(--cal-border); }
-td.block-end { border-bottom: 2px solid var(--cal-border); }
-td.block-only { border-top: 2px solid var(--cal-border); border-bottom: 2px solid var(--cal-border); }
+td.block { 
+    border-left: none; 
+    border-right: none; 
+    background: color-mix(in srgb, var(--subject-color) 12%, transparent);
+}
+td.block:first-of-type { border-left: 1px solid var(--subject-color); }
+td.block:last-of-type { border-right: 1px solid var(--subject-color); }
+td.block-start { border-top: 2px solid var(--subject-color); }
+td.block-end { border-bottom: 2px solid var(--subject-color); }
+td.block-only { 
+    border-top: 2px solid var(--subject-color); 
+    border-bottom: 2px solid var(--subject-color);
+}
 
-td.block-continue { border-top: none; border-bottom: none; }
-td.block-continue:first-of-type { border-left: 1px solid var(--cal-border); }
-td.block-continue:last-of-type { border-right: 1px solid var(--cal-border); }
+td.block-continue { 
+    border-top: none; 
+    border-bottom: none; 
+    background: color-mix(in srgb, var(--subject-color) 10%, transparent);
+}
+td.block-continue:first-of-type { border-left: 1px solid var(--subject-color); }
+td.block-continue:last-of-type { border-right: 1px solid var(--subject-color); }
+
+td.subject-cell { 
+    font-weight: 500; 
+    color: var(--cal-text);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--subject-color) 60%, transparent);
+}
+td.room-cell { 
+    font-size: 0.55rem; 
+    color: var(--cal-text-muted); 
+    margin-top: 2px; 
+    display: block; 
+}
 
 td.has-link { position: relative; }
 td.has-link::after { content: '\f35d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }

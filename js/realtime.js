@@ -36,8 +36,8 @@ const RAW_SCHEDULE = {
 };
 
 const SUBJECT_COLORS = [
-    '#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6',
-    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#14b8a6',
+    '#8b8fff', '#7dd37d', '#ffc86b', '#ff8a8a', '#c0aaff',
+    '#f4a1d0', '#6beeff', '#c8e87d', '#ffb87a', '#7de0d8',
 ];
 
 let subjectColorMap = {};
