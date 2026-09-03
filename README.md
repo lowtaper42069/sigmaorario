@@ -1,10 +1,34 @@
-Un semplice sito che mostra il mio personale orario scolastico.
+# Sigmaorario
 
-Nel tempo è diventato un progetto di testing delle varie AI nelle loro capacità di coding, e in generale quello che si può fare vibe-codando.
+Visualizzatore orario settimanale per il corso 5BINF (A.S. 2025/2026).
 
-prossime implementazioni:
-- calendario funzionante
-- login per admin
-- gestione eventi calendario
-- migliorie generali della UI
-- minigame
+## Funzionalità
+
+- **Orario interattivo** — griglia 15 minuti (8:00–20:00) con blocchi lezione contigui
+- **Indicatore lezione attuale** — linea verde verticale nell'ora corrente
+- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco
+- **Densità regolabile** — slider per altezza righe (persistito in localStorage)
+- **Tema chiaro/scuro** — toggle con preferenza salvata e rilevamento sistema
+- **Link aule** — click su una lezione apre la mappa AUNICA dell'aula
+- **Esportazione CSV** / stampa
+- **Calendario eventi** — gestione locale + sync Supabase (WIP)
+- **Easter egg** — Snake game
+
+## Stack
+
+- HTML / CSS / Vanilla JS
+- Supabase (auth + database per calendario)
+- Font Awesome 6 per icone
+
+## Sviluppo
+
+```bash
+# Servire in locale (qualsiasi static server)
+npx serve .
+# o
+python -m http.server 8000
+```
+
+## Note
+
+L'orario è hardcoded in `js/realtime.js` (`RAW_SCHEDULE`). Per modificarlo, aggiorna l'array di oggetti con `subject`, `start`, `end`, `room`.
