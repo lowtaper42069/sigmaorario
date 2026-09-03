@@ -99,8 +99,6 @@ td.block:first-of-type { border-left: 2px solid var(--subject-color); }
 td.block:last-of-type { border-right: 2px solid var(--subject-color); }
 td.block-start { 
     border-top: 2px solid var(--subject-color); 
-    overflow: visible;
-    z-index: 2;
 }
 td.block-end { border-bottom: 2px solid var(--subject-color); }
 
@@ -305,16 +303,11 @@ header { display: flex; justify-content: space-between; align-items: center; fle
     td.has-link::after { font-size: 0.45rem; }
     td.subject-cell { font-size: 1rem; }
     td.room-cell { font-size: 0.75rem; }
-    td.block-start { overflow: visible; z-index: 2; }
     .current-info { gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
     .legend { padding: 0.75rem; }
     .legend-item { font-size: 0.75rem; }
     .azioni-container { grid-template-columns: 1fr; }
-
-    .actions-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
+}
     
     .actions-group {
         justify-content: center;
