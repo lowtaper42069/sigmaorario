@@ -10,6 +10,18 @@
     --cal-orange: #f0883e;
 }
 
+[data-theme="light"] {
+    --cal-bg: #f6f8fa;
+    --cal-header-bg: #ffffff;
+    --cal-day-bg: #ffffff;
+    --cal-border: #d0d7de;
+    --cal-border-light: #d8dee4;
+    --cal-text: #24292f;
+    --cal-text-muted: #656d76;
+    --cal-green: #2da44e;
+    --cal-orange: #bc4c00;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -244,6 +256,10 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 /* Easter egg */
 .easter-egg { position: fixed; bottom: 8px; right: 12px; font-size: 0.7rem; color: var(--cal-text-muted); opacity: 0.3; text-decoration: none; transition: opacity 0.2s; }
 .easter-egg:hover { opacity: 1; }
+
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.theme-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); color: var(--cal-text); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.theme-toggle:hover { background: var(--cal-border); color: var(--cal-green); }
 
 /* Responsive */
 @media (max-width: 768px) {

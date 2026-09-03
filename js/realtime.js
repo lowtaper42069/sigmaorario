@@ -5,6 +5,33 @@ const SLOTS_PER_HOUR = 60 / SLOT_MINUTES;
 const TOTAL_SLOTS = (DAY_END - DAY_START) * SLOTS_PER_HOUR;
 const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
 
+function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+}
+
+function updateThemeIcon(theme) {
+    const toggle = document.getElementById('themeToggle');
+    if (!toggle) return;
+    const icon = toggle.querySelector('i');
+    if (icon) {
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateThemeIcon(next);
+}
+
+document.addEventListener('DOMContentLoaded', initTheme);
+
 const AUNICA_LINKS = {
     '2.1.4': 'https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=343&idaula=39&lang=IT',
     '20.S.1': 'https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=343&idaula=282&lang=IT',
@@ -356,4 +383,9 @@ document.addEventListener('DOMContentLoaded', function () {
             window.open(td.dataset.link, '_blank');
         }
     });
+
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
 });

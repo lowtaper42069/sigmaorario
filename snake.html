@@ -15,6 +15,15 @@
             --cal-accent: #238636;
         }
 
+        [data-theme="light"] {
+            --cal-bg: #f6f8fa;
+            --cal-header-bg: #ffffff;
+            --cal-border: #d0d7de;
+            --cal-text: #24292f;
+            --cal-text-muted: #656d76;
+            --cal-accent: #2da44e;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -264,7 +273,12 @@
     </style>
 </head>
 <body>
-    <h1>🐍 Snake</h1>
+    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;width:100%;max-width:400px;">
+        <h1 style="margin:0;">🐍 Snake</h1>
+        <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema" style="padding:0.4rem 0.6rem;">
+            <i class="fas fa-sun"></i>
+        </button>
+    </header>
     <div class="game-container">
         <div class="score" id="scoreEl" title="Tieni premuto per impostazioni">Punteggio: <span id="score">0</span></div>
         <canvas id="gameCanvas" width="300" height="300"></canvas>
