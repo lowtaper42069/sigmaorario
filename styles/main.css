@@ -80,6 +80,14 @@ td.lab.lab-highlight::before { content: ''; position: absolute; left: 0; top: 0;
 td.empty { color: var(--cal-text-muted); opacity: 0.3; background: var(--cal-bg); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
+td.search-highlight {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1);
+    z-index: 3;
+    position: relative;
+}
+
 td.time-col { background: var(--cal-bg); font-size: 0.6rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; position: relative; }
 td.time-col::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 0; background: var(--cal-green); pointer-events: none; transition: width 0.2s, opacity 0.2s; opacity: 0; }
 td.time-col.current-slot::after { width: 4px; opacity: 1; }

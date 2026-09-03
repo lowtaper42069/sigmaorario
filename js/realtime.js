@@ -353,32 +353,40 @@ function searchMateria() {
 
     if (isHighlighted) {
         document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
-            cell.classList.remove('today-highlight', 'search-highlight');
+            cell.classList.remove('search-highlight');
         });
     }
 
     if (!query) return;
 
     const cells = document.querySelectorAll('#scheduleTable td[data-subject]');
+    const matchedSubjects = new Set();
     let found = false;
+
     cells.forEach(cell => {
         const text = cell.textContent.toLowerCase();
         if (text.includes(query)) {
-            cell.classList.add('today-highlight', 'search-highlight');
+            matchedSubjects.add(cell.dataset.subject);
             found = true;
         }
     });
 
     if (found) {
-        document.querySelector('#scheduleTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('#scheduleTable td[data-subject]').forEach(cell => {
+            if (matchedSubjects.has(cell.dataset.subject)) {
+                cell.classList.add('search-highlight');
+            }
+        });
+        const firstMatch = document.querySelector('#scheduleTable td.search-highlight');
+        if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
         alert('Nessuna materia trovata');
     }
 }
 
 function resetView() {
-    document.querySelectorAll('#scheduleTable td.today-highlight, #scheduleTable td.search-highlight').forEach(cell => {
-        cell.classList.remove('today-highlight', 'search-highlight');
+    document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
+        cell.classList.remove('search-highlight');
     });
     document.querySelectorAll('td.lab').forEach(cell => {
         cell.classList.remove('lab-highlight');
