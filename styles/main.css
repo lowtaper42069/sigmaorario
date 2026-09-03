@@ -49,7 +49,7 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .btn-danger { background: #da3633; border-color: #da3633; color: #fff; }
 .btn-danger:hover { background: #f85149; }
 
-.table-wrapper { overflow-x: auto; overflow-y: auto; max-height: 80vh; }
+.table-wrapper { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 th, td { padding: 0.15rem 0.3rem; text-align: center; border: 1px solid var(--cal-border); vertical-align: middle; overflow: hidden; }
 th { background: var(--cal-bg); font-size: 0.65rem; font-weight: 600; color: var(--cal-text-muted); text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 2; transition: all 0.2s; }
