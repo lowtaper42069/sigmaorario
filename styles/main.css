@@ -64,7 +64,18 @@ td.lab::after { content: ''; position: absolute; top: 6px; right: 6px; width: 6p
 td.lab.lab-highlight { background: rgba(240, 136, 62, 0.15); }
 td.lab.lab-highlight::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cal-orange); }
 td.empty { color: var(--cal-text-muted); opacity: 0.4; background: var(--cal-bg); }
-td.today { background: rgba(35, 134, 54, 0.15); border: 2px solid var(--cal-green); }
+td.today-highlight { background: rgba(35, 134, 54, 0.15); border: 2px solid var(--cal-green); }
+
+td.time-col { background: var(--cal-bg); font-size: 0.7rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; }
+
+td.block-start { border-top: 2px solid var(--cal-border); }
+td.block-end { border-bottom: 2px solid var(--cal-border); }
+
+td.has-link { position: relative; }
+td.has-link::after { content: '\f35d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.6rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.7; }
+td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
+
+td[data-subject] { cursor: pointer; }
 
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; border-top: 1px solid var(--cal-border); flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
@@ -202,11 +213,13 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
     .schedule-header { flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
     .schedule-header h2 { font-size: 0.9rem; }
     .schedule-header .btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
-    th, td { padding: 0.4rem 0.2rem; font-size: 0.65rem; }
-    th { font-size: 0.55rem; letter-spacing: 0; }
-    td { font-size: 0.6rem; }
-    td:first-child, th:first-child { width: 50px; min-width: 50px; font-size: 0.55rem; }
+    th, td { padding: 0.25rem 0.15rem; font-size: 0.55rem; min-height: 28px; }
+    th { font-size: 0.5rem; letter-spacing: 0; }
+    td { font-size: 0.5rem; }
+    td:first-child, th:first-child { width: 60px; min-width: 50px; font-size: 0.5rem; }
     td.lab::after { display: none; }
+    td.time-col { font-size: 0.5rem; }
+    td.has-link::after { font-size: 0.5rem; }
     .current-info { gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
     .legend { padding: 0.75rem; }
     .legend-item { font-size: 0.75rem; }
