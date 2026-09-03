@@ -266,8 +266,15 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 .easter-egg:hover { opacity: 1; }
 
 header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.header-controls { display: flex; align-items: center; gap: 0.75rem; }
 .theme-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); color: var(--cal-text); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
 .theme-toggle:hover { background: var(--cal-border); color: var(--cal-green); }
+
+.density-control label { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.3rem; color: var(--cal-text-muted); font-size: 0.65rem; }
+.density-control input[type="range"] { -webkit-appearance: none; appearance: none; height: 4px; background: var(--cal-border); border-radius: 2px; outline: none; }
+.density-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--cal-green); cursor: pointer; transition: transform 0.15s; }
+.density-control input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.density-control input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--cal-green); border: none; cursor: pointer; }
 
 /* Responsive */
 @media (max-width: 768px) {
