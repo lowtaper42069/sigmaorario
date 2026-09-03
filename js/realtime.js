@@ -1,14 +1,14 @@
-const ORE = ['8:00 - 9:00', '9:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00', '13:00 - 14:00', '14:10 - 15:00', '15:00 - 16:00'];
-const ORE_SHORT = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:10', '15:00'];
-const INIZIO = [8, 9, 10, 11, 12, 13, 14.167, 15];
-const FINE = [9, 10, 11, 12, 13, 14, 15, 16];
+const ORE = ['8:15 - 10:15', '10:15 - 13:15', '13:15 - 16:15', '14:15 - 18:15', '15:15 - 17:15', '15:15 - 18:15', '16:15 - 19:15'];
+const ORE_SHORT = ['8:15', '10:15', '13:15', '14:15', '15:15', '15:15', '16:15'];
+const INIZIO = [8.25, 10.25, 13.25, 14.25, 15.25, 15.25, 16.25];
+const FINE = [10.25, 13.25, 16.25, 18.25, 17.25, 18.25, 19.25];
 
 const ORARIO = {
-    0: ['Gestione Progetto LAB', 'Informatica LAB', 'Informatica', 'Sistemi e Reti LAB', 'Sistemi e Reti LAB', 'Storia', 'Inglese', 'Matematica'],
-    1: ['Informatica', 'Sistemi e Reti', 'Storia', 'Inglese', 'Tecnologie e Progetti LAB', 'Tecnologie e Progetti LAB', '', ''],
-    2: ['Informatica LAB', 'Informatica LAB', 'Italiano', 'Matematica', 'Gestione Progetto LAB', 'Gestione Progetto LAB', '', ''],
-    3: ['Inglese', 'Sistemi e Reti', 'Italiano', 'Italiano', 'Tecnologie e Progetti', 'Informatica', '', ''],
-    4: ['Scienze Motorie', 'Scienze Motorie', 'Tecnologie e Progetti', 'Italiano', 'Matematica', 'Religione Cattolica', '', '']
+    0: ['', '', 'FONDAMENTI DI INFORMATICA', '', '', '', 'FONDAMENTI DI INFORMATICA'],
+    1: ['', '', '', '', '', '', ''],
+    2: ['FONDAMENTI DI INFORMATICA', 'ANALISI MATEMATICA 1', '', '', 'GEOMETRIA E ALGEBRA LINEARE', '', ''],
+    3: ['GEOMETRIA E ALGEBRA LINEARE', 'FONDAMENTI DI INFORMATICA', '', 'FONDAMENTI DI INFORMATICA', '', '', ''],
+    4: ['', '', 'ANALISI MATEMATICA 1', '', '', 'GEOMETRIA E ALGEBRA LINEARE', '']
 };
 
 const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
@@ -55,18 +55,23 @@ function getGiornoIndex() {
 }
 
 function getUltimaOraIndex(idxG) {
-    if (idxG === 0) return 7;
-    return 5;
+    const oggi = ORARIO[idxG];
+    for (let i = oggi.length - 1; i >= 0; i--) {
+        if (oggi[i] && oggi[i].trim()) return i;
+    }
+    return 0;
 }
 
 function getOraIndex() {
     const h = new Date().getHours();
     const m = new Date().getMinutes();
     const t = h + m / 60;
+    const idxG = getGiornoIndex();
+    if (idxG === -1) return -1;
     
-    for (let i = 0; i < INIZIO.length; i++) {
-        const fine = FINE[i];
-        if (t >= INIZIO[i] && t < fine) return i;
+    const oggi = ORARIO[idxG];
+    for (let i = 0; i < ORE.length; i++) {
+        if (oggi[i] && oggi[i].trim() && t >= INIZIO[i] && t < FINE[i]) return i;
     }
     return -1;
 }
@@ -84,10 +89,9 @@ function aggiornaInfo() {
     giornoEl.textContent = now.toLocaleDateString('it-IT', {weekday: 'long'});
     
     const idxG = getGiornoIndex();
-    const idxO = getOraIndex();
     const h = now.getHours();
     const m = now.getMinutes();
-    const ora = h + m / 60;
+    const t = h + m / 60;
     
     if (idxG === -1) {
         lezEl.textContent = '-';
@@ -96,18 +100,13 @@ function aggiornaInfo() {
     }
     
     const oggi = ORARIO[idxG];
-    const ultimaOraIdx = getUltimaOraIndex(idxG);
-    const fineLezioni = FINE[ultimaOraIdx];
+    const idxO = getOraIndex();
     
-    if (ora < 8) {
-        lezEl.textContent = '-';
-        const prima = oggi[0];
-        proxEl.textContent = prima ? prima + ' (8:00)' : '-';
-    } else if (idxO !== -1) {
-        lezEl.textContent = oggi[idxO] || 'Pausa';
+    if (idxO !== -1) {
+        lezEl.textContent = oggi[idxO];
         
         let trovata = false;
-        for (let i = idxO + 1; i <= ultimaOraIdx; i++) {
+        for (let i = idxO + 1; i < oggi.length; i++) {
             if (oggi[i] && oggi[i].trim()) {
                 proxEl.textContent = oggi[i] + ' (' + ORE_SHORT[i] + ')';
                 trovata = true;
@@ -120,21 +119,31 @@ function aggiornaInfo() {
     } else {
         lezEl.textContent = '-';
         
-        const prossimoG = (idxG + 1) % 5;
-        const prossimo = ORARIO[prossimoG];
-        const nomeProssimo = NOME_GIORNI[prossimoG];
-        
         let trovata = false;
-        const prossimaIdx = getUltimaOraIndex(prossimoG);
-        for (let i = 0; i <= prossimaIdx; i++) {
-            if (prossimo[i] && prossimo[i].trim()) {
-                proxEl.textContent = prossimo[i] + ' (' + nomeProssimo + ' ' + ORE_SHORT[i] + ')';
+        for (let i = 0; i < oggi.length; i++) {
+            if (oggi[i] && oggi[i].trim() && t < FINE[i]) {
+                proxEl.textContent = oggi[i] + ' (' + ORE_SHORT[i] + ')';
                 trovata = true;
                 break;
             }
         }
+        
         if (!trovata) {
-            proxEl.textContent = '-';
+            const prossimoG = (idxG + 1) % 5;
+            const prossimo = ORARIO[prossimoG];
+            const nomeProssimo = NOME_GIORNI[prossimoG];
+            
+            let trovata2 = false;
+            for (let i = 0; i < prossimo.length; i++) {
+                if (prossimo[i] && prossimo[i].trim()) {
+                    proxEl.textContent = prossimo[i] + ' (' + nomeProssimo + ' ' + ORE_SHORT[i] + ')';
+                    trovata2 = true;
+                    break;
+                }
+            }
+            if (!trovata2) {
+                proxEl.textContent = '-';
+            }
         }
     }
 }
