@@ -125,24 +125,22 @@ function generaOrario() {
                 td.classList.add('empty');
             } else {
                 td.style.setProperty('--subject-color', cell.color);
+                td.classList.add('block');
 
-                if (cell.isOnly) {
-                    td.classList.add('block', 'block-only');
+                const isBlockStart = cell.isFirst || cell.isOnly;
+                const isBlockEnd = cell.isLast || cell.isOnly;
+
+                if (isBlockStart) td.classList.add('block-start');
+                if (isBlockEnd) td.classList.add('block-end');
+                if (!isBlockStart && !isBlockEnd) td.classList.add('block-middle');
+
+                if (isBlockStart) {
                     td.innerHTML = `
                         <span class="subject-cell">${cell.subject}</span>
                         <span class="room-cell">${cell.room || ''}</span>
+                        ${cell.link ? '<span class="link-icon" aria-hidden="true">↗</span>' : ''}
                     `;
-                } else if (cell.isFirst) {
-                    td.classList.add('block', 'block-start');
-                    td.innerHTML = `
-                        <span class="subject-cell">${cell.subject}</span>
-                        <span class="room-cell">${cell.room || ''}</span>
-                    `;
-                } else if (cell.isLast) {
-                    td.classList.add('block', 'block-end');
-                    td.textContent = '';
                 } else {
-                    td.classList.add('block', 'block-continue');
                     td.textContent = '';
                 }
 
@@ -150,7 +148,6 @@ function generaOrario() {
                     td.dataset.room = cell.room;
                     if (cell.link) {
                         td.dataset.link = cell.link;
-                        td.classList.add('has-link');
                     }
                 }
                 td.dataset.subject = cell.subject;

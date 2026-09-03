@@ -49,14 +49,14 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .btn-danger { background: #da3633; border-color: #da3633; color: #fff; }
 .btn-danger:hover { background: #f85149; }
 
-.table-wrapper { overflow-x: auto; overflow-y: auto; max-height: 70vh; }
+.table-wrapper { overflow-x: auto; overflow-y: auto; max-height: 80vh; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-th, td { padding: 0.35rem 0.4rem; text-align: center; border: 1px solid var(--cal-border); vertical-align: middle; overflow: hidden; }
-th { background: var(--cal-bg); font-size: 0.7rem; font-weight: 600; color: var(--cal-text-muted); text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 2; transition: all 0.2s; }
+th, td { padding: 0.15rem 0.3rem; text-align: center; border: 1px solid var(--cal-border); vertical-align: middle; overflow: hidden; }
+th { background: var(--cal-bg); font-size: 0.65rem; font-weight: 600; color: var(--cal-text-muted); text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 2; transition: all 0.2s; }
 th.today-highlight { background: var(--cal-green); color: #fff; box-shadow: inset 0 -3px 0 var(--cal-green); }
-td { font-size: 0.7rem; color: var(--cal-text); min-height: 36px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-td:first-child { color: var(--cal-text-muted); font-size: 0.65rem; white-space: nowrap; width: 70px; min-width: 60px; background: var(--cal-bg); position: sticky; left: 0; z-index: 1; }
-th:first-child { width: 70px; min-width: 60px; background: var(--cal-bg); z-index: 3; }
+td { font-size: 0.6rem; color: var(--cal-text); min-height: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td:first-child { color: var(--cal-text-muted); font-size: 0.55rem; white-space: nowrap; width: 65px; min-width: 55px; background: var(--cal-bg); position: sticky; left: 0; z-index: 1; }
+th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-index: 3; }
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
@@ -69,31 +69,26 @@ td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 
 
 td.time-col { background: var(--cal-bg); font-size: 0.6rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
-tr.hour-separator td.time-col { background: var(--cal-header-bg); color: var(--cal-text); font-weight: 700; }
+tr.hour-separator td { border-top: 2px solid #484f58; }
+tr.hour-separator td.time-col { background: var(--cal-header-bg); color: #fff; font-weight: 700; }
 tr.hour-separator td:not(.time-col):not(.empty) { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
 
 td.block { 
     border-left: none; 
     border-right: none; 
-    background: color-mix(in srgb, var(--subject-color) 12%, transparent);
-}
-td.block:first-of-type { border-left: 1px solid var(--subject-color); }
-td.block:last-of-type { border-right: 1px solid var(--subject-color); }
-td.block-start { border-top: 2px solid var(--subject-color); }
-td.block-end { border-bottom: 2px solid var(--subject-color); }
-td.block-only { 
-    border-top: 2px solid var(--subject-color); 
-    border-bottom: 2px solid var(--subject-color);
-}
-
-td.block-continue { 
-    border-top: none; 
-    border-bottom: none; 
     background: color-mix(in srgb, var(--subject-color) 10%, transparent);
 }
-td.block-continue:first-of-type { border-left: 1px solid var(--subject-color); }
-td.block-continue:last-of-type { border-right: 1px solid var(--subject-color); }
+td.block:first-of-type { border-left: 2px solid var(--subject-color); }
+td.block:last-of-type { border-right: 2px solid var(--subject-color); }
+td.block-start { border-top: 2px solid var(--subject-color); }
+td.block-end { border-bottom: 2px solid var(--subject-color); }
+
+td.block-middle { border-top: none; border-bottom: none; }
+td.block-middle:first-of-type { border-left: 2px solid var(--subject-color); }
+td.block-middle:last-of-type { border-right: 2px solid var(--subject-color); }
+
+td.has-link { cursor: pointer; }
+td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
 
 td.subject-cell { 
     font-weight: 500; 
@@ -106,6 +101,15 @@ td.room-cell {
     margin-top: 2px; 
     display: block; 
 }
+td.link-icon { 
+    font-size: 0.6rem; 
+    color: var(--cal-orange); 
+    opacity: 0.5; 
+    margin-left: 4px; 
+    vertical-align: middle;
+    transition: opacity 0.2s, color 0.2s;
+}
+td.has-link:hover .link-icon { opacity: 1; color: var(--cal-green); }
 
 td.has-link { position: relative; }
 td.has-link::after { content: '\f35d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }
@@ -251,13 +255,13 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
     .schedule-header { flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
     .schedule-header h2 { font-size: 0.9rem; }
     .schedule-header .btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
-    th, td { padding: 0.25rem 0.15rem; font-size: 0.55rem; min-height: 28px; }
-    th { font-size: 0.5rem; letter-spacing: 0; }
-    td { font-size: 0.5rem; }
-    td:first-child, th:first-child { width: 60px; min-width: 50px; font-size: 0.5rem; }
+    th, td { padding: 0.1rem 0.15rem; font-size: 0.5rem; min-height: 22px; }
+    th { font-size: 0.45rem; letter-spacing: 0; }
+    td { font-size: 0.45rem; }
+    td:first-child, th:first-child { width: 55px; min-width: 45px; font-size: 0.45rem; }
     td.lab::after { display: none; }
-    td.time-col { font-size: 0.5rem; }
-    td.has-link::after { font-size: 0.5rem; }
+    td.time-col { font-size: 0.45rem; }
+    td.has-link::after { font-size: 0.45rem; }
     .current-info { gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
     .legend { padding: 0.75rem; }
     .legend-item { font-size: 0.75rem; }
