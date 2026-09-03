@@ -250,19 +250,16 @@ function showToday() {
     const today = new Date().getDay();
     if (today === 0 || today === 6) return;
 
-    const isHighlighted = document.querySelector('#scheduleTable td.today-highlight');
+    const isHighlighted = document.querySelector('#scheduleTable th.today-highlight');
     if (isHighlighted) return;
 
     const dayIndex = getGiornoIndex();
     if (dayIndex === -1) return;
 
-    const rows = document.querySelectorAll('#scheduleTable tbody tr');
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells[dayIndex + 1]) {
-            cells[dayIndex + 1].classList.add('today-highlight');
-        }
-    });
+    const header = document.querySelector('#scheduleTable thead tr');
+    if (header && header.children[dayIndex + 1]) {
+        header.children[dayIndex + 1].classList.add('today-highlight');
+    }
 }
 
 function toggleLabs() {
