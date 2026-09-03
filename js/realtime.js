@@ -300,10 +300,10 @@ function initDensity() {
 }
 
 function applyDensity(value) {
-    const minHeight = 20;
-    const maxHeight = 50;
-    const height = minHeight + (maxHeight - minHeight) * (value / 100);
-    document.documentElement.style.setProperty('--row-min-height', `${height}px`);
+    const minLH = 1.0;
+    const maxLH = 2.5;
+    const lh = minLH + (maxLH - minLH) * (value / 100);
+    document.documentElement.style.setProperty('--row-line-height', lh);
 }
 
 function showToday() {
