@@ -108,10 +108,12 @@ td.has-link { cursor: pointer; }
 td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
 
 td.subject-cell { 
-    font-weight: 500; 
+    font-weight: 600; 
     color: var(--cal-text);
     text-shadow: 0 0 8px color-mix(in srgb, var(--subject-color) 60%, transparent);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
 }
 td.room-cell { 
     font-size: 0.55rem; 
@@ -297,8 +299,8 @@ header { display: flex; justify-content: space-between; align-items: center; fle
     td.lab::after { display: none; }
     td.time-col { font-size: 0.45rem; }
     td.has-link::after { font-size: 0.45rem; }
-    td.subject-cell { font-size: 0.8rem; }
-    td.room-cell { font-size: 0.65rem; }
+    td.subject-cell { font-size: 0.9rem; }
+    td.room-cell { font-size: 0.7rem; }
     .current-info { gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
     .legend { padding: 0.75rem; }
     .legend-item { font-size: 0.75rem; }
