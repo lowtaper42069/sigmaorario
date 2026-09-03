@@ -1,23 +1,22 @@
 # Sigmaorario
 
-Visualizzatore orario settimanale per il corso 5BINF (A.S. 2025/2026).
+Visualizzatore orario settimanale per il mio personale corso di laurea (A.S. 2026/2027).
 
 ## Funzionalità
 
 - **Orario interattivo** — griglia 15 minuti (8:00–20:00) con blocchi lezione contigui
 - **Indicatore lezione attuale** — linea verde verticale nell'ora corrente
-- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco
+- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco (WIP)
 - **Densità regolabile** — slider per altezza righe (persistito in localStorage)
 - **Tema chiaro/scuro** — toggle con preferenza salvata e rilevamento sistema
 - **Link aule** — click su una lezione apre la mappa AUNICA dell'aula
 - **Esportazione CSV** / stampa
 - **Calendario eventi** — gestione locale + sync Supabase (WIP)
-- **Easter egg** — Snake game
 
 ## Stack
 
 - HTML / CSS / Vanilla JS
-- Supabase (auth + database per calendario)
+- Supabase (auth + database per calendario) (WIP)
 - Font Awesome 6 per icone
 
 ## Sviluppo
