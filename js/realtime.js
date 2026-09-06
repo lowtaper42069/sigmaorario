@@ -285,12 +285,14 @@ function aggiornaInfo() {
 }
 
 function updateCurrentSlotIndicator(currentSlot) {
-    document.querySelectorAll('td.time-col.current-slot').forEach(td => td.classList.remove('current-slot'));
+    document.querySelectorAll('td.current-cell').forEach(td => td.classList.remove('current-cell'));
     if (currentSlot >= 0 && currentSlot < TOTAL_SLOTS) {
+        const idxG = getGiornoIndex();
+        if (idxG === -1) return;
         const row = document.querySelector(`#scheduleTable tbody tr[data-slot="${currentSlot}"]`);
         if (row) {
-            const timeCol = row.querySelector('td.time-col');
-            if (timeCol) timeCol.classList.add('current-slot');
+            const cell = row.querySelector(`td[data-day="${idxG}"]`);
+            if (cell) cell.classList.add('current-cell');
         }
     }
 }
