@@ -110,16 +110,12 @@ td.block {
     border-right: none; 
     background: color-mix(in srgb, var(--subject-color) 10%, transparent);
 }
-td.block:first-of-type { border-left: 2px solid var(--subject-color); }
-td.block:last-of-type { border-right: 2px solid var(--subject-color); }
 td.block-start { 
     border-top: 2px solid var(--subject-color); 
 }
 td.block-end { border-bottom: 2px solid var(--subject-color); }
 
 td.block-middle { border-top: none; border-bottom: none; }
-td.block-middle:first-of-type { border-left: 2px solid var(--subject-color); }
-td.block-middle:last-of-type { border-right: 2px solid var(--subject-color); }
 
 td.has-link { cursor: pointer; position: relative; }
 td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
