@@ -301,31 +301,16 @@ function initDensity() {
     const slider = document.getElementById('densitySlider');
     if (!slider) return;
 
-    const isSessionSet = sessionStorage.getItem('densitySet') === '1';
-
-    if (isSessionSet) {
-        const saved = localStorage.getItem('density');
-        if (saved !== null) {
-            slider.value = saved;
-            applyDensity(saved);
-            return;
-        }
-    }
-
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             const fitValue = calcFitDensity();
             slider.value = fitValue;
             applyDensity(fitValue);
-            localStorage.setItem('density', fitValue);
-            sessionStorage.setItem('densitySet', '1');
         });
     });
 
     slider.addEventListener('input', function () {
         applyDensity(this.value);
-        localStorage.setItem('density', this.value);
-        sessionStorage.setItem('densitySet', '1');
     });
 }
 
@@ -335,19 +320,29 @@ function calcFitDensity() {
     const padY = 0.3 * rem;
     const border = 1;
 
-    const scheduleContainer = document.querySelector('.schedule-container');
     const tableWrapper = document.querySelector('.table-wrapper');
     const tableEl = document.getElementById('scheduleTable');
-    if (!scheduleContainer || !tableWrapper || !tableEl) return 50;
+    if (!tableWrapper || !tableEl) return 50;
 
-    const containerRect = scheduleContainer.getBoundingClientRect();
     const wrapperRect = tableWrapper.getBoundingClientRect();
     const theadRect = tableEl.querySelector('thead')?.getBoundingClientRect();
     const theadHeight = theadRect ? theadRect.height : 0;
 
-    const aboveTableBody = wrapperRect.top - containerRect.top + theadHeight;
-    const belowContainer = window.innerHeight - containerRect.bottom;
-    const availableForTableBody = window.innerHeight - aboveTableBody - belowContainer - 4;
+    const topSpace = wrapperRect.top + theadHeight;
+
+    const bottomElements = ['.current-info', '.legend', '.actions-bar', 'footer'];
+    let bottomHeight = 0;
+    for (const sel of bottomElements) {
+        const el = document.querySelector(sel);
+        if (el) {
+            const r = el.getBoundingClientRect();
+            bottomHeight += r.height;
+            const style = getComputedStyle(el);
+            bottomHeight += parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        }
+    }
+
+    const availableForTableBody = window.innerHeight - topSpace - bottomHeight - 4;
 
     const rowHeightMin = (0.6 * 1.0 * rem) + padY + border;
     const rowHeightMax = (0.6 * 2.5 * rem) + padY + border;
