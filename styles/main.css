@@ -10,6 +10,7 @@
     --cal-orange: #f0883e;
     --cal-current-outline: rgba(255, 255, 255, 0.6);
     --cal-current-bg: rgba(255, 255, 255, 0.06);
+    --cal-search-outline: #fff;
     --row-line-height: 1.3;
 }
 
@@ -25,6 +26,7 @@
     --cal-orange: #bc4c00;
     --cal-current-outline: rgba(0, 0, 0, 0.3);
     --cal-current-bg: rgba(0, 0, 0, 0.04);
+    --cal-search-outline: #1f2328;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,8 +41,8 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0.75rem; }
 
-header { text-align: center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--cal-border); }
-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--cal-border); }
+header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0; }
 
 .main-nav { display: inline-flex; gap: 0.5rem; padding: 0.5rem; background: var(--cal-header-bg); border-radius: 8px; border: 1px solid var(--cal-border); }
 .main-nav a { color: var(--cal-text-muted); text-decoration: none; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.8rem; transition: all 0.2s; }
@@ -77,15 +79,11 @@ th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-inde
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
-td.lab { position: relative; }
-td.lab::after { content: ''; position: absolute; top: 4px; right: 4px; width: 5px; height: 5px; background: var(--cal-orange); border-radius: 50%; }
-td.lab.lab-highlight { background: rgba(240, 136, 62, 0.15); }
-td.lab.lab-highlight::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--cal-orange); }
 td.empty { color: var(--cal-text-muted); opacity: 0.3; background: var(--cal-bg); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--cal-search-outline);
     outline-offset: -2px;
     z-index: 3;
     position: relative;
@@ -104,8 +102,8 @@ td.current-cell {
 td.time-col.hour-mark { color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
 td.time-col.hour-mark::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: color-mix(in srgb, var(--cal-border) 50%, transparent); transform: translateY(-50%); z-index: -1; }
 
-tr.hour-separator td { border-top: 2px solid #484f58; }
-tr.hour-separator td.time-col { background: var(--cal-header-bg); color: #fff; font-weight: 700; }
+tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
+tr.hour-separator td.time-col { background: var(--cal-header-bg); color: var(--cal-text); font-weight: 700; }
 
 td.block { 
     border-left: none; 
@@ -123,7 +121,7 @@ td.block-middle { border-top: none; border-bottom: none; }
 td.block-middle:first-of-type { border-left: 2px solid var(--subject-color); }
 td.block-middle:last-of-type { border-right: 2px solid var(--subject-color); }
 
-td.has-link { cursor: pointer; }
+td.has-link { cursor: pointer; position: relative; }
 td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
 
 td.subject-cell { 
@@ -151,12 +149,8 @@ td.link-icon {
 }
 td.has-link:hover .link-icon { opacity: 1; color: var(--cal-green); }
 
-td.has-link { position: relative; }
 td.has-link::after { content: '\f35d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }
 td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
-
-td[data-subject] { cursor: pointer; }
-td.room-cell { font-size: 0.55rem; color: var(--cal-text-muted); margin-top: 2px; display: block; }
 
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; border-top: 1px solid var(--cal-border); flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
@@ -189,12 +183,6 @@ td.room-cell { font-size: 0.55rem; color: var(--cal-text-muted); margin-top: 2px
 .actions-group .btn i {
     font-size: 0.85rem;
 }
-
-.density-control label { cursor: pointer; user-select: none; }
-.density-control input[type="range"] { -webkit-appearance: none; appearance: none; height: 4px; background: var(--cal-border); border-radius: 2px; outline: none; }
-.density-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--cal-green); cursor: pointer; transition: transform 0.15s; }
-.density-control input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-.density-control input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--cal-green); border: none; cursor: pointer; }
 
 .actions-search {
     display: flex;
@@ -240,7 +228,7 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 /* Calendario */
 .wip-banner { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.4); color: #eab308; text-align: center; padding: 0.5rem; font-size: 0.8rem; margin-bottom: 1rem; border-radius: 6px; }
 .cal-nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); border-radius: 8px 8px 0 0; }
-.cal-nav-left { display: align-items: center; gap: 1rem; }
+.cal-nav-left { display: flex; align-items: center; gap: 1rem; }
 .cal-nav h2 { font-size: 1.1rem; font-weight: 600; min-width: 180px; text-align: center; }
 .btn-icon { width: 32px; height: 32px; border-radius: 6px; background: transparent; border: 1px solid var(--cal-border); color: var(--cal-text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .btn-icon:hover { background: var(--cal-border); }
@@ -290,7 +278,6 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 .easter-egg { position: fixed; bottom: 8px; right: 12px; font-size: 0.7rem; color: var(--cal-text-muted); opacity: 0.3; text-decoration: none; transition: opacity 0.2s; }
 .easter-egg:hover { opacity: 1; }
 
-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 .header-controls { display: flex; align-items: center; gap: 0.75rem; }
 .theme-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); color: var(--cal-text); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
 .theme-toggle:hover { background: var(--cal-border); color: var(--cal-green); }
@@ -315,7 +302,6 @@ header { display: flex; justify-content: space-between; align-items: center; fle
     th { font-size: 0.45rem; letter-spacing: 0; }
     td { font-size: 0.45rem; }
     td:first-child, th:first-child { width: 55px; min-width: 45px; font-size: 0.45rem; }
-    td.lab::after { display: none; }
     td.time-col { font-size: 0.45rem; }
     td.has-link::after { font-size: 0.45rem; }
     td.subject-cell { font-size: 1rem; }
@@ -323,31 +309,11 @@ header { display: flex; justify-content: space-between; align-items: center; fle
     .current-info { gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
     .legend { padding: 0.75rem; }
     .legend-item { font-size: 0.75rem; }
-    .azioni-container { grid-template-columns: 1fr; }
-}
-    
-    .actions-group {
-        justify-content: center;
-    }
-    
-    .actions-search {
-        margin-left: 0;
-        justify-content: center;
-    }
-    
-    .actions-search input {
-        width: 100%;
-    }
-    
-    .actions-search input:focus {
-        width: 100%;
-    }
-    
-    .divider {
-        width: 100%;
-        height: 1px;
-    }
-
+    .actions-group { justify-content: center; }
+    .actions-search { margin-left: 0; justify-content: center; }
+    .actions-search input { width: 100%; }
+    .actions-search input:focus { width: 100%; }
+    .divider { width: 100%; height: 1px; }
     .cal-nav { flex-wrap: wrap; gap: 0.75rem; }
     .cal-nav h2 { font-size: 0.95rem; min-width: 140px; }
     .cal-day { min-height: 60px; padding: 0.25rem; }
