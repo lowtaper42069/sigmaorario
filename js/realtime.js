@@ -297,21 +297,57 @@ function updateCurrentSlotIndicator(currentSlot) {
     }
 }
 
+function getViewportFingerprint() {
+    return window.innerWidth + 'x' + window.innerHeight;
+}
+
 function initDensity() {
     const slider = document.getElementById('densitySlider');
+    const toggle = document.getElementById('densityMemorize');
     if (!slider) return;
+
+    const memorized = localStorage.getItem('densityMemorize') === '1';
+    const savedDensity = localStorage.getItem('density');
+    const savedViewport = localStorage.getItem('densityViewport');
+    const currentViewport = getViewportFingerprint();
+
+    if (toggle) toggle.checked = memorized;
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            const fitValue = calcFitDensity();
-            slider.value = fitValue;
-            applyDensity(fitValue);
+            let value;
+            if (memorized && savedDensity !== null && savedViewport === currentViewport) {
+                value = parseInt(savedDensity, 10);
+            } else {
+                value = calcFitDensity();
+            }
+            slider.value = value;
+            applyDensity(value);
+            if (memorized) saveDensity(value);
         });
     });
 
     slider.addEventListener('input', function () {
         applyDensity(this.value);
+        if (toggle && toggle.checked) saveDensity(this.value);
     });
+
+    if (toggle) {
+        toggle.addEventListener('change', function () {
+            localStorage.setItem('densityMemorize', this.checked ? '1' : '0');
+            if (this.checked) {
+                saveDensity(slider.value);
+            } else {
+                localStorage.removeItem('density');
+                localStorage.removeItem('densityViewport');
+            }
+        });
+    }
+}
+
+function saveDensity(value) {
+    localStorage.setItem('density', value);
+    localStorage.setItem('densityViewport', getViewportFingerprint());
 }
 
 function calcFitDensity() {
