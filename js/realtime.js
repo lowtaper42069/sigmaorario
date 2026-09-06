@@ -210,6 +210,43 @@ function getCurrentSlot() {
     return (h - DAY_START) * SLOTS_PER_HOUR + Math.floor(m / SLOT_MINUTES);
 }
 
+function findNextLesson(fromDay, fromSlot) {
+    let day = fromDay;
+    let slot = fromSlot;
+    for (let i = 0; i < 5; i++) {
+        for (let s = slot; s < TOTAL_SLOTS; s++) {
+            if (grid[s][day]) {
+                return { day, slot: s, lesson: grid[s][day] };
+            }
+        }
+        day = (day + 1) % 5;
+        slot = 0;
+    }
+    return null;
+}
+
+function getLessonEndSlot(day, slot) {
+    const subject = grid[slot][day]?.subject;
+    let s = slot;
+    while (s + 1 < TOTAL_SLOTS && grid[s + 1]?.[day]?.subject === subject) s++;
+    return s;
+}
+
+function formatLessonTime(day, slot) {
+    const endSlot = getLessonEndSlot(day, slot);
+    return `${slotToTime(slot)} - ${slotToTime(endSlot + 1)}`;
+}
+
+function formatNextLesson(result) {
+    if (!result) return 'Nessuna lezione';
+    const time = formatLessonTime(result.day, result.slot);
+    const today = getGiornoIndex();
+    if (result.day === today || today === -1) {
+        return `${result.lesson.subject} (${time})`;
+    }
+    return `${result.lesson.subject} (${NOME_GIORNI[result.day]} ${time})`;
+}
+
 function aggiornaInfo() {
     const oraEl = document.getElementById('currentTime');
     const giornoEl = document.getElementById('currentDay');
@@ -229,58 +266,33 @@ function aggiornaInfo() {
 
     if (idxG === -1) {
         lezEl.textContent = '-';
-        proxEl.textContent = 'Nessuna lezione';
+        const next = findNextLesson(0, 0);
+        proxEl.textContent = formatNextLesson(next);
         return;
     }
 
     if (currentSlot === -1) {
-        const firstSlot = grid.findIndex(row => row[idxG]);
-        if (firstSlot !== -1) {
-            const lesson = grid[firstSlot][idxG];
-            lezEl.textContent = '-';
-            proxEl.textContent = `${lesson.subject} (${slotToTimeRange(firstSlot)})`;
-        } else {
-            lezEl.textContent = '-';
-            proxEl.textContent = 'Nessuna lezione oggi';
-        }
+        lezEl.textContent = '-';
+        const next = now.getHours() < DAY_START
+            ? findNextLesson(idxG, 0)
+            : findNextLesson((idxG + 1) % 5, 0);
+        proxEl.textContent = formatNextLesson(next);
         return;
     }
 
     const current = grid[currentSlot]?.[idxG];
 
     if (current) {
-        lezEl.textContent = current.subject;
-
-        let nextSlot = currentSlot + 1;
-        while (nextSlot < TOTAL_SLOTS && !grid[nextSlot]?.[idxG]) nextSlot++;
-
-        if (nextSlot < TOTAL_SLOTS) {
-            const next = grid[nextSlot][idxG];
-            proxEl.textContent = `${next.subject} (${slotToTimeRange(nextSlot)})`;
-        } else {
-            proxEl.textContent = '-';
-        }
+        const time = formatLessonTime(idxG, currentSlot);
+        lezEl.textContent = current.room
+            ? `${current.subject} (${time} — ${current.room})`
+            : `${current.subject} (${time})`;
+        const next = findNextLesson(idxG, currentSlot + 1);
+        proxEl.textContent = formatNextLesson(next);
     } else {
         lezEl.textContent = '-';
-
-        let nextSlot = currentSlot;
-        while (nextSlot < TOTAL_SLOTS && !grid[nextSlot]?.[idxG]) nextSlot++;
-
-        if (nextSlot < TOTAL_SLOTS) {
-            const next = grid[nextSlot][idxG];
-            proxEl.textContent = `${next.subject} (${slotToTimeRange(nextSlot)})`;
-        } else {
-            let day = (idxG + 1) % 5;
-            while (day !== idxG) {
-                const firstSlot = grid.findIndex(row => row[day]);
-                if (firstSlot !== -1) {
-                    const next = grid[firstSlot][day];
-                    proxEl.textContent = `${next.subject} (${NOME_GIORNI[day]} ${slotToTimeRange(firstSlot)})`;
-                    break;
-                }
-                day = (day + 1) % 5;
-            }
-        }
+        const next = findNextLesson(idxG, currentSlot);
+        proxEl.textContent = formatNextLesson(next);
     }
 }
 
