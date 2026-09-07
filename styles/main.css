@@ -159,6 +159,7 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; border-top: 1px solid var(--cal-border); flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
 .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+.legend-color.lab { background: var(--cal-orange); }
 .legend-color.today { background: var(--cal-green); }
 
 .actions-bar {
