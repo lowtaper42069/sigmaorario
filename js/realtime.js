@@ -363,7 +363,6 @@ function saveDensity(value) {
 }
 
 function calcFitDensity() {
-    const TOTAL_SLOTS = 48;
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const padY = 0.3 * rem;
     const border = 1;
@@ -426,18 +425,6 @@ function showToday() {
     }
 }
 
-function toggleLabs() {
-    const cells = document.querySelectorAll('#scheduleTable td.lab');
-    const isActive = document.querySelector('#scheduleTable td.lab.lab-highlight') !== null;
-    cells.forEach(cell => {
-        if (isActive) {
-            cell.classList.remove('lab-highlight');
-        } else {
-            cell.classList.add('lab-highlight');
-        }
-    });
-}
-
 function searchMateria() {
     const query = document.getElementById('searchMateria').value.trim().toLowerCase();
 
@@ -479,9 +466,6 @@ function searchMateria() {
 function resetView() {
     document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
         cell.classList.remove('search-highlight');
-    });
-    document.querySelectorAll('td.lab').forEach(cell => {
-        cell.classList.remove('lab-highlight');
     });
     const searchInput = document.getElementById('searchMateria');
     if (searchInput) searchInput.value = '';
