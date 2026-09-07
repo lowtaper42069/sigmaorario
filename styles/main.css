@@ -83,10 +83,18 @@ td.empty { color: var(--cal-text-muted); opacity: 0.3; background: var(--cal-bg)
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
-    outline: 2px solid var(--cal-search-outline);
-    outline-offset: -2px;
+    border-left: 2px solid var(--cal-search-outline) !important;
+    border-right: 2px solid var(--cal-search-outline) !important;
     z-index: 3;
     position: relative;
+}
+
+td.search-highlight.block-start {
+    border-top: 2px solid var(--cal-search-outline) !important;
+}
+
+td.search-highlight.block-end {
+    border-bottom: 2px solid var(--cal-search-outline) !important;
 }
 
 td.time-col { background: var(--cal-bg); font-size: 0.6rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
