@@ -19,7 +19,7 @@ function updateLockUI() {
     const icon = btn.querySelector('i');
     const memorized = isMemorized();
     if (icon) icon.className = memorized ? 'nf nf-md-lock' : 'nf nf-md-lock_open';
-    btn.title = memorized ? 'Impostazioni bloccate (clicca per sbloccare)' : 'Le impostazioni seguono il sistema';
+    btn.title = memorized ? 'UI salvata' : 'UI automatica';
     btn.classList.toggle('locked', memorized);
 }
 

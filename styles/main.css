@@ -43,6 +43,7 @@
 .nf-fa-clipboard_check::before { content: "\ed7a"; }
 .nf-fa-pencil::before { content: "\f040"; }
 .nf-fa-folder::before { content: "\f07b"; }
+.nf-dev-github::before { content: "\f09b"; }
 
 :root {
     --cal-bg: #0d1117;
