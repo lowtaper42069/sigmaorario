@@ -13,15 +13,23 @@ function getSystemTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function updateLockUI() {
+    const btn = document.getElementById('settingsMemorize');
+    if (!btn) return;
+    const icon = btn.querySelector('i');
+    const memorized = isMemorized();
+    if (icon) icon.className = memorized ? 'fas fa-lock' : 'fas fa-lock-open';
+    btn.title = memorized ? 'Impostazioni bloccate (clicca per sbloccare)' : 'Le impostazioni seguono il sistema';
+    btn.classList.toggle('locked', memorized);
+}
+
 function initTheme() {
     const memorized = isMemorized();
     const saved = memorized ? localStorage.getItem('theme') : null;
     const theme = saved || getSystemTheme();
     document.documentElement.setAttribute('data-theme', theme);
     updateThemeIcon(theme);
-
-    const toggle = document.getElementById('settingsMemorize');
-    if (toggle) toggle.checked = memorized;
+    updateLockUI();
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!isMemorized()) {
@@ -344,8 +352,6 @@ function initDensity() {
     const savedViewport = localStorage.getItem('densityViewport');
     const currentViewport = getViewportFingerprint();
 
-    if (toggle) toggle.checked = memorized;
-
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             let value;
@@ -362,12 +368,13 @@ function initDensity() {
 
     slider.addEventListener('input', function () {
         applyDensity(this.value);
-        if (toggle && toggle.checked) saveDensity(this.value);
+        if (isMemorized()) saveDensity(this.value);
     });
 
     if (toggle) {
-        toggle.addEventListener('change', function () {
-            if (this.checked) {
+        toggle.addEventListener('click', function () {
+            const next = !isMemorized();
+            if (next) {
                 localStorage.setItem('settingsMemorize', '1');
                 saveDensity(slider.value);
                 localStorage.setItem('theme', document.documentElement.getAttribute('data-theme') || 'dark');
@@ -377,6 +384,7 @@ function initDensity() {
                 localStorage.removeItem('density');
                 localStorage.removeItem('densityViewport');
             }
+            updateLockUI();
         });
     }
 }

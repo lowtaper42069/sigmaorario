@@ -16,15 +16,14 @@
                 <a href="calendario.html">Calendario</a>
             </nav>
             <div class="header-controls">
+                <button class="btn lock-toggle" id="settingsMemorize" title="Le impostazioni seguono il sistema" aria-label="Memorizza impostazioni">
+                    <i class="fas fa-lock-open"></i>
+                </button>
                 <div class="density-control" style="display:flex;align-items:center;gap:0.5rem;">
                     <label for="densitySlider" title="Densità righe" style="display:flex;align-items:center;gap:0.3rem;color:var(--cal-text-muted);font-size:0.65rem;">
                         <i class="fas fa-compress-alt"></i>
                         <input type="range" id="densitySlider" min="0" max="100" value="50" style="width:80px;accent-color:var(--cal-green);">
                         <i class="fas fa-expand-alt"></i>
-                    </label>
-                    <label class="memorize-toggle" title="Memorizza impostazioni (tema e dimensione)">
-                        <input type="checkbox" id="settingsMemorize">
-                        <span class="toggle-track"></span>
                     </label>
                 </div>
                 <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
