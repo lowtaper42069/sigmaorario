@@ -6,7 +6,7 @@ Visualizzatore orario settimanale per il mio personale corso di laurea (A.S. 202
 
 - **Orario interattivo** — griglia 15 minuti (8:00–20:00) con blocchi lezione contigui
 - **Indicatore lezione attuale** — linea verde verticale nell'ora corrente
-- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco (WIP)
+- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco
 - **Densità regolabile** — slider per altezza righe (persistito in localStorage)
 - **Tema chiaro/scuro** — toggle con preferenza salvata e rilevamento sistema
 - **Link aule** — click su una lezione apre la mappa AUNICA dell'aula
