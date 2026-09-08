@@ -18,7 +18,7 @@ function updateLockUI() {
     if (!btn) return;
     const icon = btn.querySelector('i');
     const memorized = isMemorized();
-    if (icon) icon.className = memorized ? 'fas fa-lock' : 'fas fa-lock-open';
+    if (icon) icon.className = memorized ? 'nf nf-md-lock' : 'nf nf-md-lock_open';
     btn.title = memorized ? 'Impostazioni bloccate (clicca per sbloccare)' : 'Le impostazioni seguono il sistema';
     btn.classList.toggle('locked', memorized);
 }
@@ -45,7 +45,7 @@ function updateThemeIcon(theme) {
     if (!toggle) return;
     const icon = toggle.querySelector('i');
     if (icon) {
-        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        icon.className = theme === 'dark' ? 'nf nf-fa-sun' : 'nf nf-fa-moon';
     }
 }
 

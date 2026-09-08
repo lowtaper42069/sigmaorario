@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'JetBrains Mono Nerd';
+    src: url('https://raw.githubusercontent.com/Nick2bad4u/nerd-fonts-woff2/main/fonts/woff2/JetBrainsMono/JetBrainsMonoNerdFont-Regular.woff2') format('woff2');
+    font-display: swap;
+}
+
 :root {
     --cal-bg: #0d1117;
     --cal-header-bg: #161b22;
@@ -34,7 +40,7 @@
 body {
     background: var(--cal-bg);
     color: var(--cal-text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: 'JetBrains Mono Nerd', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     line-height: 1.5;
     min-height: 100vh;
 }
@@ -153,7 +159,7 @@ td.link-icon {
 }
 td.has-link:hover .link-icon { opacity: 1; color: var(--cal-green); }
 
-td.has-link::after { content: '\f35d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }
+td.has-link::after { content: '\f35d'; font-family: 'JetBrains Mono Nerd'; font-weight: normal; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }
 td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
 
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; border-top: 1px solid var(--cal-border); flex-wrap: wrap; }
@@ -286,6 +292,7 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 .theme-toggle, .lock-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; border: 1px solid var(--cal-border); border-radius: 6px; cursor: pointer; transition: all 0.2s; background: var(--cal-header-bg); color: var(--cal-text); }
 .theme-toggle:hover, .lock-toggle:hover { background: var(--cal-border); color: var(--cal-green); }
 .lock-toggle.locked { background: var(--cal-green); color: #fff; border-color: var(--cal-green); }
+.lock-toggle { min-width: 2.2rem; min-height: 2.2rem; display: inline-flex; align-items: center; justify-content: center; }
 [data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: var(--cal-header-bg); color: var(--cal-text); border-color: var(--cal-border); }
 [data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: var(--cal-green); color: #fff; border-color: var(--cal-green); }
 

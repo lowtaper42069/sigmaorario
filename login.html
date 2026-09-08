@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accedi - 5BINF</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @font-face {
+            font-family: 'JetBrains Mono Nerd';
+            src: url('https://raw.githubusercontent.com/Nick2bad4u/nerd-fonts-woff2/main/fonts/woff2/JetBrainsMono/JetBrainsMonoNerdFont-Regular.woff2') format('woff2');
+            font-display: swap;
+        }
+
         :root {
             --cal-bg: #0d1117;
             --cal-header-bg: #161b22;
@@ -19,7 +24,7 @@
         body {
             background: var(--cal-bg);
             color: var(--cal-text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'JetBrains Mono Nerd', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.5;
             min-height: 100vh;
             display: flex;
@@ -199,7 +204,7 @@
 
             <div class="back-link">
                 <a href="calendario.html">
-                    <i class="fas fa-arrow-left"></i> Torna al calendario
+                    <i class="nf nf-fa-arrow_left"></i> Torna al calendario
                 </a>
             </div>
         </div>

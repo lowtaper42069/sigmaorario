@@ -17,7 +17,7 @@ Visualizzatore orario settimanale per il mio personale corso di laurea (A.S. 202
 
 - HTML / CSS / Vanilla JS
 - Supabase (auth + database per calendario) (WIP)
-- Font Awesome 6 per le icone
+- [JetBrains Mono Nerd Font](https://www.nerdfonts.com/) — font per testo e icone (caricato via CDN)
 - [Netlify](https://www.netlify.com/), per il deployment
 
 ## Sviluppo

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake - Sigmaorario</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
     <style>
         :root {
             --cal-bg: #0d1117;
@@ -31,7 +31,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'JetBrains Mono Nerd', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--cal-bg);
             color: var(--cal-text);
             min-height: 100vh;
@@ -276,7 +276,7 @@
     <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;width:100%;max-width:400px;">
         <h1 style="margin:0;">🐍 Snake</h1>
         <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema" style="padding:0.4rem 0.6rem;">
-            <i class="fas fa-sun"></i>
+            <i class="nf nf-fa-sun"></i>
         </button>
     </header>
     <div class="game-container">
@@ -285,20 +285,20 @@
         <div class="controls">
             <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
             <button class="btn secondary" onclick="resetGame()">Reset</button>
-            <button class="btn secondary speed-btn" onclick="showSettings()" title="Velocità"><i class="fas fa-tachometer-alt"></i></button>
-            <button class="btn secondary speed-btn" onclick="toggleLayout()" title="Cambia layout"><i class="fas fa-th"></i></button>
+            <button class="btn secondary speed-btn" onclick="showSettings()" title="Velocità"><i class="nf nf-fa-tachometer_alt"></i></button>
+            <button class="btn secondary speed-btn" onclick="toggleLayout()" title="Cambia layout"><i class="nf nf-fa-th"></i></button>
         </div>
         <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente</p>
         <div class="dpad">
-            <button class="dpad-btn dpad-up" oncontextmenu="return false;" ontouchstart="handleDirection('up')" onclick="handleDirection('up')"><i class="fas fa-chevron-up"></i></button>
-            <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="fas fa-chevron-left"></i></button>
-            <button class="dpad-btn dpad-down" oncontextmenu="return false;" ontouchstart="handleDirection('down')" onclick="handleDirection('down')"><i class="fas fa-chevron-down"></i></button>
-            <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="fas fa-chevron-right"></i></button>
+            <button class="dpad-btn dpad-up" oncontextmenu="return false;" ontouchstart="handleDirection('up')" onclick="handleDirection('up')"><i class="nf nf-fa-chevron_up"></i></button>
+            <button class="dpad-btn dpad-left" oncontextmenu="return false;" ontouchstart="handleDirection('left')" onclick="handleDirection('left')"><i class="nf nf-fa-chevron_left"></i></button>
+            <button class="dpad-btn dpad-down" oncontextmenu="return false;" ontouchstart="handleDirection('down')" onclick="handleDirection('down')"><i class="nf nf-fa-chevron_down"></i></button>
+            <button class="dpad-btn dpad-right" oncontextmenu="return false;" ontouchstart="handleDirection('right')" onclick="handleDirection('right')"><i class="nf nf-fa-chevron_right"></i></button>
             <button class="dpad-btn dpad-center" style="display: none;"></button>
         </div>
     </div>
     <a href="index.html" class="back-link">← Torna all'orario</a>
-    <a href="index.html" class="mobile-back"><i class="fas fa-arrow-left"></i></a>
+    <a href="index.html" class="mobile-back"><i class="nf nf-fa-arrow_left"></i></a>
 
     <div class="settings-overlay" id="settingsOverlay"></div>
     <div class="settings-menu" id="settingsMenu">

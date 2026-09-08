@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario - 5BINF</title>
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="wip-banner">
-                <i class="fas fa-hard-hat"></i> Work in progress - Eventi salvati solo localmente
+                <i class="nf nf-fa-hard_hat"></i> Work in progress - Eventi salvati solo localmente
             </div>
             <h1>Calendariosigma</h1>
             <nav class="main-nav" id="mainNav">
@@ -19,32 +18,32 @@
                 <a href="calendario.html" class="active">Calendario</a>
             </nav>
             <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
-                <i class="fas fa-sun"></i>
+                <i class="nf nf-fa-sun"></i>
             </button>
         </header>
 
         <div class="cal-nav">
             <div class="cal-nav-left">
                 <button class="btn-icon" id="prevMonth" title="Mese precedente">
-                    <i class="fas fa-chevron-left"></i>
+                    <i class="nf nf-fa-chevron_left"></i>
                 </button>
                 <h2 id="currentMonth">-</h2>
                 <button class="btn-icon" id="nextMonth" title="Mese successivo">
-                    <i class="fas fa-chevron-right"></i>
+                    <i class="nf nf-fa-chevron_right"></i>
                 </button>
             </div>
             <div style="display: flex; gap: 0.5rem;">
                 <button class="btn" id="todayBtn">
-                    <i class="fas fa-calendar-day"></i> Oggi
+                    <i class="nf nf-fa-calendar_day"></i> Oggi
                 </button>
                 <button class="btn btn-primary admin-only" id="addEventBtn" style="display: none;">
-                    <i class="fas fa-plus"></i> Aggiungi
+                    <i class="nf nf-fa-plus"></i> Aggiungi
                 </button>
                 <button class="btn admin-only" id="syncBtn" style="display: none;" onclick="syncEvents()">
-                    <i class="fas fa-sync-alt"></i> Sync
+                    <i class="nf nf-fa-sync_alt"></i> Sync
                 </button>
                 <a href="login.html" class="btn guest-only" id="loginBtn">
-                    <i class="fas fa-sign-in-alt"></i> Accedi
+                    <i class="nf nf-fa-sign_in_alt"></i> Accedi
                 </a>
             </div>
         </div>
@@ -305,25 +304,25 @@
 
         function showEventDetail(evt) {
             const icons = {
-                verifica: 'fa-clipboard-check',
-                compito: 'fa-pencil',
-                progetto: 'fa-folder',
-                laboratorio: 'fa-flask',
-                altro: 'fa-calendar'
+                verifica: 'nf-fa-clipboard_check',
+                compito: 'nf-fa-pencil',
+                progetto: 'nf-fa-folder',
+                laboratorio: 'nf-fa-flask',
+                altro: 'nf-fa-calendar'
             };
 
             const content = document.getElementById('eventDetailContent');
             content.innerHTML = `
                 <div class="event-detail">
                     <div class="event-color" style="background: ${evt.color};">
-                        <i class="fas ${icons[evt.type] || 'fa-calendar'}"></i>
+                        <i class="nf ${icons[evt.type] || 'nf-fa-calendar'}"></i>
                     </div>
                     <h4>${evt.title}</h4>
                     <div class="event-info">
-                        <i class="fas fa-calendar"></i> ${formatDate(evt.date)}
+                        <i class="nf nf-fa-calendar"></i> ${formatDate(evt.date)}
                         ${evt.time ? ` alle ${evt.time}` : ''}
                     </div>
-                    ${evt.subject ? `<div class="event-info"><i class="fas fa-book"></i> ${evt.subject}</div>` : ''}
+                    ${evt.subject ? `<div class="event-info"><i class="nf nf-fa-book"></i> ${evt.subject}</div>` : ''}
                     ${evt.notes ? `<div class="event-notes">${evt.notes}</div>` : ''}
                 </div>
             `;
@@ -331,8 +330,8 @@
             const footer = document.getElementById('eventDetailFooter');
             if (isLoggedIn()) {
                 footer.innerHTML = `
-                    <button class="btn" onclick="editEvent(${evt.id})"><i class="fas fa-edit"></i> Modifica</button>
-                    <button class="btn btn-danger" onclick="deleteEvent(${evt.id})"><i class="fas fa-trash"></i> Elimina</button>
+                    <button class="btn" onclick="editEvent(${evt.id})"><i class="nf nf-fa-edit"></i> Modifica</button>
+                    <button class="btn btn-danger" onclick="deleteEvent(${evt.id})"><i class="nf nf-fa-trash"></i> Elimina</button>
                 `;
             } else {
                 footer.innerHTML = '<button class="btn" onclick="closeModal(\'detailModal\')">Chiudi</button>';
@@ -502,7 +501,7 @@
                 const logout = document.createElement('a');
                 logout.href = '#';
                 logout.className = 'logout-btn';
-                logout.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+                logout.innerHTML = '<i class="nf nf-fa-sign_out_alt"></i>';
                 logout.onclick = async (e) => {
                     e.preventDefault();
                     try {
