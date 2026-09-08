@@ -5,12 +5,31 @@ const SLOTS_PER_HOUR = 60 / SLOT_MINUTES;
 const TOTAL_SLOTS = (DAY_END - DAY_START) * SLOTS_PER_HOUR;
 const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
 
+function isMemorized() {
+    return localStorage.getItem('settingsMemorize') === '1';
+}
+
+function getSystemTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 function initTheme() {
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (prefersDark ? 'dark' : 'light');
+    const memorized = isMemorized();
+    const saved = memorized ? localStorage.getItem('theme') : null;
+    const theme = saved || getSystemTheme();
     document.documentElement.setAttribute('data-theme', theme);
     updateThemeIcon(theme);
+
+    const toggle = document.getElementById('settingsMemorize');
+    if (toggle) toggle.checked = memorized;
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!isMemorized()) {
+            const next = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            updateThemeIcon(next);
+        }
+    });
 }
 
 function updateThemeIcon(theme) {
@@ -26,8 +45,10 @@ function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
     updateThemeIcon(next);
+    if (isMemorized()) {
+        localStorage.setItem('theme', next);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initTheme);
@@ -315,10 +336,10 @@ function getViewportFingerprint() {
 
 function initDensity() {
     const slider = document.getElementById('densitySlider');
-    const toggle = document.getElementById('densityMemorize');
+    const toggle = document.getElementById('settingsMemorize');
     if (!slider) return;
 
-    const memorized = localStorage.getItem('densityMemorize') === '1';
+    const memorized = isMemorized();
     const savedDensity = localStorage.getItem('density');
     const savedViewport = localStorage.getItem('densityViewport');
     const currentViewport = getViewportFingerprint();
@@ -346,10 +367,13 @@ function initDensity() {
 
     if (toggle) {
         toggle.addEventListener('change', function () {
-            localStorage.setItem('densityMemorize', this.checked ? '1' : '0');
             if (this.checked) {
+                localStorage.setItem('settingsMemorize', '1');
                 saveDensity(slider.value);
+                localStorage.setItem('theme', document.documentElement.getAttribute('data-theme') || 'dark');
             } else {
+                localStorage.removeItem('settingsMemorize');
+                localStorage.removeItem('theme');
                 localStorage.removeItem('density');
                 localStorage.removeItem('densityViewport');
             }

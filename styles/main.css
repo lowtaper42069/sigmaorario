@@ -298,6 +298,13 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
     outline-offset: 2px;
 }
 
+.memorize-toggle { display: inline-flex; align-items: center; cursor: pointer; }
+.memorize-toggle input { display: none; }
+.toggle-track { width: 26px; height: 14px; background: var(--cal-border); border-radius: 7px; position: relative; transition: background 0.2s; }
+.toggle-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; background: var(--cal-text-muted); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
+.memorize-toggle input:checked + .toggle-track { background: var(--cal-green); }
+.memorize-toggle input:checked + .toggle-track::after { transform: translateX(12px); background: #fff; }
+
 .density-control label { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.3rem; color: var(--cal-text-muted); font-size: 0.65rem; }
 .density-control input[type="range"] { -webkit-appearance: none; appearance: none; height: 4px; background: var(--cal-border); border-radius: 2px; outline: none; }
 .density-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--cal-green); cursor: pointer; transition: transform 0.15s; }
