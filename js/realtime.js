@@ -210,6 +210,43 @@ function getCurrentSlot() {
     return (h - DAY_START) * SLOTS_PER_HOUR + Math.floor(m / SLOT_MINUTES);
 }
 
+function findNextLesson(fromDay, fromSlot) {
+    let day = fromDay;
+    let slot = fromSlot;
+    for (let i = 0; i < 5; i++) {
+        for (let s = slot; s < TOTAL_SLOTS; s++) {
+            if (grid[s][day]) {
+                return { day, slot: s, lesson: grid[s][day] };
+            }
+        }
+        day = (day + 1) % 5;
+        slot = 0;
+    }
+    return null;
+}
+
+function getLessonEndSlot(day, slot) {
+    const subject = grid[slot][day]?.subject;
+    let s = slot;
+    while (s + 1 < TOTAL_SLOTS && grid[s + 1]?.[day]?.subject === subject) s++;
+    return s;
+}
+
+function formatLessonTime(day, slot) {
+    const endSlot = getLessonEndSlot(day, slot);
+    return `${slotToTime(slot)} - ${slotToTime(endSlot + 1)}`;
+}
+
+function formatNextLesson(result) {
+    if (!result) return 'Nessuna lezione';
+    const time = formatLessonTime(result.day, result.slot);
+    const today = getGiornoIndex();
+    if (result.day === today || today === -1) {
+        return `${result.lesson.subject} (${time})`;
+    }
+    return `${result.lesson.subject} (${NOME_GIORNI[result.day]} ${time})`;
+}
+
 function aggiornaInfo() {
     const oraEl = document.getElementById('currentTime');
     const giornoEl = document.getElementById('currentDay');
@@ -229,86 +266,140 @@ function aggiornaInfo() {
 
     if (idxG === -1) {
         lezEl.textContent = '-';
-        proxEl.textContent = 'Nessuna lezione';
+        const next = findNextLesson(0, 0);
+        proxEl.textContent = formatNextLesson(next);
         return;
     }
 
     if (currentSlot === -1) {
-        const firstSlot = grid.findIndex(row => row[idxG]);
-        if (firstSlot !== -1) {
-            const lesson = grid[firstSlot][idxG];
-            lezEl.textContent = '-';
-            proxEl.textContent = `${lesson.subject} (${slotToTimeRange(firstSlot)})`;
-        } else {
-            lezEl.textContent = '-';
-            proxEl.textContent = 'Nessuna lezione oggi';
-        }
+        lezEl.textContent = '-';
+        const next = now.getHours() < DAY_START
+            ? findNextLesson(idxG, 0)
+            : findNextLesson((idxG + 1) % 5, 0);
+        proxEl.textContent = formatNextLesson(next);
         return;
     }
 
     const current = grid[currentSlot]?.[idxG];
 
     if (current) {
-        lezEl.textContent = current.subject;
-
-        let nextSlot = currentSlot + 1;
-        while (nextSlot < TOTAL_SLOTS && !grid[nextSlot]?.[idxG]) nextSlot++;
-
-        if (nextSlot < TOTAL_SLOTS) {
-            const next = grid[nextSlot][idxG];
-            proxEl.textContent = `${next.subject} (${slotToTimeRange(nextSlot)})`;
-        } else {
-            proxEl.textContent = '-';
-        }
+        const time = formatLessonTime(idxG, currentSlot);
+        lezEl.textContent = current.room
+            ? `${current.subject} (${time} — ${current.room})`
+            : `${current.subject} (${time})`;
+        const next = findNextLesson(idxG, currentSlot + 1);
+        proxEl.textContent = formatNextLesson(next);
     } else {
         lezEl.textContent = '-';
-
-        let nextSlot = currentSlot;
-        while (nextSlot < TOTAL_SLOTS && !grid[nextSlot]?.[idxG]) nextSlot++;
-
-        if (nextSlot < TOTAL_SLOTS) {
-            const next = grid[nextSlot][idxG];
-            proxEl.textContent = `${next.subject} (${slotToTimeRange(nextSlot)})`;
-        } else {
-            let day = (idxG + 1) % 5;
-            while (day !== idxG) {
-                const firstSlot = grid.findIndex(row => row[day]);
-                if (firstSlot !== -1) {
-                    const next = grid[firstSlot][day];
-                    proxEl.textContent = `${next.subject} (${NOME_GIORNI[day]} ${slotToTimeRange(firstSlot)})`;
-                    break;
-                }
-                day = (day + 1) % 5;
-            }
-        }
+        const next = findNextLesson(idxG, currentSlot);
+        proxEl.textContent = formatNextLesson(next);
     }
 }
 
 function updateCurrentSlotIndicator(currentSlot) {
-    document.querySelectorAll('td.time-col.current-slot').forEach(td => td.classList.remove('current-slot'));
+    document.querySelectorAll('td.current-cell').forEach(td => td.classList.remove('current-cell'));
     if (currentSlot >= 0 && currentSlot < TOTAL_SLOTS) {
+        const idxG = getGiornoIndex();
+        if (idxG === -1) return;
         const row = document.querySelector(`#scheduleTable tbody tr[data-slot="${currentSlot}"]`);
         if (row) {
-            const timeCol = row.querySelector('td.time-col');
-            if (timeCol) timeCol.classList.add('current-slot');
+            const cell = row.querySelector(`td[data-day="${idxG}"]`);
+            if (cell) cell.classList.add('current-cell');
         }
     }
 }
 
+function getViewportFingerprint() {
+    return window.innerWidth + 'x' + window.innerHeight;
+}
+
 function initDensity() {
     const slider = document.getElementById('densitySlider');
+    const toggle = document.getElementById('densityMemorize');
     if (!slider) return;
 
-    const saved = localStorage.getItem('density');
-    if (saved !== null) {
-        slider.value = saved;
-        applyDensity(saved);
-    }
+    const memorized = localStorage.getItem('densityMemorize') === '1';
+    const savedDensity = localStorage.getItem('density');
+    const savedViewport = localStorage.getItem('densityViewport');
+    const currentViewport = getViewportFingerprint();
+
+    if (toggle) toggle.checked = memorized;
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            let value;
+            if (memorized && savedDensity !== null && savedViewport === currentViewport) {
+                value = parseInt(savedDensity, 10);
+            } else {
+                value = calcFitDensity();
+            }
+            slider.value = value;
+            applyDensity(value);
+            if (memorized) saveDensity(value);
+        });
+    });
 
     slider.addEventListener('input', function () {
         applyDensity(this.value);
-        localStorage.setItem('density', this.value);
+        if (toggle && toggle.checked) saveDensity(this.value);
     });
+
+    if (toggle) {
+        toggle.addEventListener('change', function () {
+            localStorage.setItem('densityMemorize', this.checked ? '1' : '0');
+            if (this.checked) {
+                saveDensity(slider.value);
+            } else {
+                localStorage.removeItem('density');
+                localStorage.removeItem('densityViewport');
+            }
+        });
+    }
+}
+
+function saveDensity(value) {
+    localStorage.setItem('density', value);
+    localStorage.setItem('densityViewport', getViewportFingerprint());
+}
+
+function calcFitDensity() {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const padY = 0.3 * rem;
+    const border = 1;
+
+    const tableWrapper = document.querySelector('.table-wrapper');
+    const tableEl = document.getElementById('scheduleTable');
+    if (!tableWrapper || !tableEl) return 50;
+
+    const wrapperRect = tableWrapper.getBoundingClientRect();
+    const theadRect = tableEl.querySelector('thead')?.getBoundingClientRect();
+    const theadHeight = theadRect ? theadRect.height : 0;
+
+    const topSpace = wrapperRect.top + theadHeight;
+
+    const bottomElements = ['.current-info', '.legend', '.actions-bar', 'footer'];
+    let bottomHeight = 0;
+    for (const sel of bottomElements) {
+        const el = document.querySelector(sel);
+        if (el) {
+            const r = el.getBoundingClientRect();
+            bottomHeight += r.height;
+            const style = getComputedStyle(el);
+            bottomHeight += parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        }
+    }
+
+    const availableForTableBody = window.innerHeight - topSpace - bottomHeight - 4;
+
+    const rowHeightMin = (0.6 * 1.0 * rem) + padY + border;
+    const rowHeightMax = (0.6 * 2.5 * rem) + padY + border;
+    const tableMin = TOTAL_SLOTS * rowHeightMin;
+    const tableMax = TOTAL_SLOTS * rowHeightMax;
+
+    const clamped = Math.max(tableMin, Math.min(tableMax, availableForTableBody));
+    const lh = ((clamped / TOTAL_SLOTS) - padY - border) / (0.6 * rem);
+    const clampedLH = Math.max(1.0, Math.min(2.5, lh));
+    return Math.round(((clampedLH - 1.0) / (2.5 - 1.0)) * 100);
 }
 
 function applyDensity(value) {

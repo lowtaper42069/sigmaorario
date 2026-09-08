@@ -22,6 +22,10 @@
                         <input type="range" id="densitySlider" min="0" max="100" value="50" style="width:80px;accent-color:var(--cal-green);">
                         <i class="fas fa-expand-alt"></i>
                     </label>
+                    <label class="memorize-toggle" title="Memorizza dimensione tabella">
+                        <input type="checkbox" id="densityMemorize">
+                        <span class="toggle-track"></span>
+                    </label>
                 </div>
                 <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
                     <i class="fas fa-sun"></i>
@@ -106,7 +110,7 @@
                     </button>
                 </div>
                 <div class="actions-search">
-                    <input type="text" id="searchMateria" placeholder="Cerca materia..." onkeypress="if(event.key==='Enter')searchMateria()">
+                    <input type="text" id="searchMateria" placeholder="Cerca materia...">
                     <button class="btn" onclick="searchMateria()" title="Cerca">
                         <i class="fas fa-search"></i>
                     </button>

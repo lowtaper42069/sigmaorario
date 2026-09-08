@@ -5,8 +5,8 @@ Visualizzatore orario settimanale per il mio personale corso di laurea (A.S. 202
 ## Funzionalità
 
 - **Orario interattivo** — griglia 15 minuti (8:00–20:00) con blocchi lezione contigui
-- **Indicatore lezione attuale** — linea verde verticale nell'ora corrente
-- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco (WIP)
+- **Indicatore lezione attuale** — riquadro bianco sull ora e giorno corrente
+- **Ricerca materie** — evidenzia tutte le occorrenze di una materia con bordo bianco
 - **Densità regolabile** — slider per altezza righe (persistito in localStorage)
 - **Tema chiaro/scuro** — toggle con preferenza salvata e rilevamento sistema
 - **Link aule** — click su una lezione apre la mappa AUNICA dell'aula
@@ -17,7 +17,8 @@ Visualizzatore orario settimanale per il mio personale corso di laurea (A.S. 202
 
 - HTML / CSS / Vanilla JS
 - Supabase (auth + database per calendario) (WIP)
-- Font Awesome 6 per icone
+- Font Awesome 6 per le icone
+- [Netlify](https://www.netlify.com/), per il deployment
 
 ## Sviluppo
 
