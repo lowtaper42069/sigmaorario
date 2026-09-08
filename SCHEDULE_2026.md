@@ -4,7 +4,7 @@
 | Orario | Materia |
 |--------|---------|
 | 13:15 – 16:15 | FONDAMENTI DI INFORMATICA |
-| 16:15 – 19:15 | FONDAMENTI DI INFORMATICA |
+| 16:15 – 19:15 | ANALISI MATEMATICA 1 |
 
 ## Martedì — Libero
 

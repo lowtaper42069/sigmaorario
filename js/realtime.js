@@ -43,7 +43,7 @@ const AUNICA_LINKS = {
 const RAW_SCHEDULE = {
     0: [
         { subject: 'FONDAMENTI DI INFORMATICA', start: '13:15', end: '16:15', room: '2.1.4' },
-        { subject: 'FONDAMENTI DI INFORMATICA', start: '16:15', end: '19:15', room: '2.1.4' },
+        { subject: 'ANALISI MATEMATICA 1', start: '16:15', end: '19:15', room: '2.1.4' },
     ],
     1: [],
     2: [
