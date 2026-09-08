@@ -4,6 +4,46 @@
     font-display: swap;
 }
 
+.nf {
+    font-family: 'JetBrains Mono Nerd';
+    font-style: normal;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+}
+
+.nf-fa-sun::before { content: "\f185"; }
+.nf-fa-moon::before { content: "\f186"; }
+.nf-md-lock::before { content: "\f30e"; }
+.nf-md-lock_open::before { content: "\f30f"; }
+.nf-fa-compress_arrows_alt::before { content: "\f316"; }
+.nf-fa-expand_arrows_alt::before { content: "\f31e"; }
+.nf-fa-calendar_week::before { content: "\f073"; }
+.nf-fa-download::before { content: "\f019"; }
+.nf-fa-print::before { content: "\f02f"; }
+.nf-fa-calendar_day::before { content: "\f783"; }
+.nf-fa-flask::before { content: "\f0c3"; }
+.nf-fa-undo::before { content: "\f0e2"; }
+.nf-fa-search::before { content: "\f002"; }
+.nf-fa-hard_hat::before { content: "\f805"; }
+.nf-fa-chevron_left::before { content: "\f053"; }
+.nf-fa-chevron_right::before { content: "\f054"; }
+.nf-fa-chevron_up::before { content: "\f077"; }
+.nf-fa-chevron_down::before { content: "\f078"; }
+.nf-fa-plus::before { content: "\f067"; }
+.nf-fa-sync_alt::before { content: "\f2f1"; }
+.nf-fa-sign_in_alt::before { content: "\f2f6"; }
+.nf-fa-sign_out_alt::before { content: "\f2f5"; }
+.nf-fa-calendar::before { content: "\f133"; }
+.nf-fa-book::before { content: "\f02d"; }
+.nf-fa-edit::before { content: "\f303"; }
+.nf-fa-trash::before { content: "\f2ed"; }
+.nf-fa-arrow_left::before { content: "\f060"; }
+.nf-fa-tachometer_alt::before { content: "\f3fd"; }
+.nf-fa-th::before { content: "\f00a"; }
+.nf-fa-clipboard_check::before { content: "\f46c"; }
+.nf-fa-pencil::before { content: "\f303"; }
+.nf-fa-folder::before { content: "\f07b"; }
+
 :root {
     --cal-bg: #0d1117;
     --cal-header-bg: #161b22;
