@@ -88,7 +88,7 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0.75rem; }
 
-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--cal-border); }
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
 header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0; }
 
 .main-nav { display: inline-flex; gap: 0.5rem; padding: 0.5rem; background: var(--cal-header-bg); border-radius: 8px; border: 1px solid var(--cal-border); }
@@ -274,7 +274,7 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
     position: relative;
 }
 
-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-border); text-align: center; color: var(--cal-text-muted); font-size: 0.8rem; }
+footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(--cal-text-muted); font-size: 0.8rem; }
 
 /* Calendario */
 .wip-banner { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.4); color: #eab308; text-align: center; padding: 0.5rem; font-size: 0.8rem; margin-bottom: 1rem; border-radius: 6px; }
