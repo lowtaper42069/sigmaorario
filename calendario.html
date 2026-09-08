@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <div class="wip-banner">
-                <i class="nf nf-fa-hard_hat"></i> Work in progress - Eventi salvati solo localmente
+                <i class="nf nf-fa-helmet_safety"></i> Work in progress - Eventi salvati solo localmente
             </div>
             <h1>Calendariosigma</h1>
             <nav class="main-nav" id="mainNav">
@@ -40,10 +40,10 @@
                     <i class="nf nf-fa-plus"></i> Aggiungi
                 </button>
                 <button class="btn admin-only" id="syncBtn" style="display: none;" onclick="syncEvents()">
-                    <i class="nf nf-fa-sync_alt"></i> Sync
+                    <i class="nf nf-fa-arrows_rotate"></i> Sync
                 </button>
                 <a href="login.html" class="btn guest-only" id="loginBtn">
-                    <i class="nf nf-fa-sign_in_alt"></i> Accedi
+                    <i class="nf nf-fa-arrow_right_to_bracket"></i> Accedi
                 </a>
             </div>
         </div>
@@ -501,7 +501,7 @@
                 const logout = document.createElement('a');
                 logout.href = '#';
                 logout.className = 'logout-btn';
-                logout.innerHTML = '<i class="nf nf-fa-sign_out_alt"></i>';
+                logout.innerHTML = '<i class="nf nf-fa-arrow_right_from_bracket"></i>';
                 logout.onclick = async (e) => {
                     e.preventDefault();
                     try {

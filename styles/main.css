@@ -13,35 +13,35 @@
 
 .nf-fa-sun::before { content: "\f185"; }
 .nf-fa-moon::before { content: "\f186"; }
-.nf-md-lock::before { content: "\f30e"; }
-.nf-md-lock_open::before { content: "\f30f"; }
-.nf-fa-compress_arrows_alt::before { content: "\f316"; }
-.nf-fa-expand_arrows_alt::before { content: "\f31e"; }
-.nf-fa-calendar_week::before { content: "\f073"; }
+.nf-md-lock::before { content: "\f033e"; }
+.nf-md-lock_open::before { content: "\f033f"; }
+.nf-fa-minimize::before { content: "\ef3e"; }
+.nf-fa-maximize::before { content: "\f06f"; }
+.nf-fa-calendar_week::before { content: "\ef38"; }
 .nf-fa-download::before { content: "\f019"; }
 .nf-fa-print::before { content: "\f02f"; }
-.nf-fa-calendar_day::before { content: "\f783"; }
+.nf-fa-calendar_day::before { content: "\ef37"; }
 .nf-fa-flask::before { content: "\f0c3"; }
 .nf-fa-undo::before { content: "\f0e2"; }
 .nf-fa-search::before { content: "\f002"; }
-.nf-fa-hard_hat::before { content: "\f805"; }
+.nf-fa-helmet_safety::before { content: "\ef84"; }
 .nf-fa-chevron_left::before { content: "\f053"; }
 .nf-fa-chevron_right::before { content: "\f054"; }
 .nf-fa-chevron_up::before { content: "\f077"; }
 .nf-fa-chevron_down::before { content: "\f078"; }
 .nf-fa-plus::before { content: "\f067"; }
-.nf-fa-sync_alt::before { content: "\f2f1"; }
-.nf-fa-sign_in_alt::before { content: "\f2f6"; }
-.nf-fa-sign_out_alt::before { content: "\f2f5"; }
-.nf-fa-calendar::before { content: "\f133"; }
+.nf-fa-arrows_rotate::before { content: "\f021"; }
+.nf-fa-arrow_right_to_bracket::before { content: "\f090"; }
+.nf-fa-arrow_right_from_bracket::before { content: "\f08b"; }
+.nf-fa-calendar::before { content: "\f073"; }
 .nf-fa-book::before { content: "\f02d"; }
-.nf-fa-edit::before { content: "\f303"; }
-.nf-fa-trash::before { content: "\f2ed"; }
+.nf-fa-edit::before { content: "\f044"; }
+.nf-fa-trash::before { content: "\f1f8"; }
 .nf-fa-arrow_left::before { content: "\f060"; }
-.nf-fa-tachometer_alt::before { content: "\f3fd"; }
+.nf-fa-gauge_high::before { content: "\ed2f"; }
 .nf-fa-th::before { content: "\f00a"; }
-.nf-fa-clipboard_check::before { content: "\f46c"; }
-.nf-fa-pencil::before { content: "\f303"; }
+.nf-fa-clipboard_check::before { content: "\ed7a"; }
+.nf-fa-pencil::before { content: "\f040"; }
 .nf-fa-folder::before { content: "\f07b"; }
 
 :root {
@@ -329,12 +329,13 @@ footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cal-
 .easter-egg:hover { opacity: 1; }
 
 .header-controls { display: flex; align-items: center; gap: 0.75rem; }
-.theme-toggle, .lock-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; border: 1px solid var(--cal-border); border-radius: 6px; cursor: pointer; transition: all 0.2s; background: var(--cal-header-bg); color: var(--cal-text); }
-.theme-toggle:hover, .lock-toggle:hover { background: var(--cal-border); color: var(--cal-green); }
-.lock-toggle.locked { background: var(--cal-green); color: #fff; border-color: var(--cal-green); }
+.theme-toggle, .lock-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--cal-text); }
+.theme-toggle:hover, .lock-toggle:hover { background: rgba(255,255,255,0.05); }
+.lock-toggle.locked { background: rgba(35,134,54,0.15); color: var(--cal-green); }
 .lock-toggle { min-width: 2.2rem; min-height: 2.2rem; display: inline-flex; align-items: center; justify-content: center; }
-[data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: var(--cal-header-bg); color: var(--cal-text); border-color: var(--cal-border); }
-[data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: var(--cal-green); color: #fff; border-color: var(--cal-green); }
+[data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: transparent; color: var(--cal-text); }
+[data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: rgba(0,0,0,0.05); }
+[data-theme="light"] .lock-toggle.locked { background: rgba(45,164,78,0.1); color: var(--cal-green); }
 
 .btn:focus-visible,
 .btn-icon:focus-visible,
