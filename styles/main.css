@@ -101,6 +101,8 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .info-item .label { color: var(--cal-text-muted); }
 .info-item .value { font-weight: 600; color: var(--cal-text); }
 .info-item .value.highlight { color: var(--cal-green); }
+.info-item .value a { color: var(--cal-green); text-decoration: none; }
+.info-item .value a:hover { text-decoration: underline; }
 .info-item .value::before { content: '•'; margin-right: 0.25rem; color: var(--cal-text-muted); }
 .info-item:first-child .value::before { display: none; }
 
@@ -207,7 +209,7 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
 .legend-color { width: 12px; height: 12px; border-radius: 3px; }
 .legend-color.lab { background: var(--cal-orange); }
-.legend-color.today { background: var(--cal-green); }
+.legend-color.today { background: var(--cal-current-outline); }
 
 .actions-bar {
     display: flex;

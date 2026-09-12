@@ -261,6 +261,11 @@ function getLessonEndSlot(day, slot) {
     return s;
 }
 
+function roomLink(room) {
+    const href = AUNICA_LINKS[room];
+    return href ? `<a href="${href}" target="_blank" rel="noopener">${room}</a>` : room;
+}
+
 function formatLessonTime(day, slot) {
     const endSlot = getLessonEndSlot(day, slot);
     return `${slotToTime(slot)} - ${slotToTime(endSlot + 1)}`;
@@ -269,11 +274,12 @@ function formatLessonTime(day, slot) {
 function formatNextLesson(result) {
     if (!result) return 'Nessuna lezione';
     const time = formatLessonTime(result.day, result.slot);
+    const room = result.lesson.room ? ` — ${roomLink(result.lesson.room)}` : '';
     const today = getGiornoIndex();
     if (result.day === today || today === -1) {
-        return `${result.lesson.subject} (${time})`;
+        return `${result.lesson.subject} (${time}${room})`;
     }
-    return `${result.lesson.subject} (${NOME_GIORNI[result.day]} ${time})`;
+    return `${result.lesson.subject} (${NOME_GIORNI[result.day]} ${time}${room})`;
 }
 
 function aggiornaInfo() {
@@ -296,7 +302,7 @@ function aggiornaInfo() {
     if (idxG === -1) {
         lezEl.textContent = '-';
         const next = findNextLesson(0, 0);
-        proxEl.textContent = formatNextLesson(next);
+        proxEl.innerHTML = formatNextLesson(next);
         return;
     }
 
@@ -305,7 +311,7 @@ function aggiornaInfo() {
         const next = now.getHours() < DAY_START
             ? findNextLesson(idxG, 0)
             : findNextLesson((idxG + 1) % 5, 0);
-        proxEl.textContent = formatNextLesson(next);
+        proxEl.innerHTML = formatNextLesson(next);
         return;
     }
 
@@ -313,15 +319,15 @@ function aggiornaInfo() {
 
     if (current) {
         const time = formatLessonTime(idxG, currentSlot);
-        lezEl.textContent = current.room
-            ? `${current.subject} (${time} — ${current.room})`
+        lezEl.innerHTML = current.room
+            ? `${current.subject} (${time} — ${roomLink(current.room)})`
             : `${current.subject} (${time})`;
         const next = findNextLesson(idxG, currentSlot + 1);
-        proxEl.textContent = formatNextLesson(next);
+        proxEl.innerHTML = formatNextLesson(next);
     } else {
         lezEl.textContent = '-';
         const next = findNextLesson(idxG, currentSlot);
-        proxEl.textContent = formatNextLesson(next);
+        proxEl.innerHTML = formatNextLesson(next);
     }
 }
 
