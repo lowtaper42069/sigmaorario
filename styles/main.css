@@ -128,7 +128,7 @@ th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-inde
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
-td.empty { color: var(--cal-text-muted); background: color-mix(in srgb, var(--cal-bg) 80%, #1e2530); }
+td.empty { color: var(--cal-text-muted); background: color-mix(in srgb, var(--cal-bg) 92%, #1e2530); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
@@ -146,7 +146,7 @@ td.search-highlight.block-end {
     border-bottom: 2px solid var(--cal-search-outline) !important;
 }
 
-td.time-col { background: color-mix(in srgb, var(--cal-bg) 80%, #1e2530); font-size: 0.6rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.time-col { background: color-mix(in srgb, var(--cal-bg) 92%, #1e2530); font-size: 0.6rem; color: var(--cal-text-muted); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 td.current-cell {
     outline: 2px solid var(--cal-current-outline);
@@ -156,7 +156,7 @@ td.current-cell {
     position: relative;
 }
 
-td.time-col.hour-mark { color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
+td.time-col.hour-mark { background: var(--cal-bg); color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
 td.time-col.hour-mark::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: color-mix(in srgb, var(--cal-border) 50%, transparent); transform: translateY(-50%); z-index: -1; }
 
 tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
@@ -339,8 +339,8 @@ footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(-
 [data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: transparent; color: var(--cal-text); }
 [data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: rgba(0,0,0,0.05); }
 [data-theme="light"] .lock-toggle.locked { background: rgba(45,164,78,0.1); color: var(--cal-green); }
-[data-theme="light"] td.empty { background: color-mix(in srgb, var(--cal-bg) 80%, #ffffff); }
-[data-theme="light"] td.time-col { background: color-mix(in srgb, var(--cal-bg) 80%, #ffffff); }
+[data-theme="light"] td.empty { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
+[data-theme="light"] td.time-col { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
 
 .btn:focus-visible,
 .btn-icon:focus-visible,
