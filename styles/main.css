@@ -47,10 +47,10 @@
 
 :root {
     --cal-bg: #0d1117;
-    --cal-header-bg: #161b22;
-    --cal-day-bg: #161b22;
-    --cal-border: #30363d;
-    --cal-border-light: #3d444d;
+    --cal-header-bg: #12171e;
+    --cal-day-bg: #12171e;
+    --cal-border: #282e36;
+    --cal-border-light: #353c45;
     --cal-text: #c9d1d9;
     --cal-text-muted: #8b949e;
     --cal-green: #238636;
@@ -63,10 +63,10 @@
 
 [data-theme="light"] {
     --cal-bg: #f6f8fa;
-    --cal-header-bg: #ffffff;
-    --cal-day-bg: #ffffff;
-    --cal-border: #d0d7de;
-    --cal-border-light: #d8dee4;
+    --cal-header-bg: #f0f3f6;
+    --cal-day-bg: #f0f3f6;
+    --cal-border: #d5dce4;
+    --cal-border-light: #dce2e8;
     --cal-text: #24292f;
     --cal-text-muted: #656d76;
     --cal-green: #2da44e;
@@ -128,7 +128,7 @@ th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-inde
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
-td.empty { color: var(--cal-text-muted); opacity: 0.3; background: var(--cal-bg); }
+td.empty { color: var(--cal-text-muted); background: color-mix(in srgb, var(--cal-bg) 85%, var(--cal-header-bg)); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
