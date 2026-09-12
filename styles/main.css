@@ -103,8 +103,6 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .info-item .value.highlight { color: var(--cal-green); }
 .info-item .value a { color: var(--cal-green); text-decoration: none; }
 .info-item .value a:hover { text-decoration: underline; }
-.info-item .value::before { content: '•'; margin-right: 0.25rem; color: var(--cal-text-muted); }
-.info-item:first-child .value::before { display: none; }
 
 .schedule-container { background: var(--cal-header-bg); border: 1px solid var(--cal-border); border-radius: 8px; overflow: hidden; }
 .schedule-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; border-bottom: 1px solid var(--cal-border); }
@@ -252,6 +250,11 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
     color: var(--cal-text);
     font-size: 0.8rem;
     transition: border-color 0.2s, width 0.2s;
+}
+
+.actions-search .btn {
+    padding: 0.4rem 0.75rem;
+}
 }
 
 .actions-search input:focus {
