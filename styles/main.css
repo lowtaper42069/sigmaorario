@@ -110,7 +110,7 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .schedule-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; border-bottom: 1px solid var(--cal-border); }
 .schedule-header h2 { font-size: 0.9rem; font-weight: 600; }
 
-.btn { padding: 0.5rem 1rem; border: 1px solid var(--cal-border); border-radius: 6px; background: transparent; color: var(--cal-text); font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+.btn { padding: 0.5rem 1rem; border: 1px solid var(--cal-border); border-radius: 6px; background: transparent; color: var(--cal-text); font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s, border-color 0.2s, color 0.2s; }
 .btn:hover { background: rgba(255,255,255,0.05); border-color: var(--cal-text-muted); }
 .btn-primary { background: var(--cal-green); border-color: var(--cal-green); color: #fff; }
 .btn-primary:hover { background: #2ea043; border-color: #2ea043; }
@@ -332,7 +332,7 @@ footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(-
 .easter-egg:hover { opacity: 1; }
 
 .header-controls { display: flex; align-items: center; gap: 0.75rem; }
-.theme-toggle, .lock-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--cal-text); }
+.theme-toggle, .lock-toggle { padding: 0.4rem 0.5rem; font-size: 0.9rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s, color 0.2s; background: transparent; color: var(--cal-text); }
 .theme-toggle:hover, .lock-toggle:hover { background: rgba(255,255,255,0.05); }
 .lock-toggle.locked { background: rgba(35,134,54,0.15); color: var(--cal-green); }
 .lock-toggle { min-width: 2.2rem; min-height: 2.2rem; display: inline-flex; align-items: center; justify-content: center; }
