@@ -126,7 +126,7 @@ th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-inde
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
-td.empty { color: var(--cal-text-muted); background: color-mix(in srgb, var(--cal-bg) 92%, #1e2530); }
+td.empty { color: var(--cal-text-muted); background: color-mix(in srgb, var(--cal-bg) 92%, #1e2530); opacity: 0.5; }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
