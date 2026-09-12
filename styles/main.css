@@ -129,7 +129,8 @@ tr:last-child td { border-bottom: none; }
 td.empty { color: var(--cal-text-muted); opacity: 0.2; }
 tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, #1e2530); }
 tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 40%, #1e2530); }
-tr:not(.hour-separator) td { border-color: color-mix(in srgb, var(--cal-border) 40%, transparent); }
+tr td { border-color: color-mix(in srgb, var(--cal-border) 40%, transparent); }
+tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
 td.search-highlight {
@@ -160,7 +161,6 @@ td.current-cell {
 td.time-col.hour-mark { background: var(--cal-bg); color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
 
 tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
-tr.hour-separator td.time-col { background: var(--cal-header-bg); color: var(--cal-text); font-weight: 700; }
 
 td.block { 
     border-left: none; 
