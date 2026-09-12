@@ -13,7 +13,7 @@
             --cal-border: #30363d;
             --cal-text: #e6edf3;
             --cal-text-muted: #8b949e;
-            --cal-accent: #238636;
+            --accent-color: #44633F;
         }
 
         [data-theme="light"] {
@@ -22,7 +22,7 @@
             --cal-border: #d0d7de;
             --cal-text: #24292f;
             --cal-text-muted: #656d76;
-            --cal-accent: #2da44e;
+            --accent-color: #6a8d60;
         }
 
         * {
@@ -116,11 +116,11 @@
         }
 
         .settings-menu button:hover {
-            background: var(--cal-accent);
+            background: var(--accent-color);
         }
 
         .settings-menu button.active {
-            background: var(--cal-accent);
+            background: var(--accent-color);
         }
 
         .settings-overlay {
@@ -146,7 +146,7 @@
         }
 
         .btn {
-            background: var(--cal-accent);
+            background: var(--accent-color);
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -310,6 +310,10 @@
         <button data-speed="40" onclick="setSpeed(40, this)">Impossibile</button>
     </div>
 
+    <footer>
+        sarto - A.S. 2026/2027
+    </footer>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -408,7 +412,7 @@
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#238636';
+            ctx.fillStyle = '#44633F';
             snake.forEach((segment, index) => {
                 ctx.fillRect(
                     segment.x * gridSize,

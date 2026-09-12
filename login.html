@@ -18,6 +18,7 @@
             --cal-border: #30363d;
             --cal-text: #c9d1d9;
             --cal-text-muted: #8b949e;
+            --accent-color: #44633F;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -85,7 +86,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #238636;
+            border-color: var(--accent-color);
         }
 
         .btn {
@@ -109,13 +110,13 @@
         }
 
         .btn-primary {
-            background: #238636;
-            border-color: #238636;
+            background: var(--accent-color);
+            border-color: var(--accent-color);
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: #2ea043;
+            background: color-mix(in srgb, var(--accent-color) 80%, #000);
         }
 
         .btn-primary:disabled {
