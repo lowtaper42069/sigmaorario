@@ -9,9 +9,12 @@
     font-style: normal;
     font-weight: normal;
     -webkit-font-smoothing: antialiased;
+}
+.nf::before {
     display: inline-block;
-    width: 1.2em;
+    min-width: 1.2em;
     text-align: center;
+    overflow: visible;
 }
 
 .nf-fa-sun::before { content: "\f185"; }
