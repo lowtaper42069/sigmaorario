@@ -13,8 +13,8 @@
 
 .nf-fa-sun::before { content: "\f185"; }
 .nf-fa-moon::before { content: "\f186"; }
-.nf-fa-lock::before { content: "\f023"; }
-.nf-fa-lock_open::before { content: "\f3c1"; }
+.nf-md-lock::before { content: "\f033e"; }
+.nf-md-lock_open::before { content: "\f033f"; }
 .nf-fa-minimize::before { content: "\ef3e"; }
 .nf-fa-maximize::before { content: "\f06f"; }
 .nf-fa-calendar_week::before { content: "\ef38"; }
