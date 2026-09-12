@@ -127,8 +127,8 @@ td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
 td.empty { color: var(--cal-text-muted); opacity: 0.2; }
-tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 92%, #1e2530); }
-tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 80%, #1e2530); }
+tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, #1e2530); }
+tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 65%, #1e2530); }
 tr:not(.hour-separator) td { border-color: color-mix(in srgb, var(--cal-border) 40%, transparent); }
 td.today-highlight { background: rgba(35, 134, 54, 0.12); box-shadow: inset 2px 0 0 var(--cal-green); }
 
@@ -339,8 +339,8 @@ footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(-
 [data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: transparent; color: var(--cal-text); }
 [data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: rgba(0,0,0,0.05); }
 [data-theme="light"] .lock-toggle.locked { background: rgba(45,164,78,0.1); color: var(--cal-green); }
-[data-theme="light"] tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
-[data-theme="light"] tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 80%, #ffffff); }
+[data-theme="light"] tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, #ffffff); }
+[data-theme="light"] tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 65%, #ffffff); }
 [data-theme="light"] td.time-col { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
 
 .btn:focus-visible,
