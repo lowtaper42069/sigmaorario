@@ -96,7 +96,7 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .main-nav a:hover { color: var(--cal-text); background: rgba(255,255,255,0.05); }
 .main-nav a.active { color: var(--cal-text); background: var(--cal-green); }
 
-.current-info { display: flex; gap: 1rem; margin-top: 0.75rem; padding: 0.75rem 1rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); border-radius: 8px; flex-wrap: wrap; }
+.current-info { display: flex; gap: 1rem; margin-bottom: 0.75rem; padding: 0.75rem 1rem; background: var(--cal-header-bg); border: 1px solid var(--cal-border); border-radius: 8px; flex-wrap: wrap; }
 .info-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
 .info-item .label { color: var(--cal-text-muted); }
 .info-item .value { font-weight: 600; color: var(--cal-text); }

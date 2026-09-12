@@ -15,6 +15,16 @@
                 <a href="calendario.html">Calendario</a>
             </nav>
             <div class="header-controls">
+                <button class="btn lock-toggle" id="settingsMemorize" title="UI automatica" aria-label="Memorizza impostazioni">
+                    <i class="nf nf-md-lock_open"></i>
+                </button>
+                <div class="density-control" style="display:flex;align-items:center;gap:0.5rem;">
+                    <label for="densitySlider" title="Densità righe" style="display:flex;align-items:center;gap:0.3rem;color:var(--cal-text-muted);font-size:0.65rem;">
+                        <i class="nf nf-fa-minimize"></i>
+                        <input type="range" id="densitySlider" min="0" max="100" value="50" style="width:80px;accent-color:var(--cal-green);">
+                        <i class="nf nf-fa-maximize"></i>
+                    </label>
+                </div>
                 <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
                     <i class="nf nf-fa-sun"></i>
                 </button>
@@ -22,6 +32,25 @@
         </header>
 
         <main>
+            <div class="current-info">
+                <div class="info-item">
+                    <span class="label">Ora:</span>
+                    <span class="value" id="currentTime">--:--</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Giorno:</span>
+                    <span class="value" id="currentDay">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Lezione:</span>
+                    <span class="value highlight" id="currentLesson">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Prossima:</span>
+                    <span class="value" id="nextLesson">-</span>
+                </div>
+            </div>
+
             <div class="schedule-container">
                 <div class="schedule-header">
                     <h2><i class="nf nf-fa-calendar_week"></i> Orario Settimanale</h2>
@@ -32,25 +61,6 @@
                         <button class="btn" onclick="printSchedule()">
                             <i class="nf nf-fa-print"></i> Stampa
                         </button>
-                    </div>
-                </div>
-
-                <div class="current-info">
-                    <div class="info-item">
-                        <span class="label">Ora:</span>
-                        <span class="value" id="currentTime">--:--</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Giorno:</span>
-                        <span class="value" id="currentDay">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Lezione:</span>
-                        <span class="value highlight" id="currentLesson">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">Prossima:</span>
-                        <span class="value" id="nextLesson">-</span>
                     </div>
                 </div>
 
@@ -89,17 +99,6 @@
                     </button>
                     <button class="btn" onclick="toggleLabs()" title="Mostra/nascondi laboratori">
                         <i class="nf nf-fa-flask"></i> Lab
-                    </button>
-                </div>
-                <div class="divider"></div>
-                <div class="actions-group">
-                    <label class="density-control" for="densitySlider" title="Densità righe" style="display:flex;align-items:center;gap:0.3rem;color:var(--cal-text-muted);font-size:0.75rem;">
-                        <i class="nf nf-fa-minimize"></i>
-                        <input type="range" id="densitySlider" min="0" max="100" value="50" style="width:80px;accent-color:var(--cal-green);">
-                        <i class="nf nf-fa-maximize"></i>
-                    </label>
-                    <button class="btn lock-toggle" id="settingsMemorize" title="UI automatica" aria-label="Memorizza impostazioni">
-                        <i class="nf nf-md-lock_open"></i>
                     </button>
                 </div>
                 <div class="divider"></div>
