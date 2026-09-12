@@ -11,7 +11,7 @@
     <div class="container">
         <header>
             <div class="wip-banner">
-                <i class="nf nf-fa-helmet_safety"></i> Work in progress - Eventi salvati solo localmente
+                <i class="nf nf-fa-helmet_safety">&#xef84;</i> Work in progress - Eventi salvati solo localmente
             </div>
             <h1>Calendariosigma</h1>
             <nav class="main-nav" id="mainNav">
@@ -19,32 +19,32 @@
                 <a href="calendario.html" class="active">Calendario</a>
             </nav>
             <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
-                <i class="nf nf-fa-sun"></i>
+                <i class="nf nf-fa-sun">&#xf185;</i>
             </button>
         </header>
 
         <div class="cal-nav">
             <div class="cal-nav-left">
                 <button class="btn-icon" id="prevMonth" title="Mese precedente">
-                    <i class="nf nf-fa-chevron_left"></i>
+                    <i class="nf nf-fa-chevron_left">&#xf053;</i>
                 </button>
                 <h2 id="currentMonth">-</h2>
                 <button class="btn-icon" id="nextMonth" title="Mese successivo">
-                    <i class="nf nf-fa-chevron_right"></i>
+                    <i class="nf nf-fa-chevron_right">&#xf054;</i>
                 </button>
             </div>
             <div style="display: flex; gap: 0.5rem;">
                 <button class="btn" id="todayBtn">
-                    <i class="nf nf-fa-calendar_day"></i> Oggi
+                    <i class="nf nf-fa-calendar_day">&#xef37;</i> Oggi
                 </button>
                 <button class="btn btn-primary admin-only" id="addEventBtn" style="display: none;">
-                    <i class="nf nf-fa-plus"></i> Aggiungi
+                    <i class="nf nf-fa-plus">&#xf067;</i> Aggiungi
                 </button>
                 <button class="btn admin-only" id="syncBtn" style="display: none;" onclick="syncEvents()">
-                    <i class="nf nf-fa-arrows_rotate"></i> Sync
+                    <i class="nf nf-fa-arrows_rotate">&#xf021;</i> Sync
                 </button>
                 <a href="login.html" class="btn guest-only" id="loginBtn">
-                    <i class="nf nf-fa-arrow_right_to_bracket"></i> Accedi
+                    <i class="nf nf-fa-arrow_right_to_bracket">&#xf090;</i> Accedi
                 </a>
             </div>
         </div>
@@ -311,19 +311,27 @@
                 laboratorio: 'nf-fa-flask',
                 altro: 'nf-fa-calendar'
             };
+            const iconChars = {
+                'nf-fa-clipboard_check': '&#xed7a;',
+                'nf-fa-pencil': '&#xf040;',
+                'nf-fa-folder': '&#xf07b;',
+                'nf-fa-flask': '&#xf0c3;',
+                'nf-fa-calendar': '&#xf073;'
+            };
 
             const content = document.getElementById('eventDetailContent');
+            const iconName = icons[evt.type] || 'nf-fa-calendar';
             content.innerHTML = `
                 <div class="event-detail">
                     <div class="event-color" style="background: ${evt.color};">
-                        <i class="nf ${icons[evt.type] || 'nf-fa-calendar'}"></i>
+                        <i class="nf ${iconName}">${iconChars[iconName]}</i>
                     </div>
                     <h4>${evt.title}</h4>
                     <div class="event-info">
-                        <i class="nf nf-fa-calendar"></i> ${formatDate(evt.date)}
+                        <i class="nf nf-fa-calendar">&#xf073;</i> ${formatDate(evt.date)}
                         ${evt.time ? ` alle ${evt.time}` : ''}
                     </div>
-                    ${evt.subject ? `<div class="event-info"><i class="nf nf-fa-book"></i> ${evt.subject}</div>` : ''}
+                    ${evt.subject ? `<div class="event-info"><i class="nf nf-fa-book">&#xf02d;</i> ${evt.subject}</div>` : ''}
                     ${evt.notes ? `<div class="event-notes">${evt.notes}</div>` : ''}
                 </div>
             `;
@@ -331,8 +339,8 @@
             const footer = document.getElementById('eventDetailFooter');
             if (isLoggedIn()) {
                 footer.innerHTML = `
-                    <button class="btn" onclick="editEvent(${evt.id})"><i class="nf nf-fa-edit"></i> Modifica</button>
-                    <button class="btn btn-danger" onclick="deleteEvent(${evt.id})"><i class="nf nf-fa-trash"></i> Elimina</button>
+                    <button class="btn" onclick="editEvent(${evt.id})"><i class="nf nf-fa-edit">&#xf044;</i> Modifica</button>
+                    <button class="btn btn-danger" onclick="deleteEvent(${evt.id})"><i class="nf nf-fa-trash">&#xf1f8;</i> Elimina</button>
                 `;
             } else {
                 footer.innerHTML = '<button class="btn" onclick="closeModal(\'detailModal\')">Chiudi</button>';
@@ -502,7 +510,7 @@
                 const logout = document.createElement('a');
                 logout.href = '#';
                 logout.className = 'logout-btn';
-                logout.innerHTML = '<i class="nf nf-fa-arrow_right_from_bracket"></i>';
+                logout.innerHTML = '<i class="nf nf-fa-arrow_right_from_bracket">&#xf08b;</i>';
                 logout.onclick = async (e) => {
                     e.preventDefault();
                     try {

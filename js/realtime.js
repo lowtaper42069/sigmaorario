@@ -13,12 +13,53 @@ function getSystemTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+const ICON_CHARS = {
+    'nf-fa-sun': '\uf185',
+    'nf-fa-moon': '\uf186',
+    'nf-md-lock': '\uf033e',
+    'nf-md-lock_open': '\uf033f',
+    'nf-fa-minimize': '\xef3e',
+    'nf-fa-maximize': '\uf06f',
+    'nf-fa-calendar_week': '\xef38',
+    'nf-fa-download': '\uf019',
+    'nf-fa-print': '\uf02f',
+    'nf-fa-calendar_day': '\xef37',
+    'nf-fa-flask': '\uf0c3',
+    'nf-fa-undo': '\uf0e2',
+    'nf-fa-search': '\uf002',
+    'nf-fa-helmet_safety': '\xef84',
+    'nf-fa-chevron_left': '\uf053',
+    'nf-fa-chevron_right': '\uf054',
+    'nf-fa-chevron_up': '\uf077',
+    'nf-fa-chevron_down': '\uf078',
+    'nf-fa-plus': '\uf067',
+    'nf-fa-arrows_rotate': '\uf021',
+    'nf-fa-arrow_right_to_bracket': '\uf090',
+    'nf-fa-arrow_right_from_bracket': '\uf08b',
+    'nf-fa-calendar': '\uf073',
+    'nf-fa-book': '\uf02d',
+    'nf-fa-edit': '\uf044',
+    'nf-fa-trash': '\uf1f8',
+    'nf-fa-arrow_left': '\uf060',
+    'nf-fa-gauge_high': '\ued2f',
+    'nf-fa-th': '\uf00a',
+    'nf-fa-clipboard_check': '\ued7a',
+    'nf-fa-pencil': '\uf040',
+    'nf-fa-folder': '\uf07b',
+    'nf-dev-github': '\uf09b',
+};
+
+function setIcon(el, iconClass) {
+    el.className = 'nf ' + iconClass;
+    el.textContent = ICON_CHARS[iconClass] || '';
+}
+
 function updateLockUI() {
     const btn = document.getElementById('settingsMemorize');
     if (!btn) return;
     const icon = btn.querySelector('i');
     const memorized = isMemorized();
-    if (icon) icon.className = memorized ? 'nf nf-md-lock' : 'nf nf-md-lock_open';
+    if (icon) setIcon(icon, memorized ? 'nf-md-lock' : 'nf-md-lock_open');
     btn.title = memorized ? 'UI salvata' : 'UI automatica';
     btn.classList.toggle('locked', memorized);
 }
@@ -44,9 +85,7 @@ function updateThemeIcon(theme) {
     const toggle = document.getElementById('themeToggle');
     if (!toggle) return;
     const icon = toggle.querySelector('i');
-    if (icon) {
-        icon.className = theme === 'dark' ? 'nf nf-fa-sun' : 'nf nf-fa-moon';
-    }
+    if (icon) setIcon(icon, theme === 'dark' ? 'nf-fa-sun' : 'nf-fa-moon');
 }
 
 function toggleTheme() {
