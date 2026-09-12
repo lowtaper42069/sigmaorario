@@ -9,6 +9,7 @@
     font-style: normal;
     font-weight: normal;
     -webkit-font-smoothing: antialiased;
+    transform: translateZ(0);
 }
 
 .nf-fa-sun::before { content: "\f185"; }
