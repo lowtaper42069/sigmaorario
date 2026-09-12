@@ -71,8 +71,8 @@
     --cal-text-muted: #656d76;
     --cal-green: #2da44e;
     --cal-orange: #bc4c00;
-    --cal-current-outline: rgba(0, 0, 0, 0.3);
-    --cal-current-bg: rgba(0, 0, 0, 0.04);
+    --cal-current-outline: rgba(0, 0, 0, 0.5);
+    --cal-current-bg: rgba(0, 0, 0, 0.1);
     --cal-search-outline: #1f2328;
 }
 
