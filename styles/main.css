@@ -253,7 +253,8 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
 }
 
 .actions-search .btn {
-    padding: 0.4rem 0.75rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
 }
 }
 
