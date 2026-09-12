@@ -225,8 +225,10 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
     gap: 0.5rem;
 }
 
-.actions-group .btn {
-    padding: 0.4rem 0.75rem;
+.actions-bar .btn,
+.actions-bar input {
+    height: 1.8rem;
+    padding: 0 0.75rem;
     font-size: 0.8rem;
 }
 
@@ -243,19 +245,11 @@ td.has-link:hover::after { opacity: 1; color: var(--cal-green); }
 
 .actions-search input {
     width: 180px;
-    padding: 0.4rem 0.75rem;
     background: var(--cal-bg);
     border: 1px solid var(--cal-border);
     border-radius: 6px;
     color: var(--cal-text);
-    font-size: 0.8rem;
     transition: border-color 0.2s, width 0.2s;
-}
-
-.actions-search .btn {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
-}
 }
 
 .actions-search input:focus {
