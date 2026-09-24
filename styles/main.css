@@ -392,3 +392,15 @@ footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(-
     .day-event { font-size: 0.55rem; padding: 1px 3px; }
     .form-row { grid-template-columns: 1fr; }
 }
+
+@media print {
+    header, footer, .current-info, .legend, .actions-bar, .easter-egg,
+    .header-controls, .schedule-header { display: none !important; }
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 0; margin: 0; }
+    .schedule-container { border: none; overflow: visible; }
+    .table-wrapper { overflow: visible; }
+    th, td { border-color: #000; }
+    td.subject-cell { font-size: 0.8rem; }
+    td.room-cell { font-size: 0.6rem; }
+}
