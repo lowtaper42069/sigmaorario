@@ -525,19 +525,79 @@ function resetView() {
     showToday();
 }
 
+const SEMESTER_START = new Date(2026, 8, 14);
+const SEMESTER_WEEKS = 20;
+
+const HOLIDAYS_BY_WEEKDAY = {
+    1: ['20261221', '20261228', '20270104'],
+    2: ['20261208', '20261222', '20261229'],
+    3: ['20261223', '20261230', '20270106'],
+    4: ['20261224', '20261231'],
+    5: ['20261225', '20270101'],
+};
+
+function pad2(n) {
+    return n.toString().padStart(2, '0');
+}
+
+function icsTime(timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    return `${pad2(h)}${pad2(m)}00`;
+}
+
+function icsDate(date, timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    return `${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}T${pad2(h)}${pad2(m)}00`;
+}
+
 function exportSchedule() {
-    let csv = [];
-    document.querySelectorAll('#scheduleTable tr').forEach(row => {
-        const rowData = [];
-        row.querySelectorAll('th, td').forEach(cell => {
-            rowData.push(cell.textContent.trim());
-        });
-        csv.push(rowData.join(','));
-    });
-    const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+    const dtstamp = '20260901T000000Z';
+    let uidCounter = 0;
+    const events = [];
+
+    for (const dayKey of Object.keys(RAW_SCHEDULE)) {
+        const day = Number(dayKey);
+        for (const lesson of RAW_SCHEDULE[day]) {
+            const date = new Date(SEMESTER_START);
+            date.setDate(date.getDate() + day);
+            uidCounter++;
+
+            const exDates = []
+                .concat(HOLIDAYS_BY_WEEKDAY[day + 1] || [])
+                .map(d => `${d}T${icsTime(lesson.start)}`)
+                .join(',');
+
+            events.push([
+                'BEGIN:VEVENT',
+                `DTSTAMP:${dtstamp}`,
+                `DTSTART:${icsDate(date, lesson.start)}`,
+                `DTEND:${icsDate(date, lesson.end)}`,
+                `RRULE:FREQ=WEEKLY;COUNT=${SEMESTER_WEEKS}`,
+                `EXDATE:${exDates}`,
+                `SUMMARY:${lesson.subject}`,
+                `LOCATION:${lesson.room}`,
+                `UID:sigmaorario-e${uidCounter}@sigmaorario`,
+                'END:VEVENT',
+            ].join('\r\n'));
+        }
+    }
+
+    const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//SigmaOrario//IT',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'X-WR-CALNAME:Orario 5BINF',
+        'X-WR-TIMEZONE:Europe/Rome',
+        ...events,
+        'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'orario_5binf.csv';
+    a.download = 'orario_5binf.ics';
     a.click();
 }
 
