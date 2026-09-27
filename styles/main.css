@@ -409,13 +409,17 @@ footer a:hover { color: var(--accent-color); }
 }
 
 @media print {
-    @page { size: A4 landscape; margin: 5mm; }
-    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4 landscape; margin: 0; }
+    *, *::before, *::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     html, body { background: var(--cal-bg) !important; height: auto; min-height: 0; }
+    .container, table, th, td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     header, nav, .header-controls, .current-info, .schedule-header,
     .legend, .actions-bar, footer, .easter-egg { display: none !important; }
-    .container { max-width: none; margin: 0; padding: 0; }
-    .schedule-container { border: none; overflow: visible; }
+    .container { max-width: none; margin: 0; padding: 10mm; background: var(--cal-bg) !important; min-height: 100vh; }
+    @supports (-moz-appearance: none) {
+        .container { min-height: calc(100vh - 15mm); }
+    }
+    .schedule-container { border: none; overflow: visible; background: transparent; }
     .table-wrapper { overflow: visible; }
     table { page-break-inside: avoid; }
     th, td { position: static !important; line-height: 1.1 !important; font-size: 6px; padding: 1px 1.5px; }

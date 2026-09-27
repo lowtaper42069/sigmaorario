@@ -9,6 +9,11 @@ function isMemorized() {
     return localStorage.getItem('settingsMemorize') === '1';
 }
 
+let isPrinting = false;
+
+window.addEventListener('beforeprint', () => { isPrinting = true; });
+window.addEventListener('afterprint', () => { isPrinting = false; });
+
 function getSystemTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
@@ -32,7 +37,7 @@ function initTheme() {
     updateLockUI();
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!isMemorized()) {
+        if (!isMemorized() && !isPrinting) {
             const next = e.matches ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', next);
             updateThemeIcon(next);
@@ -602,7 +607,10 @@ function exportSchedule() {
 }
 
 function printSchedule() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
     window.print();
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
