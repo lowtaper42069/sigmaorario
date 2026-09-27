@@ -407,3 +407,21 @@ footer a:hover { color: var(--accent-color); }
     .day-event { font-size: 0.55rem; padding: 1px 3px; }
     .form-row { grid-template-columns: 1fr; }
 }
+
+@media print {
+    @page { size: A4 landscape; margin: 5mm; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { background: var(--cal-bg) !important; height: auto; min-height: 0; }
+    header, nav, .header-controls, .current-info, .schedule-header,
+    .legend, .actions-bar, footer, .easter-egg { display: none !important; }
+    .container { max-width: none; margin: 0; padding: 0; }
+    .schedule-container { border: none; overflow: visible; }
+    .table-wrapper { overflow: visible; }
+    table { page-break-inside: avoid; }
+    th, td { position: static !important; line-height: 1.1 !important; font-size: 6px; padding: 1px 1.5px; }
+    td.subject-cell { font-size: 0.45rem; line-height: 1.1; text-shadow: none; }
+    td.room-cell { font-size: 0.38rem; }
+    td.current-cell, td.search-highlight, td.today-highlight, th.today-highlight { outline: none; box-shadow: none; background: none; }
+    td.block { background: color-mix(in srgb, var(--subject-color) 30%, transparent) !important; }
+    tr { break-inside: avoid; }
+}
