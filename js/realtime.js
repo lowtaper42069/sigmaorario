@@ -602,7 +602,59 @@ function exportSchedule() {
 }
 
 function printSchedule() {
-    window.print();
+    const table = document.getElementById('scheduleTable');
+    if (!table) {
+        window.print();
+        return;
+    }
+
+    const clone = table.cloneNode(true);
+    clone.querySelectorAll('.current-cell, .search-highlight, .today-highlight, .lab-highlight, .has-link').forEach(cell => {
+        cell.classList.remove('current-cell', 'search-highlight', 'today-highlight', 'lab-highlight', 'has-link');
+        cell.querySelectorAll('.link-icon').forEach(icon => icon.remove());
+    });
+
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const cssUrl = new URL('styles/main.css', location.href).href;
+
+    const printDoc = `<!DOCTYPE html>
+<html lang="it" data-theme="${theme}">
+<head>
+<meta charset="UTF-8">
+<title>Orario</title>
+<link rel="stylesheet" href="${cssUrl}">
+<style>
+@page { size: A4 landscape; margin: 5mm; }
+* { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+th, td:first-child { position: static !important; }
+th, td { font-size: 6.5px; padding: 1px 1.5px; }
+td.subject-cell { font-size: 0.5rem; line-height: 1.2; }
+td.room-cell { font-size: 0.42rem; }
+tr { break-inside: avoid; }
+</style>
+</head>
+<body>
+${clone.outerHTML}
+</body>
+</html>`;
+
+    const printWin = window.open('', '_blank', 'width=1200,height=800');
+    if (!printWin) {
+        window.print();
+        return;
+    }
+
+    printWin.document.open();
+    printWin.document.write(printDoc);
+    printWin.document.close();
+
+    printWin.onload = function () {
+        printWin.focus();
+        printWin.print();
+        printWin.onafterprint = function () {
+            printWin.close();
+        };
+    };
 }
 
 document.addEventListener('DOMContentLoaded', function () {
