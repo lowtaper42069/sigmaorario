@@ -297,9 +297,6 @@ td.block-end { border-bottom: 2px solid var(--subject-color) !important; }
 
 td.block-middle { border-top: none; border-bottom: none; }
 
-td.has-link { cursor: pointer; position: relative; }
-td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
-
 td.subject-cell { 
     font-weight: 600; 
     color: var(--cal-text);
@@ -323,10 +320,6 @@ td.link-icon {
     vertical-align: middle;
     transition: opacity 0.2s, color 0.2s;
 }
-td.has-link:hover .link-icon { opacity: 1; color: var(--accent-color); }
-
-td.has-link::after { content: '\f35d'; font-family: 'JetBrains Mono Nerd'; font-weight: normal; font-size: 0.55rem; position: absolute; top: 2px; right: 4px; color: var(--cal-orange); opacity: 0.6; }
-td.has-link:hover::after { opacity: 1; color: var(--accent-color); }
 
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
@@ -641,7 +634,6 @@ footer a:hover { color: var(--accent-color); }
 }
 [data-theme^="brutal"] .room-cell { color: var(--brutal-room); font-size: 0.7rem; font-weight: 400; line-height: 1.4; }
 [data-theme^="brutal"] .link-icon { color: var(--cal-text-ice); opacity: 0.7; }
-[data-theme^="brutal"] td.has-link:hover { background: color-mix(in srgb, var(--subject-color) 42%, var(--cal-header-bg)); filter: none; }
 
 /* Ricerca: cornice stretta grigio cemento su tutto il blocco (niente bordi laterali bianchi frammentati) */
 [data-theme^="brutal"] td.search-highlight {
@@ -853,7 +845,6 @@ footer a:hover { color: var(--accent-color); }
     td { font-size: 0.45rem; }
     td:first-child, th:first-child { width: 55px; min-width: 45px; font-size: 0.45rem; }
     td.time-col { font-size: 0.45rem; }
-    td.has-link::after { font-size: 0.45rem; }
     td.subject-cell { font-size: 1rem; }
     td.room-cell { font-size: 0.75rem; }
     .current-info { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 0.75rem; padding: 0.6rem 0.75rem; font-size: 0.8rem; }
