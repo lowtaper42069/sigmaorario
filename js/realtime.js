@@ -27,14 +27,10 @@ function updateLockUI() {
 }
 
 function initTheme() {
-    // Il tema iniziale è già applicato da js/theme.js (nell'<head>). Qui: fallback
-    // nel caso manchi, UI del lock e aggiornamento live dal tema di sistema.
+    // Il tema iniziale è già applicato da js/theme.js (nell'<head>), che garantisce
+    // sempre un data-theme valido (bootstrap). Qui: UI del lock + aggiornamento live
+    // dal tema di sistema.
     // FEATURE VOLUTA (NON "FIXARE"): tema letto SOLO con lock attivo.
-    if (!document.documentElement.getAttribute('data-theme')) {
-        const memorized = isMemorized();
-        const saved = memorized ? localStorage.getItem('theme') : null;
-        document.documentElement.setAttribute('data-theme', saved || 'brutal');
-    }
     updateLockUI();
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
