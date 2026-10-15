@@ -108,7 +108,6 @@
     /* "Ink": testo su superfici accent/ice (in dark è scuro perché l'accent è chiaro) */
     --brutal-ink: #121212;
     --brutal-room: #afafaf;
-    --brutal-today-bg: rgba(207, 207, 207, 0.10);
 }
 
 /* Brutal chiaro — stesso béton brut, cemento chiaro (invertito) */
@@ -130,7 +129,6 @@
     --cal-cell-alt: #cfcfcf;
     --brutal-ink: #f2f2f2;
     --brutal-room: #4f4f4f;
-    --brutal-today-bg: rgba(0, 0, 0, 0.06);
 }
 
 /* Brutal chiaro: ritocchi dove il tema base assume un fondo scuro */
@@ -245,7 +243,6 @@ tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, v
 tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 40%, var(--cal-cell-alt)); }
 tr td { border-color: color-mix(in srgb, var(--cal-border) 40%, transparent); }
 tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
-td.today-highlight { background: color-mix(in srgb, var(--accent-color) 12%, transparent); box-shadow: inset 2px 0 0 var(--accent-color); }
 
 td.search-highlight {
     border-left: 2px solid var(--cal-search-outline) !important;
@@ -626,7 +623,6 @@ footer a:hover { color: var(--accent-color); }
 }
 
 [data-theme^="brutal"] th.today-highlight { background: var(--cal-text); color: var(--brutal-ink); box-shadow: none; }
-[data-theme^="brutal"] td.today-highlight { background: var(--brutal-today-bg); border-left: 3px solid var(--cal-border-strong); }
 
 [data-theme^="brutal"] td.current-cell {
     outline: 3px solid var(--cal-border-strong);
@@ -870,7 +866,7 @@ footer a:hover { color: var(--accent-color); }
     th, td { position: static !important; line-height: 1 !important; font-size: 6px; padding: 0.5px 1px; }
     td.subject-cell { font-size: 0.45rem; line-height: 1.1; text-shadow: none; }
     td.room-cell { font-size: 0.38rem; }
-    td.current-cell, td.search-highlight, td.today-highlight, th.today-highlight { outline: none; box-shadow: none; background: none; }
+    td.current-cell, td.search-highlight, th.today-highlight { outline: none; box-shadow: none; background: none; }
     td.block { background: color-mix(in srgb, var(--subject-color) 30%, transparent) !important; }
     tr { break-inside: avoid; }
 }
