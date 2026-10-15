@@ -312,7 +312,7 @@ td.room-cell {
     margin-top: 2px; 
     display: block; 
 }
-td.link-icon { 
+.link-icon { 
     font-size: 0.6rem; 
     color: var(--cal-orange); 
     opacity: 0.5; 
