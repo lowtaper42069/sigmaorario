@@ -1,4 +1,4 @@
-# Orario Universitario 2025/2026 — 5BINF (riferimento)
+# Orario 2026/2027 — riferimento
 
 ## Lunedì — Aula 2.1.4
 | Orario | Materia |
@@ -36,6 +36,7 @@
 - T.2.3: https://aunicalogin.polimi.it/aunicalogin/getservizio.xml?id_servizio=343&idaula=56&lang=IT
 
 ## Note
+- Fonte di verità dell'orario: `orario.json` (questo file è solo un promemoria leggibile)
 - Martedì e Sabato: libero
 - Periodo: dal 14/09/2026 al 23/12/2026 (varia per materia)
 - 4 giorni di lezione: Lun, Mer, Gio, Ven
