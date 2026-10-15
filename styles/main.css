@@ -69,6 +69,7 @@
     --cal-search-outline: #fff;
     --cal-cell-alt: #1e2530;
     --row-line-height: 1.3;
+    --font-mono: 'JetBrains Mono Nerd', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
 
 [data-theme="light"] {
@@ -143,7 +144,7 @@
 body {
     background: var(--cal-bg);
     color: var(--cal-text);
-    font-family: 'JetBrains Mono Nerd', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    font-family: var(--font-mono);
     line-height: 1.5;
     min-height: 100vh;
 }
@@ -225,7 +226,7 @@ tr:last-child td { border-bottom: none; }
     justify-content: center;
     gap: 0.8rem;
     background: var(--cal-bg);
-    font-family: 'JetBrains Mono Nerd', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    font-family: var(--font-mono);
 }
 .loading-screen .spinner {
     font-size: 1.8rem;
