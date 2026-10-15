@@ -488,7 +488,9 @@
                     sessionStorage.removeItem('userId');
                     sessionStorage.removeItem('email');
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error('Errore recupero sessione:', err);
+            }
 
             const loggedIn = isLoggedIn();
             document.querySelectorAll('.guest-only').forEach(el => {
@@ -511,7 +513,9 @@
                     e.preventDefault();
                     try {
                         await supabaseClient.auth.signOut();
-                    } catch (err) {}
+                    } catch (err) {
+                        console.error('Errore logout:', err);
+                    }
                     sessionStorage.removeItem('loggedIn');
                     sessionStorage.removeItem('userId');
                     sessionStorage.removeItem('email');
