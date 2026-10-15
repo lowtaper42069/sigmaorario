@@ -54,6 +54,8 @@ document.addEventListener('themechange', () => {
         generaOrario();
         showToday();
     }
+    // Vista giorno (mobile): anche lei dipende dal tema (i brutal usano rowSpan).
+    if (document.getElementById('dayBody')) renderDayView();
 });
 
 document.addEventListener('DOMContentLoaded', initTheme);
@@ -197,7 +199,7 @@ function generaOrario() {
                 td.innerHTML = `
                     <span class="subject-cell">${cell.subject}</span>
                     <span class="room-cell">${cell.room || ''}</span>
-                    ${cell.link ? '<span class="link-icon" aria-hidden="true">↗</span>' : ''}
+                    ${cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : ''}
                 `;
                 if (cell.room) {
                     td.dataset.room = cell.room;
@@ -222,7 +224,7 @@ function generaOrario() {
                     td.innerHTML = `
                         <span class="subject-cell">${cell.subject}</span>
                         <span class="room-cell">${cell.room || ''}</span>
-                        ${cell.link ? '<span class="link-icon" aria-hidden="true">↗</span>' : ''}
+                        ${cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : ''}
                     `;
                 } else {
                     td.textContent = '';
@@ -413,8 +415,8 @@ function initDensity() {
         applyDensity(v);
         if (isMemorized()) saveDensity(v);
     };
-    const minIcon = document.querySelector('.density-control .nf-fa-minimize');
-    const maxIcon = document.querySelector('.density-control .nf-fa-maximize');
+    const minIcon = document.querySelector('.density-control .nf-fa-minus');
+    const maxIcon = document.querySelector('.density-control .nf-fa-plus');
     if (minIcon) minIcon.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setDensity(slider.min); });
     if (maxIcon) maxIcon.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setDensity(slider.max); });
 
@@ -576,6 +578,127 @@ function isLessonNow(lesson) {
     return mins >= minutesOf(lesson.start) && mins < minutesOf(lesson.end);
 }
 
+// Vista giorno "lista": le lezioni in ordine di orario
+function renderDayList(body, lessons) {
+    lessons.forEach(lesson => {
+        const current = isLessonNow(lesson);
+        const room = lesson.room
+            ? (AUNICA_LINKS[lesson.room]
+                ? `<a href="${AUNICA_LINKS[lesson.room]}" target="_blank" rel="noopener">${lesson.room}</a>`
+                : lesson.room)
+            : '';
+        const meta = [room, current ? 'in corso' : ''].filter(Boolean).join(' · ');
+
+        const row = document.createElement('div');
+        row.className = 'day-lesson' + (current ? ' is-current' : '');
+        row.style.setProperty('--subject-color', getSubjectColor(lesson.subject));
+        row.innerHTML =
+            `<div class="dl-time">${lesson.start}<span class="dl-time-end">${lesson.end}</span></div>` +
+            `<div><div class="dl-subject">${lesson.subject}</div>` +
+            (meta ? `<div class="dl-meta">${meta}</div>` : '') +
+            `</div>`;
+        body.appendChild(row);
+    });
+}
+
+// Vista giorno "tabella": la giornata come griglia oraria, coi blocchi delle lezioni
+function renderDayGrid(body, idx, lessons) {
+    const brutal = (document.documentElement.getAttribute('data-theme') || '').startsWith('brutal');
+
+    // slot occupati dalla lezione in corso (per evidenziarli)
+    const nowSlots = new Set();
+    lessons.forEach(l => {
+        if (!isLessonNow(l)) return;
+        for (let s = timeToSlot(l.start); s < timeToSlot(l.end); s++) nowSlots.add(s);
+    });
+
+    // tutta la giornata (08:00–20:00), anche se rimane lunga
+    const from = 0;
+    const to = TOTAL_SLOTS - 1;
+
+    const table = document.createElement('table');
+    table.className = 'day-table';
+    // larghezze esplicite: con table-layout:fixed le colonne sono prevedibili
+    const colgroup = document.createElement('colgroup');
+    const colOra = document.createElement('col');
+    colOra.style.width = '20%';
+    const colGiorno = document.createElement('col');
+    colGiorno.style.width = '80%';
+    colgroup.appendChild(colOra);
+    colgroup.appendChild(colGiorno);
+    table.appendChild(colgroup);
+    const tbody = document.createElement('tbody');
+
+    for (let s = from; s <= to; s++) {
+        const tr = document.createElement('tr');
+        if (s % SLOTS_PER_HOUR === 0) tr.classList.add('hour-separator');
+
+        const tdOra = document.createElement('td');
+        tdOra.className = 'time-col' + (s % SLOTS_PER_HOUR === 0 ? ' hour-mark' : '');
+        tdOra.textContent = slotToHourLabel(s);
+        tr.appendChild(tdOra);
+
+        const cell = grid[s] ? grid[s][idx] : null;
+
+        // nei temi brutal la cella è coperta dal rowSpan del blocco iniziato sopra
+        if (brutal && cell && !cell.isFirst && !cell.isOnly) {
+            tbody.appendChild(tr);
+            continue;
+        }
+
+        const td = document.createElement('td');
+        td.dataset.day = idx;
+
+        if (!cell) {
+            td.classList.add('empty');
+            td.textContent = '-';
+        } else if (brutal) {
+            const endSlot = getLessonEndSlot(idx, s);
+            td.rowSpan = endSlot - s + 1;
+            td.style.setProperty('--subject-color', cell.color);
+            td.classList.add('block');
+            if (nowSlots.has(s)) td.classList.add('is-now');
+            td.innerHTML =
+                `<span class="subject-cell">${cell.subject}</span>` +
+                `<span class="room-cell">${cell.room || ''}</span>` +
+                (cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : '');
+            if (cell.room) {
+                td.dataset.room = cell.room;
+                if (cell.link) td.dataset.link = cell.link;
+            }
+            td.dataset.subject = cell.subject;
+        } else {
+            td.style.setProperty('--subject-color', cell.color);
+            td.classList.add('block');
+
+            const isStart = cell.isFirst || cell.isOnly;
+            const isEnd = cell.isLast || cell.isOnly;
+            if (isStart) td.classList.add('block-start');
+            if (isEnd) td.classList.add('block-end');
+            if (!isStart && !isEnd) td.classList.add('block-middle');
+            if (nowSlots.has(s)) td.classList.add('is-now');
+
+            if (isStart) {
+                td.innerHTML =
+                    `<span class="subject-cell">${cell.subject}</span>` +
+                    `<span class="room-cell">${cell.room || ''}</span>` +
+                    (cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : '');
+            }
+            if (cell.room) {
+                td.dataset.room = cell.room;
+                if (cell.link) td.dataset.link = cell.link;
+            }
+            td.dataset.subject = cell.subject;
+        }
+
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    }
+
+    table.appendChild(tbody);
+    body.appendChild(table);
+}
+
 function renderDayView(dir) {
     const body = document.getElementById('dayBody');
     if (!body) return;
@@ -600,26 +723,10 @@ function renderDayView(dir) {
         empty.className = 'day-empty';
         empty.textContent = 'Nessuna lezione';
         body.appendChild(empty);
+    } else if (currentLayout() === 'grid') {
+        renderDayGrid(body, idx, lessons);
     } else {
-        lessons.forEach(lesson => {
-            const current = isLessonNow(lesson);
-            const room = lesson.room
-                ? (AUNICA_LINKS[lesson.room]
-                    ? `<a href="${AUNICA_LINKS[lesson.room]}" target="_blank" rel="noopener">${lesson.room}</a>`
-                    : lesson.room)
-                : '';
-            const meta = [room, current ? 'in corso' : ''].filter(Boolean).join(' · ');
-
-            const row = document.createElement('div');
-            row.className = 'day-lesson' + (current ? ' is-current' : '');
-            row.style.setProperty('--subject-color', getSubjectColor(lesson.subject));
-            row.innerHTML =
-                `<div class="dl-time">${lesson.start}<span class="dl-time-end">${lesson.end}</span></div>` +
-                `<div><div class="dl-subject">${lesson.subject}</div>` +
-                (meta ? `<div class="dl-meta">${meta}</div>` : '') +
-                `</div>`;
-            body.appendChild(row);
-        });
+        renderDayList(body, lessons);
     }
 
     const dots = document.getElementById('dayDots');
@@ -695,31 +802,48 @@ function initDayView() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Vista mobile: giorno (default) oppure tabella piena, col lock        */
+/* Vista mobile: giorno (default) / giorno tabella / tabella piena      */
+/* La scelta è salvata col lock (chiave 'mobileView').                  */
 /* ------------------------------------------------------------------ */
 
+const LAYOUTS = ['day', 'grid', 'table'];
+const LAYOUT_LABEL = { day: 'giorno', grid: 'giorno tabella', table: 'tabella' };
+const LAYOUT_ICON  = { day: 'nf-fa-th_list', grid: 'nf-fa-calendar_day', table: 'nf-fa-table' };
+
 function currentLayout() {
-    return document.body.classList.contains('mobile-table') ? 'table' : 'day';
+    if (document.body.classList.contains('mobile-table')) return 'table';
+    if (document.body.classList.contains('mobile-grid')) return 'grid';
+    return 'day';
 }
 
 function savedLayout() {
     // FEATURE VOLUTA (come tema e densità): letto/salvato solo col lock attivo.
     if (!isMemorized()) return 'day';
-    return localStorage.getItem(MOBILE_VIEW_KEY) === 'table' ? 'table' : 'day';
+    const saved = localStorage.getItem(MOBILE_VIEW_KEY);
+    return LAYOUTS.indexOf(saved) === -1 ? 'day' : saved;
+}
+
+function nextLayout(pref) {
+    return LAYOUTS[(LAYOUTS.indexOf(pref) + 1) % LAYOUTS.length];
 }
 
 function applyLayout(pref) {
     document.body.classList.toggle('mobile-table', pref === 'table');
+    document.body.classList.toggle('mobile-grid', pref === 'grid');
 
     const btn = document.getElementById('layoutToggle');
-    if (!btn) return;
+    if (btn) {
+        // il pulsante mostra la vista di destinazione
+        const next = nextLayout(pref);
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = 'nf ' + LAYOUT_ICON[next];
+        const label = 'Vista ' + LAYOUT_LABEL[pref] + ' — clicca per: ' + LAYOUT_LABEL[next];
+        btn.title = label;
+        btn.setAttribute('aria-label', label);
+    }
 
-    const toTable = pref !== 'table';   // il pulsante mostra la vista di destinazione
-    const icon = btn.querySelector('i');
-    if (icon) icon.className = 'nf ' + (toTable ? 'nf-fa-table' : 'nf-fa-th_list');
-    const label = toTable ? 'Vista tabella' : 'Vista giorno';
-    btn.title = label;
-    btn.setAttribute('aria-label', label);
+    // la vista "giorno" cambia corpo (lista o tabella oraria) → ridisegna
+    if (document.getElementById('dayBody')) renderDayView();
 }
 
 function initLayout() {
@@ -728,7 +852,7 @@ function initLayout() {
     const btn = document.getElementById('layoutToggle');
     if (!btn) return;
     btn.addEventListener('click', function () {
-        const next = currentLayout() === 'table' ? 'day' : 'table';
+        const next = nextLayout(currentLayout());
         applyLayout(next);
         if (isMemorized()) localStorage.setItem(MOBILE_VIEW_KEY, next);
     });

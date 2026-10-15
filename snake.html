@@ -83,6 +83,7 @@
             border-radius: 4px;
             max-width: 100%;
             height: auto;
+            touch-action: none; /* il campo di gioco gestisce lo swipe, niente scroll */
         }
 
         /* Bottone tema: feedback visibile in dark/light (brutal gestito da main.css) */
@@ -306,7 +307,7 @@
     <header>
         <h1 style="margin:0;">🐍 Snake</h1>
         <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema" style="padding:0.4rem 0.6rem;">
-            <i class="nf nf-fa-sun"></i>
+            <i class="nf nf-fa-circle_half"></i>
         </button>
     </header>
     <div class="game-container">
@@ -316,9 +317,9 @@
             <button class="btn" id="startBtn" onclick="startGame(false)">Start</button>
             <button class="btn secondary" onclick="resetGame()">Reset</button>
             <button class="btn secondary speed-btn" onclick="showSettings()" title="Velocità"><i class="nf nf-fa-gauge_high"></i></button>
-            <button class="btn secondary speed-btn layout-btn" onclick="toggleLayout()" title="Cambia layout"><i class="nf nf-fa-th"></i></button>
+            <button class="btn secondary speed-btn layout-btn" onclick="toggleLayout()" title="Cambia layout"><i class="nf nf-fa-exchange"></i></button>
         </div>
-        <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente</p>
+        <p class="instructions">Usa le frecce direzionali, WASD o h/j/k/l (nvim) per muovere il serpente — su mobile trascina sul campo di gioco</p>
         <div class="dpad">
             <button class="dpad-btn dpad-up" oncontextmenu="return false;" onclick="handleDirection('up')"><i class="nf nf-fa-chevron_up"></i></button>
             <button class="dpad-btn dpad-left" oncontextmenu="return false;" onclick="handleDirection('left')"><i class="nf nf-fa-chevron_left"></i></button>
@@ -627,6 +628,34 @@
                 handleDirection(dir);
             }
         });
+
+        // Swipe sul campo di gioco: trascina in una direzione per cambiare verso.
+        // (touch-action:none sul canvas evita scroll/zoom durante il gesto)
+        (function initSwipe() {
+            var SOGLIA = 24;   // px minimi per riconoscere uno swipe
+            var sx = 0, sy = 0, tracking = false;
+
+            canvas.addEventListener('touchstart', function (e) {
+                if (e.touches.length !== 1) { tracking = false; return; }
+                tracking = true;
+                sx = e.touches[0].clientX;
+                sy = e.touches[0].clientY;
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', function (e) {
+                if (!tracking) return;
+                tracking = false;
+                var t = e.changedTouches && e.changedTouches[0];
+                if (!t) return;
+                var dx = t.clientX - sx;
+                var dy = t.clientY - sy;
+                if (Math.abs(dx) < SOGLIA && Math.abs(dy) < SOGLIA) return;   // tap: ignora
+                if (Math.abs(dx) > Math.abs(dy)) handleDirection(dx > 0 ? 'right' : 'left');
+                else handleDirection(dy > 0 ? 'down' : 'up');
+            }, { passive: true });
+
+            canvas.addEventListener('touchcancel', function () { tracking = false; }, { passive: true });
+        })();
 
         initGame();
     </script>

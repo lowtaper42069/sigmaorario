@@ -24,7 +24,7 @@
                 <a href="calendario.html" class="active">Calendario</a>
             </nav>
             <button class="btn theme-toggle" id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
-                <i class="nf nf-fa-sun"></i>
+                <i class="nf nf-fa-circle_half"></i>
             </button>
         </header>
 
@@ -313,14 +313,14 @@
                 compito: 'nf-fa-pencil',
                 progetto: 'nf-fa-folder',
                 laboratorio: 'nf-fa-flask',
-                altro: 'nf-fa-calendar'
+                altro: 'nf-fa-tag'
             };
 
             const content = document.getElementById('eventDetailContent');
             content.innerHTML = `
                 <div class="event-detail">
                     <div class="event-color" style="background: ${evt.color};">
-                        <i class="nf ${icons[evt.type] || 'nf-fa-calendar'}"></i>
+                        <i class="nf ${icons[evt.type] || 'nf-fa-tag'}"></i>
                     </div>
                     <h4>${evt.title}</h4>
                     <div class="event-info">

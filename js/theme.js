@@ -3,10 +3,10 @@
    e costruisce il selettore quando il DOM è pronto. */
 (function () {
     var THEMES = [
-        { value: 'brutal',       label: 'Brutal scuro',  icon: 'nf-fa-terminal', bg: '#1a1a1a', accent: '#cfcfcf' },
-        { value: 'brutal-light', label: 'Brutal chiaro', icon: 'nf-fa-th',       bg: '#d9d9d9', accent: '#333333' },
-        { value: 'dark',         label: 'Scuro',         icon: 'nf-fa-moon',     bg: '#0d1117', accent: '#44633F' },
-        { value: 'light',        label: 'Chiaro',        icon: 'nf-fa-sun',      bg: '#f6f8fa', accent: '#6a8d60' }
+        { value: 'brutal',       label: 'Brutal scuro',  bg: '#1a1a1a', accent: '#cfcfcf' },
+        { value: 'brutal-light', label: 'Brutal chiaro', bg: '#d9d9d9', accent: '#333333' },
+        { value: 'dark',         label: 'Scuro',         bg: '#0d1117', accent: '#44633F' },
+        { value: 'light',        label: 'Chiaro',        bg: '#f6f8fa', accent: '#6a8d60' }
     ];
 
     // Tema di default quando non c'è nulla di salvato (vedi bootstrap sotto).
@@ -44,9 +44,11 @@
     function refreshTrigger(value) {
         var btn = document.getElementById('themeToggle');
         if (!btn) return;
-        var info = themeInfo(value);
+        // Icona fissa: il selettore mostra sempre lo stesso simbolo ("contrasto"),
+        // il tema corrente lo dicono il colore e l'etichetta del menu.
         var icon = btn.querySelector('i');
-        if (icon && info) icon.className = 'nf ' + info.icon;
+        if (icon) icon.className = 'nf nf-fa-circle_half';
+        var info = themeInfo(value);
         var label = info ? info.label : value;
         btn.title = 'Tema: ' + label;
         btn.setAttribute('aria-label', 'Tema: ' + label);

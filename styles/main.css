@@ -17,12 +17,9 @@
     overflow: visible;
 }
 
-.nf-fa-sun::before { content: "\f185"; }
-.nf-fa-moon::before { content: "\f186"; }
+.nf-fa-circle_half::before { content: "\f042"; }
 .nf-md-lock::before { content: "\f033e"; }
 .nf-md-lock_open::before { content: "\f033f"; }
-.nf-fa-minimize::before { content: "\ef3e"; }
-.nf-fa-maximize::before { content: "\f06f"; }
 .nf-fa-calendar_week::before { content: "\ef38"; }
 .nf-fa-download::before { content: "\f019"; }
 .nf-fa-print::before { content: "\f02f"; }
@@ -36,6 +33,7 @@
 .nf-fa-chevron_up::before { content: "\f077"; }
 .nf-fa-chevron_down::before { content: "\f078"; }
 .nf-fa-plus::before { content: "\f067"; }
+.nf-fa-minus::before { content: "\f068"; }
 .nf-fa-arrows_rotate::before { content: "\f021"; }
 .nf-fa-arrow_right_to_bracket::before { content: "\f090"; }
 .nf-fa-arrow_right_from_bracket::before { content: "\f08b"; }
@@ -45,13 +43,14 @@
 .nf-fa-trash::before { content: "\f1f8"; }
 .nf-fa-arrow_left::before { content: "\f060"; }
 .nf-fa-gauge_high::before { content: "\ed2f"; }
-.nf-fa-th::before { content: "\f00a"; }
 .nf-fa-table::before { content: "\f0ce"; }
 .nf-fa-th_list::before { content: "\f00b"; }
+.nf-fa-exchange::before { content: "\f0ec"; }
+.nf-fa-tag::before { content: "\f02b"; }
+.nf-fa-external_link::before { content: "\f08e"; }
 .nf-fa-clipboard_check::before { content: "\ed7a"; }
 .nf-fa-pencil::before { content: "\f040"; }
 .nf-fa-folder::before { content: "\f07b"; }
-.nf-fa-terminal::before { content: "\f120"; }
 .nf-dev-github::before { content: "\f09b"; }
 
 :root {
@@ -196,6 +195,13 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
 .day-lesson .dl-meta a { color: var(--cal-orange); text-decoration: none; }
 .day-lesson.is-current .dl-meta { color: var(--accent-color); }
 .day-empty { padding: 2.5rem 0.5rem; text-align: center; color: var(--cal-text-muted); font-size: 0.8rem; }
+
+/* Vista "giorno tabella": la giornata come griglia oraria, coi blocchi delle lezioni */
+.day-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.day-table td.subject-cell { white-space: normal; overflow-wrap: break-word; }
+.day-table .room-cell { display: block; margin-top: 2px; font-size: 0.75rem; color: var(--cal-text-muted); }
+.day-table td.block { text-align: left; }
+.day-table td.block.is-now { outline: 2px solid var(--accent-color); outline-offset: -2px; }
 .day-view-dots { display: flex; gap: 0.3rem; justify-content: center; align-items: flex-start; margin-top: 0.8rem; }
 .day-dot { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; width: 2.1rem; padding: 0.15rem 0; background: none; border: none; cursor: pointer; color: var(--cal-text-muted); opacity: 0.45; }
 .day-dot:hover { opacity: 0.8; }
@@ -283,6 +289,9 @@ td.block-end { border-bottom: 2px solid var(--subject-color) !important; }
 
 td.block-middle { border-top: none; border-bottom: none; }
 
+td[data-link] { cursor: pointer; position: relative; }
+td[data-link]:hover { background: color-mix(in srgb, var(--subject-color) 18%, transparent); }
+
 td.subject-cell { 
     font-weight: 600; 
     color: var(--cal-text);
@@ -306,6 +315,7 @@ td.room-cell {
     vertical-align: middle;
     transition: opacity 0.2s, color 0.2s;
 }
+td[data-link]:hover .link-icon { opacity: 1; color: var(--accent-color); }
 
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
@@ -613,6 +623,7 @@ footer a:hover { color: var(--accent-color); }
 }
 [data-theme^="brutal"] .room-cell { color: var(--brutal-room); font-size: 0.7rem; font-weight: 400; line-height: 1.4; }
 [data-theme^="brutal"] .link-icon { color: var(--cal-text-ice); opacity: 0.7; }
+[data-theme^="brutal"] td[data-link]:hover { background: color-mix(in srgb, var(--subject-color) 42%, var(--cal-header-bg)); filter: none; }
 
 /* Ricerca: cornice stretta grigio cemento su tutto il blocco (niente bordi laterali bianchi frammentati) */
 [data-theme^="brutal"] td.search-highlight {

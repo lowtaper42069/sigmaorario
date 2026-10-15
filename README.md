@@ -12,6 +12,7 @@ App non ufficiale — per gli orari attendibili fa fede il sito del Politecnico 
 - **Temi** — 4 temi: *Brutal scuro* (default), *Brutal chiaro*, *Scuro*, *Chiaro*, scelti da un selettore a tendina
 - **Motion** — wipe radiale al cambio tema, slide al cambio mese, animazioni dei modali e della ricerca (rispetta `prefers-reduced-motion`)
 - **Link aule** — click su una lezione apre la mappa AUNICA dell'aula
+- **Viste mobile** — su schermi stretti: *giorno* (lista), *giorno tabella* (griglia oraria coi blocchi) e *tabella piena*, con pallini e swipe per cambiare giorno
 - **Esportazione .ics** e stampa
 - **Calendario eventi** — gestione locale + sync Supabase (WIP)
 
@@ -19,7 +20,7 @@ App non ufficiale — per gli orari attendibili fa fede il sito del Politecnico 
 
 - `index.html` — orario settimanale
 - `calendario.html` — calendario eventi
-- `snake.html` — easter egg 🐍
+- `snake.html` — easter egg 🐍 (frecce/WASD, oppure swipe su mobile)
 - `login.html`, `404.html`
 
 ## Stack
