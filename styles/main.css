@@ -273,8 +273,6 @@ td.current-cell {
 
 td.time-col.hour-mark { background: var(--cal-bg); color: var(--cal-text); font-weight: 700; font-size: 0.65rem; }
 
-tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
-
 td.block { 
     border-left: none; 
     border-right: none; 
