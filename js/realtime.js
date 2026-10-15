@@ -149,6 +149,26 @@ function buildGrid() {
     }
 }
 
+function isBrutalTheme() {
+    return (document.documentElement.getAttribute('data-theme') || '').startsWith('brutal');
+}
+
+// Markup interno di una cella-lezione: materia, aula e (se presente) icona link.
+function lessonCellHTML(cell) {
+    return `<span class="subject-cell">${cell.subject}</span>` +
+           `<span class="room-cell">${cell.room || ''}</span>` +
+           (cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : '');
+}
+
+// Data-attribute condivisi (aula/link/materia) letti dal click delegato sulla cella.
+function setCellData(td, cell) {
+    if (cell.room) {
+        td.dataset.room = cell.room;
+        if (cell.link) td.dataset.link = cell.link;
+    }
+    td.dataset.subject = cell.subject;
+}
+
 function generaOrario() {
     const table = document.getElementById('scheduleTable');
     if (!table) return;
@@ -158,7 +178,7 @@ function generaOrario() {
     const tbody = table.querySelector('tbody');
     tbody.innerHTML = '';
 
-    const brutal = (document.documentElement.getAttribute('data-theme') || '').startsWith('brutal');
+    const brutal = isBrutalTheme();
 
     for (let s = 0; s < TOTAL_SLOTS; s++) {
         const tr = document.createElement('tr');
@@ -196,18 +216,8 @@ function generaOrario() {
                 td.dataset.endSlot = endSlot;
                 td.style.setProperty('--subject-color', cell.color);
                 td.classList.add('block');
-                td.innerHTML = `
-                    <span class="subject-cell">${cell.subject}</span>
-                    <span class="room-cell">${cell.room || ''}</span>
-                    ${cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : ''}
-                `;
-                if (cell.room) {
-                    td.dataset.room = cell.room;
-                    if (cell.link) {
-                        td.dataset.link = cell.link;
-                    }
-                }
-                td.dataset.subject = cell.subject;
+                td.innerHTML = lessonCellHTML(cell);
+                setCellData(td, cell);
             } else {
                 td.dataset.slot = s;
                 td.style.setProperty('--subject-color', cell.color);
@@ -221,22 +231,12 @@ function generaOrario() {
                 if (!isBlockStart && !isBlockEnd) td.classList.add('block-middle');
 
                 if (isBlockStart) {
-                    td.innerHTML = `
-                        <span class="subject-cell">${cell.subject}</span>
-                        <span class="room-cell">${cell.room || ''}</span>
-                        ${cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : ''}
-                    `;
+                    td.innerHTML = lessonCellHTML(cell);
                 } else {
                     td.textContent = '';
                 }
 
-                if (cell.room) {
-                    td.dataset.room = cell.room;
-                    if (cell.link) {
-                        td.dataset.link = cell.link;
-                    }
-                }
-                td.dataset.subject = cell.subject;
+                setCellData(td, cell);
             }
             tr.appendChild(td);
         }
@@ -603,7 +603,7 @@ function renderDayList(body, lessons) {
 
 // Vista giorno "tabella": la giornata come griglia oraria, coi blocchi delle lezioni
 function renderDayGrid(body, idx, lessons) {
-    const brutal = (document.documentElement.getAttribute('data-theme') || '').startsWith('brutal');
+    const brutal = isBrutalTheme();
 
     // slot occupati dalla lezione in corso (per evidenziarli)
     const nowSlots = new Set();
@@ -658,15 +658,8 @@ function renderDayGrid(body, idx, lessons) {
             td.style.setProperty('--subject-color', cell.color);
             td.classList.add('block');
             if (nowSlots.has(s)) td.classList.add('is-now');
-            td.innerHTML =
-                `<span class="subject-cell">${cell.subject}</span>` +
-                `<span class="room-cell">${cell.room || ''}</span>` +
-                (cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : '');
-            if (cell.room) {
-                td.dataset.room = cell.room;
-                if (cell.link) td.dataset.link = cell.link;
-            }
-            td.dataset.subject = cell.subject;
+            td.innerHTML = lessonCellHTML(cell);
+            setCellData(td, cell);
         } else {
             td.style.setProperty('--subject-color', cell.color);
             td.classList.add('block');
@@ -679,16 +672,9 @@ function renderDayGrid(body, idx, lessons) {
             if (nowSlots.has(s)) td.classList.add('is-now');
 
             if (isStart) {
-                td.innerHTML =
-                    `<span class="subject-cell">${cell.subject}</span>` +
-                    `<span class="room-cell">${cell.room || ''}</span>` +
-                    (cell.link ? '<i class="nf nf-fa-external_link link-icon" aria-hidden="true"></i>' : '');
+                td.innerHTML = lessonCellHTML(cell);
             }
-            if (cell.room) {
-                td.dataset.room = cell.room;
-                if (cell.link) td.dataset.link = cell.link;
-            }
-            td.dataset.subject = cell.subject;
+            setCellData(td, cell);
         }
 
         tr.appendChild(td);
