@@ -9,9 +9,7 @@ const GIORNI_BREVI = ['LUN', 'MAR', 'MER', 'GIO', 'VEN'];
 // Preferenza vista mobile: 'day' (default) o 'table'. Salvata solo col lock attivo.
 const MOBILE_VIEW_KEY = 'mobileView';
 
-function isMemorized() {
-    return localStorage.getItem('settingsMemorize') === '1';
-}
+// isMemorized() e' fornita da js/theme.js (window.isMemorized), caricato prima.
 
 let isPrinting = false;
 
