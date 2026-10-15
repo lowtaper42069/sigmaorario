@@ -214,16 +214,6 @@ th:first-child { width: 65px; min-width: 55px; background: var(--cal-bg); z-inde
 td:not(:first-child), th:not(:first-child) { width: 20%; }
 tr:last-child td { border-bottom: none; }
 
-td.loading-placeholder {
-    padding: 1rem;
-    font-size: 0.85rem;
-    font-family: 'JetBrains Mono Nerd', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
-    color: var(--cal-text-muted);
-    text-align: left;
-    letter-spacing: 0.05em;
-    background: var(--cal-header-bg);
-}
-
 /* Loading screen: spinner ASCII a schermo intero, rimosso su window.load */
 .loading-screen {
     position: fixed;
@@ -324,7 +314,6 @@ td.room-cell {
 .legend { display: flex; gap: 1.5rem; padding: 1rem 1.5rem; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--cal-text-muted); }
 .legend-color { width: 12px; height: 12px; border-radius: 3px; }
-.legend-color.lab { background: var(--cal-orange); }
 .legend-color.today { background: var(--cal-current-outline); }
 
 .actions-bar {
@@ -381,12 +370,6 @@ td.room-cell {
 
 .actions-search input::placeholder {
     color: var(--cal-text-muted);
-}
-
-.divider {
-    width: 1px;
-    height: 24px;
-    background: var(--cal-border);
 }
 
 /* Tooltip */
@@ -684,8 +667,7 @@ footer a:hover { color: var(--accent-color); }
 /* Caret coerente con il bianco ghiaccio */
 [data-theme^="brutal"] input, [data-theme^="brutal"] textarea, [data-theme^="brutal"] select { caret-color: var(--cal-text-ice); }
 
-/* Placeholder di caricamento: blocco grigio statico, // LOADING... */
-[data-theme^="brutal"] .loading-placeholder { background: var(--cal-border); color: var(--cal-text-muted); }
+/* Spinner del loading screen coerente con il testo ghiaccio */
 [data-theme^="brutal"] .loading-screen .spinner { color: var(--cal-text-ice); }
 
 /* Pannello errore 404 */
@@ -856,7 +838,6 @@ footer a:hover { color: var(--accent-color); }
     .actions-group { justify-content: flex-start; }
     .actions-search { flex: 1; min-width: 0; margin-left: 0; }
     .actions-search input, .actions-search input:focus { width: auto; flex: 1; min-width: 0; }
-    .divider { display: none; }
     .cal-nav { flex-wrap: wrap; gap: 0.75rem; }
     .cal-nav h2 { font-size: 0.95rem; min-width: 140px; }
     .cal-day { min-height: 60px; padding: 0.25rem; }
