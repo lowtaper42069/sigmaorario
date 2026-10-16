@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sartalendario</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/calendar.css">
     <script src="js/theme.js"></script>
 </head>
 <body>
@@ -170,7 +172,7 @@
 
         async function loadEvents() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            events = saved ? JSON.parse(saved) : getDefaultEvents();
+            events = saved ? JSON.parse(saved) : [];
             
             if (isLoggedIn()) {
                 await loadFromDB();
@@ -211,10 +213,6 @@
         async function saveEvents() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
             updateEventCount();
-        }
-
-        function getDefaultEvents() {
-            return [];
         }
 
         function updateEventCount() {
@@ -492,7 +490,9 @@
                     sessionStorage.removeItem('userId');
                     sessionStorage.removeItem('email');
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error('Errore recupero sessione:', err);
+            }
 
             const loggedIn = isLoggedIn();
             document.querySelectorAll('.guest-only').forEach(el => {
@@ -515,7 +515,9 @@
                     e.preventDefault();
                     try {
                         await supabaseClient.auth.signOut();
-                    } catch (err) {}
+                    } catch (err) {
+                        console.error('Errore logout:', err);
+                    }
                     sessionStorage.removeItem('loggedIn');
                     sessionStorage.removeItem('userId');
                     sessionStorage.removeItem('email');

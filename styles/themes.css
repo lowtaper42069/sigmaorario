@@ -1,0 +1,322 @@
+/* themes.css — override per tema (Brutal scuro/chiaro, Scuro, Chiaro):
+   variabili e regole [data-theme], incluse quelle per calendario, snake e login. */
+
+[data-theme="light"] {
+    --cal-bg: #f6f8fa;
+    --cal-header-bg: #f0f3f6;
+    --cal-day-bg: #f0f3f6;
+    --cal-border: #d5dce4;
+    --cal-border-light: #dce2e8;
+    --cal-text: #24292f;
+    --cal-text-muted: #656d76;
+    --accent-color: #6a8d60;
+    --cal-orange: #bc4c00;
+    --cal-current-outline: rgba(0, 0, 0, 0.5);
+    --cal-current-bg: rgba(0, 0, 0, 0.1);
+    --cal-search-outline: #1f2328;
+    --cal-cell-alt: #ffffff;
+}
+
+/* Brutal scuro — béton brut notturno (cemento grigio su fondo scuro) */
+[data-theme^="brutal"] {
+    --cal-bg: #1a1a1a;
+    --cal-header-bg: #232323;
+    --cal-day-bg: #232323;
+    --cal-border: #3a3a3a;
+    --cal-border-light: #565656;
+    --cal-border-strong: #808080;
+    --cal-text: #e8e8e8;
+    --cal-text-muted: #8f8f8f;
+    --cal-text-ice: #f2f2f2;
+    --accent-color: #cfcfcf;
+    --cal-orange: #9a9a9a;
+    --cal-current-outline: #909090;
+    --cal-current-bg: rgba(207, 207, 207, 0.14);
+    --cal-search-outline: #b0b0b0;
+    --cal-cell-alt: #161616;
+    /* "Ink": testo su superfici accent/ice (in dark è scuro perché l'accent è chiaro) */
+    --brutal-ink: #121212;
+    --brutal-room: #afafaf;
+}
+
+/* Brutal chiaro — stesso béton brut, cemento chiaro (invertito) */
+[data-theme="brutal-light"] {
+    --cal-bg: #d9d9d9;
+    --cal-header-bg: #e6e6e6;
+    --cal-day-bg: #e6e6e6;
+    --cal-border: #b0b0b0;
+    --cal-border-light: #8f8f8f;
+    --cal-border-strong: #4a4a4a;
+    --cal-text: #141414;
+    --cal-text-muted: #4f4f4f;
+    --cal-text-ice: #0a0a0a;
+    --accent-color: #333333;
+    --cal-orange: #555555;
+    --cal-current-outline: #5a5a5a;
+    --cal-current-bg: rgba(20, 20, 20, 0.10);
+    --cal-search-outline: #333333;
+    --cal-cell-alt: #cfcfcf;
+    --brutal-ink: #f2f2f2;
+    --brutal-room: #4f4f4f;
+}
+
+/* Brutal chiaro: ritocchi dove il tema base assume un fondo scuro */
+[data-theme="brutal-light"] .main-nav a:hover { background: rgba(0, 0, 0, 0.06); }
+[data-theme="brutal-light"] .cal-day:hover { background: rgba(0, 0, 0, 0.04); }
+[data-theme="brutal-light"] .modal { background: rgba(0, 0, 0, 0.55); }
+[data-theme="brutal-light"] .settings-menu { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); }
+[data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: transparent; color: var(--cal-text); }
+[data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: rgba(0,0,0,0.05); }
+[data-theme="light"] .lock-toggle.locked { background: color-mix(in srgb, var(--accent-color) 10%, transparent); color: var(--accent-color); }
+[data-theme^="brutal"] .theme-menu { border-radius: 0; border: 2px solid var(--cal-border-strong); box-shadow: none; }
+[data-theme^="brutal"] .pick-option { border-radius: 0; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72rem; font-weight: 700; }
+[data-theme^="brutal"] .theme-swatch { border-radius: 0; }
+[data-theme="light"] tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, #ffffff); }
+[data-theme="light"] tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 40%, #ffffff); }
+[data-theme="light"] td.time-col { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
+/* ------------------------------------------------------------------ */
+/* Tema brutalist — il terminale come béton brut                       */
+
+/* Transizioni: nessuna (max 100ms vietate, il terminale non "scivola") */
+[data-theme^="brutal"] *, [data-theme^="brutal"] *::before, [data-theme^="brutal"] *::after { transition-duration: 0s !important; }
+
+[data-theme^="brutal"] header h1::before { content: '// '; color: var(--accent-color); }
+
+[data-theme^="brutal"] .main-nav { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .main-nav a { border-radius: 0; }
+[data-theme^="brutal"] .main-nav a.active { background: var(--accent-color); color: var(--brutal-ink); }
+
+[data-theme^="brutal"] .current-info {
+    border-radius: 0;
+    border: 2px solid var(--cal-border-strong);
+}
+[data-theme^="brutal"] .current-info .value::before { content: '> '; color: var(--accent-color); }
+[data-theme^="brutal"] .current-info .value a { color: var(--cal-text-ice); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+[data-theme^="brutal"] .current-info .value a:hover { color: var(--accent-color); }
+
+[data-theme^="brutal"] .schedule-container {
+    border-radius: 0;
+    border: 2px solid var(--cal-border-strong);
+    min-height: 400px;
+}
+[data-theme^="brutal"] .schedule-header { border-bottom: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .table-wrapper { min-width: 720px; }
+
+[data-theme^="brutal"] .legend-color { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+
+/* Vista giorno: angoli netti nel tema brutal */
+[data-theme^="brutal"] .day-lesson { border-radius: 0; border-width: 2px; border-left-width: 2px; }
+[data-theme^="brutal"] .day-nav-btn { border-radius: 0; border-width: 2px; }
+[data-theme^="brutal"] .day-dot-mark { border-radius: 0; }
+
+[data-theme^="brutal"] .actions-bar {
+    border-radius: 0;
+    border: 2px solid var(--cal-border-strong);
+    gap: 1.5rem;
+    padding: 1.25rem;
+}
+[data-theme^="brutal"] .actions-search .search-prompt { display: inline; font-size: 1.1rem; font-weight: 700; color: var(--cal-text-ice); user-select: none; }
+[data-theme^="brutal"] .actions-search input { border-radius: 0; border: 2px solid var(--cal-border); width: 220px; }
+[data-theme^="brutal"] .actions-search input:focus { border-color: var(--accent-color); width: 220px; }
+
+[data-theme^="brutal"] .btn {
+    border-radius: 0;
+    border: 2px solid var(--cal-border);
+    background: transparent;
+    color: var(--cal-text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+[data-theme^="brutal"] .btn:hover {
+    background: var(--cal-text);
+    border-color: var(--cal-text);
+    color: var(--cal-bg);
+}
+[data-theme^="brutal"] .btn-primary {
+    background: transparent;
+    border-color: var(--cal-border);
+    color: var(--cal-text-muted);
+}
+[data-theme^="brutal"] .btn-primary:hover {
+    background: var(--cal-text-ice);
+    border-color: var(--cal-text-ice);
+    color: var(--brutal-ink);
+}
+
+[data-theme^="brutal"] .theme-toggle, [data-theme^="brutal"] .lock-toggle { border-radius: 0; border: 2px solid var(--cal-border); background: transparent; color: var(--cal-text-muted); }
+[data-theme^="brutal"] .theme-toggle:hover, [data-theme^="brutal"] .lock-toggle:hover { background: var(--cal-text); border-color: var(--cal-text); color: var(--cal-bg); }
+/* Lock bloccato: resta acceso anche senza hover */
+[data-theme^="brutal"] .lock-toggle.locked, [data-theme^="brutal"] .lock-toggle.locked:hover { background: var(--cal-text-ice); border-color: var(--cal-text-ice); color: var(--brutal-ink); }
+/* Pressione: feedback istantaneo (disattivato -> acceso) */
+[data-theme^="brutal"] .theme-toggle:active, [data-theme^="brutal"] .lock-toggle:active { background: var(--cal-text-ice); border-color: var(--cal-text-ice); color: var(--brutal-ink); }
+
+[data-theme^="brutal"] td, [data-theme^="brutal"] th { border-color: var(--cal-border); }
+[data-theme^="brutal"] tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
+
+/* Intestazioni colonna: targhe */
+[data-theme^="brutal"] th {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--cal-text);
+}
+
+/* Celle vuote: sfondo piatto, niente zebra, niente trasparenza */
+[data-theme^="brutal"] tr:nth-child(odd) td.empty,
+[data-theme^="brutal"] tr:nth-child(even) td.empty { background: var(--cal-bg); }
+[data-theme^="brutal"] td.empty { opacity: 1; color: var(--cal-border); }
+
+/* Padding di ritmo: stesso per blocchi e celle vuote */
+[data-theme^="brutal"] th, [data-theme^="brutal"] td { padding: 0.15rem 0.6rem; }
+
+/* Blocco lezione: slab incastonato, solo colore + testo, niente bordi */
+[data-theme^="brutal"] td.block {
+    background: color-mix(in srgb, var(--subject-color) 20%, var(--cal-header-bg));
+    border: none;
+}
+[data-theme^="brutal"] .subject-cell {
+    color: var(--cal-text-ice);
+    text-shadow: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+    white-space: normal;
+    width: 100%;
+}
+[data-theme^="brutal"] .room-cell { color: var(--brutal-room); font-size: 0.7rem; font-weight: 400; line-height: 1.4; }
+[data-theme^="brutal"] .link-icon { color: var(--cal-text-ice); opacity: 0.7; }
+[data-theme^="brutal"] td[data-link]:hover { background: color-mix(in srgb, var(--subject-color) 42%, var(--cal-header-bg)); filter: none; }
+
+/* Ricerca: cornice stretta grigio cemento su tutto il blocco (niente bordi laterali bianchi frammentati) */
+[data-theme^="brutal"] td.search-highlight {
+    outline: 3px solid var(--cal-search-outline);
+    outline-offset: -3px;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+[data-theme^="brutal"] th.today-highlight { background: var(--cal-text); color: var(--brutal-ink); box-shadow: none; }
+
+[data-theme^="brutal"] td.current-cell {
+    outline: 3px solid var(--cal-border-strong);
+    outline-offset: -3px;
+    animation: brutal-blink 1s step-end infinite;
+}
+[data-theme^="brutal"] td.block.current-cell {
+    background: var(--accent-color);
+}
+[data-theme^="brutal"] td.block.current-cell .subject-cell,
+[data-theme^="brutal"] td.block.current-cell .room-cell {
+    color: var(--brutal-ink);
+}
+
+@keyframes brutal-blink {
+    50% { outline-color: transparent; }
+}
+
+[data-theme^="brutal"] footer { border-top: 2px solid var(--cal-border-strong); padding-top: 1.5rem; text-align: left; }
+[data-theme^="brutal"] .footer-line::before { content: '// '; color: var(--cal-text); }
+[data-theme^="brutal"] .footer-sep { color: var(--cal-border-light); margin: 0 0.6rem; }
+
+[data-theme^="brutal"] .density-control input[type="range"] { border-radius: 0; }
+[data-theme^="brutal"] .density-control input[type="range"]:focus-visible { outline: 2px solid var(--cal-border-strong); outline-offset: 4px; border-radius: 4px; }
+[data-theme^="brutal"] .density-control input[type="range"]::-webkit-slider-thumb { border-radius: 0; transition: none; }
+[data-theme^="brutal"] .density-control input[type="range"]::-moz-range-thumb { border-radius: 0; }
+
+[data-theme^="brutal"] ::selection { background: var(--accent-color); color: var(--brutal-ink); }
+
+/* Scrollbar: sottile, rettangolare, grigia */
+[data-theme^="brutal"] * { scrollbar-width: thin; scrollbar-color: var(--cal-border-light) var(--cal-bg); }
+[data-theme^="brutal"] *::-webkit-scrollbar { width: 8px; height: 8px; }
+[data-theme^="brutal"] *::-webkit-scrollbar-track { background: var(--cal-bg); }
+[data-theme^="brutal"] *::-webkit-scrollbar-thumb { background: var(--cal-border-light); border-radius: 0; }
+[data-theme^="brutal"] *::-webkit-scrollbar-thumb:hover { background: var(--cal-text-muted); }
+
+/* Caret coerente con il bianco ghiaccio */
+[data-theme^="brutal"] input, [data-theme^="brutal"] textarea, [data-theme^="brutal"] select { caret-color: var(--cal-text-ice); }
+
+/* Spinner del loading screen coerente con il testo ghiaccio */
+[data-theme^="brutal"] .loading-screen .spinner { color: var(--cal-text-ice); }
+[data-theme^="brutal"] .error-panel {
+    border: 2px solid var(--cal-border-strong);
+    border-radius: 0;
+    background: var(--cal-header-bg);
+}
+[data-theme^="brutal"] .error-code {
+    font-size: 5rem;
+    color: var(--cal-text-ice);
+    letter-spacing: 0.1em;
+}
+[data-theme^="brutal"] .error-message { color: var(--cal-text); }
+[data-theme^="brutal"] .error-message .prompt { color: var(--accent-color); }
+[data-theme^="brutal"] .error-detail { color: var(--cal-text-muted); }
+/* Calendario */
+[data-theme^="brutal"] .wip-banner { border-radius: 0; }
+[data-theme^="brutal"] .cal-nav { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .btn-icon { border-radius: 0; border: 2px solid var(--cal-border); background: transparent; color: var(--cal-text-muted); }
+[data-theme^="brutal"] .btn-icon:hover { background: var(--cal-text); color: var(--cal-bg); }
+[data-theme^="brutal"] .cal-grid { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .cal-header { border: 2px solid var(--cal-border-strong); border-bottom: none; }
+[data-theme^="brutal"] .cal-day.today .day-num { border-radius: 0; }
+[data-theme^="brutal"] .day-event { border-radius: 0; }
+[data-theme^="brutal"] .modal-box { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .modal-header { border-bottom: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .modal-footer { border-top: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .form-group input, [data-theme^="brutal"] .form-group select, [data-theme^="brutal"] .form-group textarea { border-radius: 0; }
+[data-theme^="brutal"] .color-picker label { border-radius: 0; }
+[data-theme^="brutal"] .color-picker input:checked + label { border-color: var(--cal-text-ice); }
+[data-theme^="brutal"] .event-detail .event-color { border-radius: 0; }
+[data-theme^="brutal"] .event-detail .event-notes { border-radius: 0; }
+
+/* Snake */
+[data-theme^="brutal"] .game-container { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] #gameCanvas { border-radius: 0; }
+[data-theme^="brutal"] .settings-menu { border-radius: 0; border: 2px solid var(--cal-border-strong); box-shadow: none; }
+[data-theme^="brutal"] .settings-menu button { border-radius: 0; background: transparent; color: var(--cal-text-muted); }
+[data-theme^="brutal"] .btn.secondary { background: transparent; border: 2px solid var(--cal-border); color: var(--cal-text-muted); }
+[data-theme^="brutal"] .btn.secondary:hover { background: var(--cal-text); border-color: var(--cal-text); color: var(--cal-bg); }
+[data-theme^="brutal"] .dpad-btn { border-radius: 0; border: 2px solid var(--cal-border); background: transparent; color: var(--cal-text-muted); }
+[data-theme^="brutal"] .dpad-btn:hover { background: var(--cal-text); border-color: var(--cal-text); color: var(--cal-bg); }
+
+/* Login */
+[data-theme^="brutal"] .login-card { border-radius: 0; border: 2px solid var(--cal-border-strong); }
+[data-theme^="brutal"] .error { border-radius: 0; }
+[data-theme^="brutal"] .login-spinner { border-radius: 0; border-color: var(--cal-border-light); border-top-color: var(--cal-text-ice); }
+@media (prefers-reduced-motion: reduce) {
+    [data-theme^="brutal"] td.current-cell { animation: none; }
+}
+
+@media print {
+    [data-theme^="brutal"] td.current-cell { animation: none; outline: none; }
+    [data-theme^="brutal"] td.block { background: color-mix(in srgb, var(--subject-color) 30%, transparent) !important; border: none; padding: 0.15rem 0.3rem; }
+    [data-theme^="brutal"] .subject-cell { font-size: 0.45rem !important; font-weight: 700; text-transform: uppercase; letter-spacing: 0; }
+    [data-theme^="brutal"] .room-cell { font-size: 0.38rem !important; }
+    [data-theme^="brutal"] td, [data-theme^="brutal"] th { padding: 0.5px 1px; }
+    [data-theme^="brutal"] th { font-size: 5px !important; letter-spacing: 0.05em; }
+    [data-theme^="brutal"] .container { padding: 3mm; }
+    [data-theme^="brutal"] .schedule-container { min-height: 0; }
+    [data-theme^="brutal"] .table-wrapper { min-width: 0; }
+}
+[data-theme^="brutal"] .btn:focus-visible,
+[data-theme^="brutal"] .btn-icon:focus-visible,
+[data-theme^="brutal"] .main-nav a:focus-visible,
+[data-theme^="brutal"] .lock-toggle:focus-visible,
+[data-theme^="brutal"] .theme-toggle:focus-visible,
+[data-theme^="brutal"] .actions-search input:focus-visible {
+    outline: 2px solid var(--cal-text);
+    outline-offset: 2px;
+}
+/* Responsive (override tema brutal) */
+@media (max-width: 768px) {
+    [data-theme^="brutal"] .table-wrapper { min-width: 0; }
+    [data-theme^="brutal"] th, [data-theme^="brutal"] td { padding: 0.1rem 0.35rem; }
+    [data-theme^="brutal"] th { font-size: 0.45rem; }
+    [data-theme^="brutal"] .subject-cell { font-size: 0.7rem; }
+    [data-theme^="brutal"] .room-cell { font-size: 0.6rem; }
+    [data-theme^="brutal"] .actions-bar { gap: 0.5rem; padding: 0.75rem; }
+    [data-theme^="brutal"] .actions-search input { width: auto; flex: 1; min-width: 0; font-size: 0.75rem; }
+}

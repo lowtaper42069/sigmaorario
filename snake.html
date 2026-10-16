@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>snake</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/themes.css">
     <style>
         /* Scoping a [data-theme="dark"] (non :root) così le varianti di
-           main.css ([data-theme="brutal"] ecc.) non vengono sovrascritte */
+           themes.css ([data-theme="brutal"] ecc.) non vengono sovrascritte */
         [data-theme="dark"] {
             --cal-bg: #0d1117;
             --cal-header-bg: #161b22;
@@ -86,7 +87,7 @@
             touch-action: none; /* il campo di gioco gestisce lo swipe, niente scroll */
         }
 
-        /* Bottone tema: feedback visibile in dark/light (brutal gestito da main.css) */
+        /* Bottone tema: feedback visibile in dark/light (brutal gestito da themes.css) */
         [data-theme="dark"] .theme-toggle:hover, [data-theme="light"] .theme-toggle:hover {
             background: var(--accent-color);
             opacity: 1;
