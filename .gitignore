@@ -6,3 +6,6 @@ Thumbs.db
 
 # Log
 *.log
+
+# Segreti / config locale (non tracciare)
+js/supabase.js
