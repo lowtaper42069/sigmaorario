@@ -1,0 +1,445 @@
+// orario.js — UI desktop dell'orario: tabella settimanale, pannello info
+// (lezione corrente/prossima), densità righe, ricerca e export .ics/stampa.
+
+import {
+    DAY_START, TOTAL_SLOTS, SLOTS_PER_HOUR, NOME_GIORNI, ROOM_LINKS,
+    SEMESTER_START, SEMESTER_WEEKS, HOLIDAYS_BY_WEEKDAY, MOBILE_VIEW_KEY,
+    RAW_SCHEDULE, grid, DAY_VIEW, isMemorized,
+    buildGrid, getLessonEndSlot, getGiornoIndex, getCurrentSlot,
+    isBrutalTheme, lessonCellHTML, setCellData, slotToHourLabel, slotToTime,
+    icsTime, icsDate, updateLockUI,
+} from './core.js';
+import { renderDayView, currentLayout } from './mobile.js';
+
+function generaOrario() {
+    const table = document.getElementById('scheduleTable');
+    if (!table) return;
+
+    buildGrid();
+
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';
+
+    const brutal = isBrutalTheme();
+
+    for (let s = 0; s < TOTAL_SLOTS; s++) {
+        const tr = document.createElement('tr');
+        tr.dataset.slot = s;
+
+        if (s % SLOTS_PER_HOUR === 0) {
+            tr.classList.add('hour-separator');
+        }
+
+        const tdOra = document.createElement('td');
+        const isHourMark = s % SLOTS_PER_HOUR === 0;
+        tdOra.textContent = slotToHourLabel(s);
+        tdOra.classList.add('time-col');
+        if (isHourMark) tdOra.classList.add('hour-mark');
+        tr.appendChild(tdOra);
+
+        for (let day = 0; day < 5; day++) {
+            const cell = grid[s][day];
+
+            if (brutal && cell && !cell.isFirst && !cell.isOnly) {
+                continue;
+            }
+
+            const td = document.createElement('td');
+            td.dataset.day = day;
+
+            if (!cell) {
+                td.dataset.slot = s;
+                td.textContent = '-';
+                td.classList.add('empty');
+            } else if (brutal) {
+                const endSlot = getLessonEndSlot(day, s);
+                td.rowSpan = endSlot - s + 1;
+                td.dataset.startSlot = s;
+                td.dataset.endSlot = endSlot;
+                td.style.setProperty('--subject-color', cell.color);
+                td.classList.add('block');
+                td.innerHTML = lessonCellHTML(cell);
+                setCellData(td, cell);
+            } else {
+                td.dataset.slot = s;
+                td.style.setProperty('--subject-color', cell.color);
+                td.classList.add('block');
+
+                const isBlockStart = cell.isFirst || cell.isOnly;
+                const isBlockEnd = cell.isLast || cell.isOnly;
+
+                if (isBlockStart) td.classList.add('block-start');
+                if (isBlockEnd) td.classList.add('block-end');
+                if (!isBlockStart && !isBlockEnd) td.classList.add('block-middle');
+
+                if (isBlockStart) {
+                    td.innerHTML = lessonCellHTML(cell);
+                } else {
+                    td.textContent = '';
+                }
+
+                setCellData(td, cell);
+            }
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    }
+}
+
+function findNextLesson(fromDay, fromSlot) {
+    let day = fromDay;
+    let slot = fromSlot;
+    for (let i = 0; i < 5; i++) {
+        for (let s = slot; s < TOTAL_SLOTS; s++) {
+            if (grid[s][day]) {
+                return { day, slot: s, lesson: grid[s][day] };
+            }
+        }
+        day = (day + 1) % 5;
+        slot = 0;
+    }
+    return null;
+}
+
+function roomLink(room) {
+    const href = ROOM_LINKS[room];
+    return href ? `<a href="${href}" target="_blank" rel="noopener">${room}</a>` : room;
+}
+
+function formatLessonTime(day, slot) {
+    const endSlot = getLessonEndSlot(day, slot);
+    return `${slotToTime(slot)} - ${slotToTime(endSlot + 1)}`;
+}
+
+function formatNextLesson(result) {
+    if (!result) return 'Nessuna lezione';
+    const time = formatLessonTime(result.day, result.slot);
+    const room = result.lesson.room ? ` — ${roomLink(result.lesson.room)}` : '';
+    const today = getGiornoIndex();
+    if (result.day === today || today === -1) {
+        return `${result.lesson.subject} (${time}${room})`;
+    }
+    return `${result.lesson.subject} (${NOME_GIORNI[result.day]} ${time}${room})`;
+}
+
+function aggiornaInfo() {
+    const oraEl = document.getElementById('currentTime');
+    const giornoEl = document.getElementById('currentDay');
+    const lezEl = document.getElementById('currentLesson');
+    const proxEl = document.getElementById('nextLesson');
+
+    if (!oraEl) return;
+
+    const now = new Date();
+    oraEl.textContent = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    giornoEl.textContent = now.toLocaleDateString('it-IT', { weekday: 'long' });
+
+    const idxG = getGiornoIndex();
+    const currentSlot = getCurrentSlot();
+
+    updateCurrentSlotIndicator(currentSlot);
+
+    // Vista giorno (mobile): si ridisegna solo quando cambia lo slot
+    if (DAY_VIEW.index !== null && currentSlot !== DAY_VIEW.lastSlot) {
+        DAY_VIEW.lastSlot = currentSlot;
+        renderDayView();
+    }
+
+    if (idxG === -1) {
+        lezEl.textContent = '-';
+        const next = findNextLesson(0, 0);
+        proxEl.innerHTML = formatNextLesson(next);
+        return;
+    }
+
+    if (currentSlot === -1) {
+        lezEl.textContent = '-';
+        const next = now.getHours() < DAY_START
+            ? findNextLesson(idxG, 0)
+            : findNextLesson((idxG + 1) % 5, 0);
+        proxEl.innerHTML = formatNextLesson(next);
+        return;
+    }
+
+    const current = grid[currentSlot]?.[idxG];
+
+    if (current) {
+        const time = formatLessonTime(idxG, currentSlot);
+        lezEl.innerHTML = current.room
+            ? `${current.subject} (${time} — ${roomLink(current.room)})`
+            : `${current.subject} (${time})`;
+        const next = findNextLesson(idxG, currentSlot + 1);
+        proxEl.innerHTML = formatNextLesson(next);
+    } else {
+        lezEl.textContent = '-';
+        const next = findNextLesson(idxG, currentSlot);
+        proxEl.innerHTML = formatNextLesson(next);
+    }
+}
+
+function updateCurrentSlotIndicator(currentSlot) {
+    document.querySelectorAll('td.current-cell').forEach(td => td.classList.remove('current-cell'));
+    if (currentSlot >= 0 && currentSlot < TOTAL_SLOTS) {
+        const idxG = getGiornoIndex();
+        if (idxG === -1) return;
+        const lessonCells = document.querySelectorAll(`#scheduleTable tbody td[data-day="${idxG}"][data-start-slot]`);
+        for (const cell of lessonCells) {
+            const start = Number(cell.dataset.startSlot);
+            const end = Number(cell.dataset.endSlot);
+            if (currentSlot >= start && currentSlot <= end) {
+                cell.classList.add('current-cell');
+                return;
+            }
+        }
+        const row = document.querySelector(`#scheduleTable tbody tr[data-slot="${currentSlot}"]`);
+        if (row) {
+            const cell = row.querySelector(`td[data-day="${idxG}"]`);
+            if (cell) cell.classList.add('current-cell');
+        }
+    }
+}
+
+function showToday() {
+    const today = new Date().getDay();
+    if (today === 0 || today === 6) return;
+
+    const isHighlighted = document.querySelector('#scheduleTable th.today-highlight');
+    if (isHighlighted) return;
+
+    const dayIndex = getGiornoIndex();
+    if (dayIndex === -1) return;
+
+    const header = document.querySelector('#scheduleTable thead tr');
+    if (header && header.children[dayIndex + 1]) {
+        header.children[dayIndex + 1].classList.add('today-highlight');
+    }
+}
+
+// opts.live = true → ricerca mentre si scrive: niente alert, niente scroll forzato
+function searchMateria(opts) {
+    const live = !!(opts && opts.live);
+    const query = document.getElementById('searchMateria').value.trim().toLowerCase();
+
+    const isHighlighted = document.querySelector('#scheduleTable td.search-highlight');
+
+    if (isHighlighted) {
+        document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
+            cell.classList.remove('search-highlight');
+        });
+    }
+
+    if (!query) return;
+
+    const cells = document.querySelectorAll('#scheduleTable td[data-subject]');
+    const matchedSubjects = new Set();
+    let found = false;
+
+    cells.forEach(cell => {
+        const text = cell.textContent.toLowerCase();
+        if (text.includes(query)) {
+            matchedSubjects.add(cell.dataset.subject);
+            found = true;
+        }
+    });
+
+    if (found) {
+        document.querySelectorAll('#scheduleTable td[data-subject]').forEach(cell => {
+            if (matchedSubjects.has(cell.dataset.subject)) {
+                cell.classList.add('search-highlight');
+            }
+        });
+        if (!live) {
+            const firstMatch = document.querySelector('#scheduleTable td.search-highlight');
+            if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } else if (!live) {
+        alert('Nessuna materia trovata');
+    }
+}
+
+function resetView() {
+    document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
+        cell.classList.remove('search-highlight');
+    });
+    const searchInput = document.getElementById('searchMateria');
+    if (searchInput) searchInput.value = '';
+    showToday();
+}
+
+function getViewportFingerprint() {
+    return window.innerWidth + 'x' + window.innerHeight;
+}
+
+function initDensity() {
+    const slider = document.getElementById('densitySlider');
+    const toggle = document.getElementById('settingsMemorize');
+    if (!slider) return;
+
+    const memorized = isMemorized();
+    const savedDensity = localStorage.getItem('density');
+    const savedViewport = localStorage.getItem('densityViewport');
+    const currentViewport = getViewportFingerprint();
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            let value;
+            if (memorized && savedDensity !== null && savedViewport === currentViewport) {
+                value = parseInt(savedDensity, 10);
+            } else {
+                value = calcFitDensity();
+            }
+            slider.value = value;
+            applyDensity(value);
+            if (memorized) saveDensity(value);
+        });
+    });
+
+    slider.addEventListener('input', function () {
+        applyDensity(this.value);
+        if (isMemorized()) saveDensity(this.value);
+    });
+
+    const setDensity = (v) => {
+        slider.value = v;
+        applyDensity(v);
+        if (isMemorized()) saveDensity(v);
+    };
+    const minIcon = document.querySelector('.density-control .nf-fa-minus');
+    const maxIcon = document.querySelector('.density-control .nf-fa-plus');
+    if (minIcon) minIcon.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setDensity(slider.min); });
+    if (maxIcon) maxIcon.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setDensity(slider.max); });
+
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            const next = !isMemorized();
+            if (next) {
+                localStorage.setItem('settingsMemorize', '1');
+                saveDensity(slider.value);
+                localStorage.setItem('theme', document.documentElement.getAttribute('data-theme') || 'dark');
+                localStorage.setItem(MOBILE_VIEW_KEY, currentLayout());
+            } else {
+                localStorage.removeItem('settingsMemorize');
+                // FEATURE VOLUTA: unlock cancella anche il tema scelto.
+                localStorage.removeItem('theme');
+                localStorage.removeItem('density');
+                localStorage.removeItem('densityViewport');
+                localStorage.removeItem(MOBILE_VIEW_KEY);
+            }
+            updateLockUI();
+        });
+    }
+}
+
+function saveDensity(value) {
+    localStorage.setItem('density', value);
+    localStorage.setItem('densityViewport', getViewportFingerprint());
+}
+
+function calcFitDensity() {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const padY = 0.4 * rem;
+    const border = 1;
+
+    const tableWrapper = document.querySelector('.table-wrapper');
+    const tableEl = document.getElementById('scheduleTable');
+    if (!tableWrapper || !tableEl) return 50;
+
+    const wrapperRect = tableWrapper.getBoundingClientRect();
+    const theadRect = tableEl.querySelector('thead')?.getBoundingClientRect();
+    const theadHeight = theadRect ? theadRect.height : 0;
+
+    const topSpace = wrapperRect.top + theadHeight;
+
+    const bottomElements = ['.current-info', '.legend', '.actions-bar', 'footer'];
+    let bottomHeight = 0;
+    for (const sel of bottomElements) {
+        const el = document.querySelector(sel);
+        if (el) {
+            const r = el.getBoundingClientRect();
+            bottomHeight += r.height;
+            const style = getComputedStyle(el);
+            bottomHeight += parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        }
+    }
+
+    const availableForTableBody = window.innerHeight - topSpace - bottomHeight - 4;
+
+    const rowHeightMin = (0.6 * 1.0 * rem) + padY + border;
+    const rowHeightMax = (0.6 * 2.5 * rem) + padY + border;
+    const tableMin = TOTAL_SLOTS * rowHeightMin;
+    const tableMax = TOTAL_SLOTS * rowHeightMax;
+
+    const clamped = Math.max(tableMin, Math.min(tableMax, availableForTableBody));
+    const lh = ((clamped / TOTAL_SLOTS) - padY - border) / (0.6 * rem);
+    const clampedLH = Math.max(1.0, Math.min(2.5, lh));
+    return Math.round(((clampedLH - 1.0) / (2.5 - 1.0)) * 100);
+}
+
+function applyDensity(value) {
+    const minLH = 1.0;
+    const maxLH = 2.5;
+    const lh = minLH + (maxLH - minLH) * (value / 100);
+    document.documentElement.style.setProperty('--row-line-height', lh);
+}
+
+function exportSchedule() {
+    const dtstamp = '20260901T000000Z';
+    let uidCounter = 0;
+    const events = [];
+
+    for (const dayKey of Object.keys(RAW_SCHEDULE)) {
+        const day = Number(dayKey);
+        for (const lesson of RAW_SCHEDULE[day]) {
+            const date = new Date(SEMESTER_START);
+            date.setDate(date.getDate() + day);
+            uidCounter++;
+
+            const exDates = []
+                .concat(HOLIDAYS_BY_WEEKDAY[day + 1] || [])
+                .map(d => `${d}T${icsTime(lesson.start)}`)
+                .join(',');
+
+            events.push([
+                'BEGIN:VEVENT',
+                `DTSTAMP:${dtstamp}`,
+                `DTSTART:${icsDate(date, lesson.start)}`,
+                `DTEND:${icsDate(date, lesson.end)}`,
+                `RRULE:FREQ=WEEKLY;COUNT=${SEMESTER_WEEKS}`,
+                `EXDATE:${exDates}`,
+                `SUMMARY:${lesson.subject}`,
+                `LOCATION:${lesson.room}`,
+                `UID:sigmaorario-e${uidCounter}@sigmaorario`,
+                'END:VEVENT',
+            ].join('\r\n'));
+        }
+    }
+
+    const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//SigmaOrario//IT',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'X-WR-CALNAME:Orario 5BINF',
+        'X-WR-TIMEZONE:Europe/Rome',
+        ...events,
+        'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'orario_5binf.ics';
+    a.click();
+}
+
+function printSchedule() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    window.print();
+    document.documentElement.setAttribute('data-theme', theme);
+}
+
+export {
+    generaOrario, aggiornaInfo, showToday,
+    searchMateria, resetView, initDensity, exportSchedule, printSchedule,
+};

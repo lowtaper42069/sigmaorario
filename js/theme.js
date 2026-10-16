@@ -117,6 +117,7 @@
     }
     window.applyTheme = applyTheme;
     window.getTheme = currentTheme;
+    window.isMemorized = isMemorized;
 
     function buildPicker(btn) {
         if (btn.dataset.themePicker === '1') return;

@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sartorario</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/schedule.css">
     <script src="js/theme.js"></script>
 </head>
 <body>
@@ -93,10 +95,10 @@
                 <div class="schedule-header">
                     <h2><i class="nf nf-fa-calendar_week"></i> Orario Settimanale</h2>
                     <div>
-                        <button class="btn" onclick="exportSchedule()">
+                        <button class="btn" id="exportBtn">
                             <i class="nf nf-fa-download"></i> Esporta .ics
                         </button>
-                        <button class="btn" onclick="printSchedule()">
+                        <button class="btn" id="printBtn">
                             <i class="nf nf-fa-print"></i> Stampa
                         </button>
                     </div>
@@ -138,14 +140,14 @@
 
             <div class="actions-bar">
                 <div class="actions-group">
-                    <button class="btn" onclick="resetView()" title="Ripristina vista originale">
+                    <button class="btn" id="resetBtn" title="Ripristina vista originale">
                         <i class="nf nf-fa-undo"></i> Reset
                     </button>
                 </div>
                 <div class="actions-search">
                     <span class="search-prompt" aria-hidden="true">&gt;</span>
                     <input type="text" id="searchMateria" placeholder="Cerca materia...">
-                    <button class="btn btn-primary" onclick="searchMateria()" title="Cerca">
+                    <button class="btn btn-primary" id="searchBtn" title="Cerca">
                         <i class="nf nf-fa-search"></i>
                     </button>
                 </div>
@@ -160,9 +162,7 @@
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="js/realtime.js"></script>
+    <script type="module" src="js/main.js"></script>
     <a href="snake.html" class="easter-egg">🐍</a>
 </body>
 </html>

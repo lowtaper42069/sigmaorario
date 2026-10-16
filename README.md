@@ -24,6 +24,22 @@ App non ufficiale — per gli orari attendibili fa fede il sito del Politecnico 
 - `snake.html` — easter egg 🐍 (frecce/WASD, oppure swipe su mobile)
 - `login.html`, `404.html`
 
+## Struttura
+
+La pagina orario (`index.html`) carica un solo ES module, `js/main.js`, che importa:
+
+- `js/core.js` — costanti, stato dell'orario (incluse le aule), caricamento dei JSON, utility di tempo/griglia
+- `js/orario.js` — tabella settimanale, pannello info, densità, ricerca, export `.ics`/stampa
+- `js/mobile.js` — viste "giorno"/"giorno tabella"/"tabella piena" e layout mobile
+- `js/theme.js` — bootstrap tema + selettore (script classico in `<head>`, per evitare il flash)
+
+Gli stili sono divisi per pagina, così ogni pagina carica solo il necessario:
+
+- `styles/base.css` — font, variabili, reset, componenti condivisi (header, pannello impostazioni, tema), motion
+- `styles/themes.css` — override dei temi (`[data-theme]`)
+- `styles/schedule.css` — orario (usato da `index.html`)
+- `styles/calendar.css` — calendario (usato da `calendario.html`)
+
 ## Stack
 
 - HTML / CSS / Vanilla JS (nessun build step)
@@ -52,8 +68,8 @@ L'orario sta in **`orario.json`** (chiavi `0`–`4` = lunedì–venerdì):
 }
 ```
 
-Viene caricato via `fetch` da `js/realtime.js`. Per aggiornarlo basta modificare il JSON:
-niente da toccare nel codice.
+Viene caricato via `fetch` da `js/core.js` (`loadData`). Per aggiornarlo basta
+modificare il JSON: niente da toccare nel codice.
 
 I link delle aule (es. accesso AUNICA) stanno invece in **`aule.json`**, mappa
 stanza → link, caricato nello stesso momento:
