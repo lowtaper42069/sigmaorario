@@ -1,55 +1,28 @@
 # Configurazione Login
 
-Questo progetto usa un sistema di autenticazione sicuro **senza database**, adatto per repository pubbliche.
+L'autenticazione usa **Supabase** (email + password), non più un backend PHP locale.
 
 ## Come funziona
 
-Le credenziali sono salvate in un file di configurazione locale **NON tracciato da git**.
+- `js/supabase.js` contiene `SUPABASE_URL` e `SUPABASE_ANON_KEY`.
+- La **anon key è pubblica per design**: può stare nel repo, i permessi reali sono
+  decisi dalle Row Level Security policy del progetto Supabase.
+- `login.html` fa `supabaseClient.auth.signInWithPassword({ email, password })` e,
+  in caso di successo, salva la sessione in `sessionStorage` e reindirizza a
+  `calendario.html`.
+- `calendario.html` mostra i pulsanti di gestione (`admin-only`) solo se loggato.
 
-## Prima configurazione
+## Creare un utente
 
-1. **Esegui il setup automatico:**
+Gli utenti si creano dalla dashboard Supabase del progetto:
 
-```bash
-cd api
-php config.example.php
-```
+1. **Authentication → Users → Add user**
+2. Imposta email e password, poi conferma.
 
-Questo genererà un file `config.local.php` con:
-- Password temporanea mostrata a schermo
-- Chiave sessione sicura
-
-2. **Oppure crea manualmente:**
-
-```bash
-# Genera un hash sicuro della tua password
-php -r "echo password_hash('LaTuaPasswordSicura123', PASSWORD_DEFAULT);"
-```
-
-Copia l'hash generato e crea `api/config.local.php`:
-
-```php
-<?php
-define('ADMIN_HASH', 'il_tuo_hash_qui');
-define('SESSION_SECRET', 'una_chiave_casuale_di_almeno_32_caratteri');
-```
-
-3. **Accedi con:**
-- Username: `admin`
-- Password: la password che hai scelto
+Non serve nessun file di configurazione locale.
 
 ## Sicurezza
 
-- Password mai salvata in chiaro (solo hash bcrypt)
-- Sessioni sicure con flag HttpOnly, SameSite=Strict
-- Protezione anti-brute-force (1 secondo di delay)
-- File `.env` e `config.local.php` ignorati da git
-
-## Modificare la password
-
-```bash
-# Genera nuovo hash
-php -r "echo password_hash('nuova_password', PASSWORD_DEFAULT);"
-
-# Modifica api/config.local.php con il nuovo hash
-```
+- La password non viene mai salvata in chiaro (gestita da Supabase Auth).
+- Le operazioni sul database sono protette dalle RLS policy della tabella `eventi`.
+- La `service_role` key **non** deve mai finire nel repo (solo la anon key).
