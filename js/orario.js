@@ -440,7 +440,8 @@ function exportSchedule() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    // La revoca immediata può annullare il download in alcuni browser.
+    setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 function printSchedule() {

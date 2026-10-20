@@ -175,7 +175,7 @@
             try {
                 events = saved ? JSON.parse(saved) : [];
             } catch (err) {
-                console.error('Cache eventi non valida, la ignoro:', err);
+                console.warn('Cache eventi non valida, la ignoro:', err);
                 events = [];
             }
 
@@ -568,8 +568,8 @@
             };
         });
 
-        updateAuthUI().then(() => {
-            loadEvents();
+        updateAuthUI().then(async () => {
+            await loadEvents();
             renderCalendar();
         });
 
