@@ -3,8 +3,8 @@
 // altri moduli (orario.js, mobile.js, main.js).
 
 export const DAY_START = 8;
-export const DAY_END = 20;
-export const SLOT_MINUTES = 15;
+const DAY_END = 20;
+const SLOT_MINUTES = 15;
 export const SLOTS_PER_HOUR = 60 / SLOT_MINUTES;
 export const TOTAL_SLOTS = (DAY_END - DAY_START) * SLOTS_PER_HOUR;
 export const NOME_GIORNI = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì'];
@@ -13,7 +13,7 @@ export const GIORNI_BREVI = ['LUN', 'MAR', 'MER', 'GIO', 'VEN'];
 // Preferenza vista mobile: 'day' (default), 'grid' o 'table'. Salvata col lock attivo.
 export const MOBILE_VIEW_KEY = 'mobileView';
 
-export const SUBJECT_COLORS = [
+const SUBJECT_COLORS = [
     '#6b7f9e', '#7a8a5f', '#a8894f', '#8a7a9e', '#a0705c',
     '#7d8a72', '#6e7a85', '#9c7380', '#5f8a85', '#a3906e',
 ];
@@ -35,7 +35,7 @@ export const HOLIDAYS_BY_WEEKDAY = {
 // Ri-assegnati in loadData(); gli importatori li leggono via live binding.
 export let RAW_SCHEDULE = {};
 export let ROOM_LINKS = {};
-export const subjectColorMap = {};
+const subjectColorMap = {};
 export let grid = [];
 
 // Stato della vista "giorno" (mobile): giorno selezionato e ultimo slot mostrato.
@@ -80,44 +80,53 @@ export function loadData() {
     ]);
 }
 
-function timeToSlot(timeStr) {
+// Unico punto di parsing/formatting per "HH:MM" e per gli slot della griglia.
+function parseTime(timeStr) {
     const [h, m] = timeStr.split(':').map(Number);
-    return (h - DAY_START) * SLOTS_PER_HOUR + Math.floor(m / SLOT_MINUTES);
-}
-
-function slotToTime(slot) {
-    const totalMinutes = DAY_START * 60 + slot * SLOT_MINUTES;
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-}
-
-function slotToHourLabel(slot) {
-    const totalMinutes = DAY_START * 60 + slot * SLOT_MINUTES;
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
-    if (m === 0) {
-        return `${h.toString().padStart(2, '0')}:00`;
-    }
-    return `:${m.toString().padStart(2, '0')}`;
-}
-
-function minutesOf(timeStr) {
-    const [h, m] = timeStr.split(':').map(Number);
-    return h * 60 + m;
+    return { h, m };
 }
 
 function pad2(n) {
     return n.toString().padStart(2, '0');
 }
 
+function timeToSlot(timeStr) {
+    const { h, m } = parseTime(timeStr);
+    return (h - DAY_START) * SLOTS_PER_HOUR + Math.floor(m / SLOT_MINUTES);
+}
+
+function slotToTotalMinutes(slot) {
+    return DAY_START * 60 + slot * SLOT_MINUTES;
+}
+
+function slotToTime(slot) {
+    const total = slotToTotalMinutes(slot);
+    return `${pad2(Math.floor(total / 60))}:${pad2(total % 60)}`;
+}
+
+function slotToHourLabel(slot) {
+    const total = slotToTotalMinutes(slot);
+    const m = total % 60;
+    return m === 0 ? `${pad2(Math.floor(total / 60))}:00` : `:${pad2(m)}`;
+}
+
+function minutesOf(timeStr) {
+    const { h, m } = parseTime(timeStr);
+    return h * 60 + m;
+}
+
+function nowMinutes() {
+    const now = new Date();
+    return now.getHours() * 60 + now.getMinutes();
+}
+
 function icsTime(timeStr) {
-    const [h, m] = timeStr.split(':').map(Number);
+    const { h, m } = parseTime(timeStr);
     return `${pad2(h)}${pad2(m)}00`;
 }
 
 function icsDate(date, timeStr) {
-    const [h, m] = timeStr.split(':').map(Number);
+    const { h, m } = parseTime(timeStr);
     return `${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}T${pad2(h)}${pad2(m)}00`;
 }
 
@@ -154,6 +163,12 @@ function buildGrid() {
 
 function isBrutalTheme() {
     return (document.documentElement.getAttribute('data-theme') || '').startsWith('brutal');
+}
+
+// Nome aula come link (se aule.json lo prevede) oppure testo semplice.
+function roomLinkHTML(room) {
+    const href = ROOM_LINKS[room];
+    return href ? `<a href="${href}" target="_blank" rel="noopener">${room}</a>` : room;
 }
 
 // Markup interno di una cella-lezione: materia, aula e (se presente) icona link.
@@ -193,7 +208,7 @@ function getLessonEndSlot(day, slot) {
 }
 
 export {
-    timeToSlot, slotToTime, slotToHourLabel, minutesOf, pad2, icsTime, icsDate,
-    getSubjectColor, buildGrid, isBrutalTheme, lessonCellHTML, setCellData,
-    getGiornoIndex, getCurrentSlot, getLessonEndSlot,
+    timeToSlot, slotToTime, slotToHourLabel, minutesOf, nowMinutes,
+    icsTime, icsDate, roomLinkHTML, getSubjectColor, buildGrid, isBrutalTheme,
+    lessonCellHTML, setCellData, getGiornoIndex, getCurrentSlot, getLessonEndSlot,
 };

@@ -2,14 +2,19 @@
 // (lezione corrente/prossima), densità righe, ricerca e export .ics/stampa.
 
 import {
-    DAY_START, TOTAL_SLOTS, SLOTS_PER_HOUR, NOME_GIORNI, ROOM_LINKS,
+    DAY_START, TOTAL_SLOTS, SLOTS_PER_HOUR, NOME_GIORNI,
     SEMESTER_START, SEMESTER_WEEKS, HOLIDAYS_BY_WEEKDAY, MOBILE_VIEW_KEY,
     RAW_SCHEDULE, grid, DAY_VIEW, isMemorized,
     buildGrid, getLessonEndSlot, getGiornoIndex, getCurrentSlot,
     isBrutalTheme, lessonCellHTML, setCellData, slotToHourLabel, slotToTime,
-    icsTime, icsDate, updateLockUI,
+    icsTime, icsDate, roomLinkHTML, updateLockUI,
 } from './core.js';
 import { renderDayView, currentLayout } from './mobile.js';
+
+// Cache per non riscrivere la UI ogni secondo quando nulla è cambiato.
+let lastIndicatorSlot = null;
+let lastIndicatorDay = null;
+let lastDayLabel = '';
 
 function generaOrario() {
     const table = document.getElementById('scheduleTable');
@@ -84,6 +89,10 @@ function generaOrario() {
         }
         tbody.appendChild(tr);
     }
+
+    // La tabella è stata ricostruita: l'indicatore "ora" va riapplicato.
+    lastIndicatorSlot = null;
+    lastIndicatorDay = null;
 }
 
 function findNextLesson(fromDay, fromSlot) {
@@ -101,11 +110,6 @@ function findNextLesson(fromDay, fromSlot) {
     return null;
 }
 
-function roomLink(room) {
-    const href = ROOM_LINKS[room];
-    return href ? `<a href="${href}" target="_blank" rel="noopener">${room}</a>` : room;
-}
-
 function formatLessonTime(day, slot) {
     const endSlot = getLessonEndSlot(day, slot);
     return `${slotToTime(slot)} - ${slotToTime(endSlot + 1)}`;
@@ -114,7 +118,7 @@ function formatLessonTime(day, slot) {
 function formatNextLesson(result) {
     if (!result) return 'Nessuna lezione';
     const time = formatLessonTime(result.day, result.slot);
-    const room = result.lesson.room ? ` — ${roomLink(result.lesson.room)}` : '';
+    const room = result.lesson.room ? ` — ${roomLinkHTML(result.lesson.room)}` : '';
     const today = getGiornoIndex();
     if (result.day === today || today === -1) {
         return `${result.lesson.subject} (${time}${room})`;
@@ -128,16 +132,27 @@ function aggiornaInfo() {
     const lezEl = document.getElementById('currentLesson');
     const proxEl = document.getElementById('nextLesson');
 
-    if (!oraEl) return;
+    if (!oraEl || !giornoEl || !lezEl || !proxEl) return;
 
     const now = new Date();
     oraEl.textContent = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-    giornoEl.textContent = now.toLocaleDateString('it-IT', { weekday: 'long' });
+
+    // Il giorno cambia una volta al giorno, non serve ricalcolarlo ogni secondo.
+    const dayLabel = now.toLocaleDateString('it-IT', { weekday: 'long' });
+    if (dayLabel !== lastDayLabel) {
+        giornoEl.textContent = dayLabel;
+        lastDayLabel = dayLabel;
+    }
 
     const idxG = getGiornoIndex();
     const currentSlot = getCurrentSlot();
 
-    updateCurrentSlotIndicator(currentSlot);
+    // Lo slot cambia ogni 15 minuti: evita di riscansionare tutte le celle ogni secondo.
+    if (currentSlot !== lastIndicatorSlot || idxG !== lastIndicatorDay) {
+        updateCurrentSlotIndicator(currentSlot);
+        lastIndicatorSlot = currentSlot;
+        lastIndicatorDay = idxG;
+    }
 
     // Vista giorno (mobile): si ridisegna solo quando cambia lo slot
     if (DAY_VIEW.index !== null && currentSlot !== DAY_VIEW.lastSlot) {
@@ -166,7 +181,7 @@ function aggiornaInfo() {
     if (current) {
         const time = formatLessonTime(idxG, currentSlot);
         lezEl.innerHTML = current.room
-            ? `${current.subject} (${time} — ${roomLink(current.room)})`
+            ? `${current.subject} (${time} — ${roomLinkHTML(current.room)})`
             : `${current.subject} (${time})`;
         const next = findNextLesson(idxG, currentSlot + 1);
         proxEl.innerHTML = formatNextLesson(next);
@@ -218,40 +233,23 @@ function showToday() {
 // opts.live = true → ricerca mentre si scrive: niente alert, niente scroll forzato
 function searchMateria(opts) {
     const live = !!(opts && opts.live);
-    const query = document.getElementById('searchMateria').value.trim().toLowerCase();
+    const input = document.getElementById('searchMateria');
+    if (!input) return;
 
-    const isHighlighted = document.querySelector('#scheduleTable td.search-highlight');
+    const query = input.value.trim().toLowerCase();
 
-    if (isHighlighted) {
-        document.querySelectorAll('#scheduleTable td.search-highlight').forEach(cell => {
-            cell.classList.remove('search-highlight');
-        });
-    }
+    // Una sola passata: toglie l'evidenza precedente e applica quella nuova.
+    let firstMatch = null;
+    document.querySelectorAll('#scheduleTable td[data-subject]').forEach(cell => {
+        const match = cell.dataset.subject.toLowerCase().includes(query);
+        cell.classList.toggle('search-highlight', !!query && match);
+        if (match && !firstMatch) firstMatch = cell;
+    });
 
     if (!query) return;
 
-    const cells = document.querySelectorAll('#scheduleTable td[data-subject]');
-    const matchedSubjects = new Set();
-    let found = false;
-
-    cells.forEach(cell => {
-        const text = cell.textContent.toLowerCase();
-        if (text.includes(query)) {
-            matchedSubjects.add(cell.dataset.subject);
-            found = true;
-        }
-    });
-
-    if (found) {
-        document.querySelectorAll('#scheduleTable td[data-subject]').forEach(cell => {
-            if (matchedSubjects.has(cell.dataset.subject)) {
-                cell.classList.add('search-highlight');
-            }
-        });
-        if (!live) {
-            const firstMatch = document.querySelector('#scheduleTable td.search-highlight');
-            if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+    if (firstMatch) {
+        if (!live) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (!live) {
         alert('Nessuna materia trovata');
     }
@@ -382,6 +380,14 @@ function applyDensity(value) {
     document.documentElement.style.setProperty('--row-line-height', lh);
 }
 
+function icsEscape(text) {
+    return String(text ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,')
+        .replace(/\r?\n/g, '\\n');
+}
+
 function exportSchedule() {
     const dtstamp = '20260901T000000Z';
     let uidCounter = 0;
@@ -406,8 +412,8 @@ function exportSchedule() {
                 `DTEND:${icsDate(date, lesson.end)}`,
                 `RRULE:FREQ=WEEKLY;COUNT=${SEMESTER_WEEKS}`,
                 `EXDATE:${exDates}`,
-                `SUMMARY:${lesson.subject}`,
-                `LOCATION:${lesson.room}`,
+                `SUMMARY:${icsEscape(lesson.subject)}`,
+                `LOCATION:${icsEscape(lesson.room)}`,
                 `UID:sigmaorario-e${uidCounter}@sigmaorario`,
                 'END:VEVENT',
             ].join('\r\n'));
@@ -427,16 +433,18 @@ function exportSchedule() {
     ].join('\r\n');
 
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = 'orario_5binf.ics';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
 }
 
 function printSchedule() {
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
     window.print();
-    document.documentElement.setAttribute('data-theme', theme);
 }
 
 export {

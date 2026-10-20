@@ -33,7 +33,6 @@
 .day-empty { padding: 2.5rem 0.5rem; text-align: center; color: var(--cal-text-muted); font-size: 0.8rem; }
 
 /* Vista "giorno tabella": la giornata come griglia oraria, coi blocchi delle lezioni */
-.day-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .day-table .col-ora { width: 13%; }
 .day-table .col-giorno { width: 87%; }
 /* Schermi stretti: la colonna ore deve bastare per "08:00" altrimenti viene

@@ -8,37 +8,9 @@
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/themes.css">
     <style>
-        /* Scoping a [data-theme="dark"] (non :root) così le varianti di
-           themes.css ([data-theme="brutal"] ecc.) non vengono sovrascritte */
-        [data-theme="dark"] {
-            --cal-bg: #0d1117;
-            --cal-header-bg: #161b22;
-            --cal-border: #30363d;
-            --cal-text: #e6edf3;
-            --cal-text-muted: #8b949e;
-            --accent-color: #44633F;
-        }
-
-        [data-theme="light"] {
-            --cal-bg: #f6f8fa;
-            --cal-header-bg: #ffffff;
-            --cal-border: #d0d7de;
-            --cal-text: #24292f;
-            --cal-text-muted: #656d76;
-            --accent-color: #6a8d60;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Token di tema e reset: ereditati da base.css/themes.css. */
         body {
-            /* font: ereditato da main.css */
-            background: var(--cal-bg);
-            color: var(--cal-text);
-            min-height: 100vh;
+            /* font: ereditato da base.css */
             display: flex;
             flex-direction: column;
             align-items: center;

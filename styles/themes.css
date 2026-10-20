@@ -4,7 +4,6 @@
 [data-theme="light"] {
     --cal-bg: #f6f8fa;
     --cal-header-bg: #f0f3f6;
-    --cal-day-bg: #f0f3f6;
     --cal-border: #d5dce4;
     --cal-border-light: #dce2e8;
     --cal-text: #24292f;
@@ -21,7 +20,6 @@
 [data-theme^="brutal"] {
     --cal-bg: #1a1a1a;
     --cal-header-bg: #232323;
-    --cal-day-bg: #232323;
     --cal-border: #3a3a3a;
     --cal-border-light: #565656;
     --cal-border-strong: #808080;
@@ -43,7 +41,6 @@
 [data-theme="brutal-light"] {
     --cal-bg: #d9d9d9;
     --cal-header-bg: #e6e6e6;
-    --cal-day-bg: #e6e6e6;
     --cal-border: #b0b0b0;
     --cal-border-light: #8f8f8f;
     --cal-border-strong: #4a4a4a;
@@ -65,15 +62,11 @@
 [data-theme="brutal-light"] .cal-day:hover { background: rgba(0, 0, 0, 0.04); }
 [data-theme="brutal-light"] .modal { background: rgba(0, 0, 0, 0.55); }
 [data-theme="brutal-light"] .settings-menu { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); }
-[data-theme="light"] .theme-toggle, [data-theme="light"] .lock-toggle { background: transparent; color: var(--cal-text); }
 [data-theme="light"] .theme-toggle:hover, [data-theme="light"] .lock-toggle:hover { background: rgba(0,0,0,0.05); }
 [data-theme="light"] .lock-toggle.locked { background: color-mix(in srgb, var(--accent-color) 10%, transparent); color: var(--accent-color); }
 [data-theme^="brutal"] .theme-menu { border-radius: 0; border: 2px solid var(--cal-border-strong); box-shadow: none; }
 [data-theme^="brutal"] .pick-option { border-radius: 0; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72rem; font-weight: 700; }
 [data-theme^="brutal"] .theme-swatch { border-radius: 0; }
-[data-theme="light"] tr:nth-child(odd) td.empty { background: color-mix(in srgb, var(--cal-bg) 85%, #ffffff); }
-[data-theme="light"] tr:nth-child(even) td.empty { background: color-mix(in srgb, var(--cal-bg) 40%, #ffffff); }
-[data-theme="light"] td.time-col { background: color-mix(in srgb, var(--cal-bg) 92%, #ffffff); }
 /* ------------------------------------------------------------------ */
 /* Tema brutalist — il terminale come béton brut                       */
 
@@ -153,7 +146,6 @@
 [data-theme^="brutal"] .theme-toggle:active, [data-theme^="brutal"] .lock-toggle:active { background: var(--cal-text-ice); border-color: var(--cal-text-ice); color: var(--brutal-ink); }
 
 [data-theme^="brutal"] td, [data-theme^="brutal"] th { border-color: var(--cal-border); }
-[data-theme^="brutal"] tr.hour-separator td { border-top: 2px solid var(--cal-border-light); }
 
 /* Intestazioni colonna: targhe */
 [data-theme^="brutal"] th {

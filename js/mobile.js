@@ -3,28 +3,24 @@
 
 import {
     TOTAL_SLOTS, SLOTS_PER_HOUR, NOME_GIORNI, GIORNI_BREVI, MOBILE_VIEW_KEY,
-    ROOM_LINKS, RAW_SCHEDULE, grid, DAY_VIEW, isMemorized,
+    RAW_SCHEDULE, grid, DAY_VIEW, isMemorized,
     getSubjectColor, getLessonEndSlot, getGiornoIndex, getCurrentSlot,
     isBrutalTheme, lessonCellHTML, setCellData, slotToHourLabel, timeToSlot,
-    minutesOf,
+    minutesOf, nowMinutes, roomLinkHTML,
 } from './core.js';
 
-function isLessonNow(lesson) {
+function isLessonNow(lesson, mins) {
     if (DAY_VIEW.index !== getGiornoIndex()) return false;
-    const now = new Date();
-    const mins = now.getHours() * 60 + now.getMinutes();
-    return mins >= minutesOf(lesson.start) && mins < minutesOf(lesson.end);
+    const nowMin = mins ?? nowMinutes();
+    return nowMin >= minutesOf(lesson.start) && nowMin < minutesOf(lesson.end);
 }
 
 // Vista giorno "lista": le lezioni in ordine di orario
 function renderDayList(body, lessons) {
+    const mins = nowMinutes();
     lessons.forEach(lesson => {
-        const current = isLessonNow(lesson);
-        const room = lesson.room
-            ? (ROOM_LINKS[lesson.room]
-                ? `<a href="${ROOM_LINKS[lesson.room]}" target="_blank" rel="noopener">${lesson.room}</a>`
-                : lesson.room)
-            : '';
+        const current = isLessonNow(lesson, mins);
+        const room = lesson.room ? roomLinkHTML(lesson.room) : '';
         const meta = [room, current ? 'in corso' : ''].filter(Boolean).join(' · ');
 
         const row = document.createElement('div');
@@ -45,8 +41,9 @@ function renderDayGrid(body, idx, lessons) {
 
     // slot occupati dalla lezione in corso (per evidenziarli)
     const nowSlots = new Set();
+    const mins = nowMinutes();
     lessons.forEach(l => {
-        if (!isLessonNow(l)) return;
+        if (!isLessonNow(l, mins)) return;
         for (let s = timeToSlot(l.start); s < timeToSlot(l.end); s++) nowSlots.add(s);
     });
 
@@ -125,6 +122,31 @@ function renderDayGrid(body, idx, lessons) {
     body.appendChild(table);
 }
 
+// I pallini si creano una volta sola; qui si aggiorna solo lo stato attivo.
+function renderDayDots(idx) {
+    const dots = document.getElementById('dayDots');
+    if (!dots) return;
+
+    if (!dots.childElementCount) {
+        NOME_GIORNI.forEach((nome, i) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'day-dot';
+            dot.setAttribute('aria-label', nome);
+            dot.innerHTML = '<span class="day-dot-mark"></span>' +
+                            '<span class="day-dot-label">' + GIORNI_BREVI[i] + '</span>';
+            dot.addEventListener('click', () => gotoDayIndex(i));
+            dots.appendChild(dot);
+        });
+    }
+
+    Array.prototype.forEach.call(dots.children, (dot, i) => {
+        dot.classList.toggle('active', i === idx);
+        if (i === idx) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+    });
+}
+
 function renderDayView(dir) {
     const body = document.getElementById('dayBody');
     if (!body) return;
@@ -157,21 +179,7 @@ function renderDayView(dir) {
         renderDayList(body, lessons);
     }
 
-    const dots = document.getElementById('dayDots');
-    if (dots) {
-        dots.innerHTML = '';
-        NOME_GIORNI.forEach((nome, i) => {
-            const dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'day-dot' + (i === idx ? ' active' : '');
-            dot.setAttribute('aria-label', nome);
-            if (i === idx) dot.setAttribute('aria-current', 'true');
-            dot.innerHTML = '<span class="day-dot-mark"></span>' +
-                            '<span class="day-dot-label">' + GIORNI_BREVI[i] + '</span>';
-            dot.addEventListener('click', () => gotoDayIndex(i));
-            dots.appendChild(dot);
-        });
-    }
+    renderDayDots(idx);
 
     if (dir) {
         body.classList.remove('from-right', 'from-left');

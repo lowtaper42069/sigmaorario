@@ -45,7 +45,7 @@ document.addEventListener('themechange', () => {
     if (document.getElementById('dayBody')) renderDayView();
 });
 
-document.addEventListener('DOMContentLoaded', initTheme);
+// (initTheme è richiamata dal bootstrap più sotto, insieme al resto della UI.)
 
 // Mobile: i controlli dell'header vivono in un pannello laterale che resta
 // aperto finché non lo si chiude (X, backdrop, Esc).
@@ -87,6 +87,8 @@ function initControlsMenu() {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
+    initTheme();
+
     if (document.getElementById('scheduleTable')) {
         await loadData();
         generaOrario();
@@ -117,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // apre il link della stanza — stesso handler, contenitori diversi.
     const openRoomLink = (e) => {
         const td = e.target.closest('td[data-link]');
-        if (td) window.open(td.dataset.link, '_blank');
+        if (td) window.open(td.dataset.link, '_blank', 'noopener,noreferrer');
     };
     document.getElementById('scheduleTable')?.addEventListener('click', openRoomLink);
     document.getElementById('dayBody')?.addEventListener('click', openRoomLink);

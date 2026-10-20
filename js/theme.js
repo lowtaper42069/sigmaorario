@@ -202,9 +202,10 @@
             if (!isOpen) return;
             if (e.key === 'Escape') { close(); btn.focus(); return; }
             var opts = Array.prototype.slice.call(menu.querySelectorAll('.theme-option'));
+            var len = opts.length;
             var idx = opts.indexOf(document.activeElement);
-            if (e.key === 'ArrowDown') { e.preventDefault(); opts[(idx + 1) % opts.length].focus(); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); opts[(idx - 1 + opts.length) % opts.length].focus(); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); opts[idx < 0 ? 0 : (idx + 1) % len].focus(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); opts[idx < 0 ? len - 1 : (idx - 1 + len) % len].focus(); }
         });
     }
 

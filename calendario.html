@@ -172,12 +172,17 @@
 
         async function loadEvents() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            events = saved ? JSON.parse(saved) : [];
-            
+            try {
+                events = saved ? JSON.parse(saved) : [];
+            } catch (err) {
+                console.error('Cache eventi non valida, la ignoro:', err);
+                events = [];
+            }
+
             if (isLoggedIn()) {
                 await loadFromDB();
             }
-            
+
             saveEvents();
         }
 
@@ -195,19 +200,17 @@
                 return;
             }
             
-            if (data && data.length > 0) {
-                events = data.map(e => ({
-                    id: e.id,
-                    title: e.titolo,
-                    date: e.data,
-                    time: e.ora,
-                    type: e.tipo,
-                    subject: e.materia,
-                    notes: e.note,
-                    color: e.colore,
-                    userId: e.user_id
-                }));
-            }
+            events = (data || []).map(e => ({
+                id: e.id,
+                title: e.titolo,
+                date: e.data,
+                time: e.ora,
+                type: e.tipo,
+                subject: e.materia,
+                notes: e.note,
+                color: e.colore,
+                userId: e.user_id
+            }));
         }
 
         async function saveEvents() {
@@ -304,7 +307,10 @@
             document.getElementById('modalTitle').textContent = 'Nuovo Evento';
             document.getElementById('eventId').value = '';
             document.getElementById('eventForm').reset();
-            document.getElementById('eventDate').value = date || new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').value = date || (function () {
+                const today = new Date();
+                return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            })();
             document.getElementById('eventDetailFooter').innerHTML = '';
             openModal('eventModal');
         }
@@ -402,11 +408,8 @@
                     }
                 }
             } else {
-                eventData.id = Date.now();
-                events.push(eventData);
-                
                 if (isLoggedIn() && userId) {
-                    await supabaseClient
+                    const { data, error } = await supabaseClient
                         .from('eventi')
                         .insert({
                             titolo: eventData.title,
@@ -417,8 +420,20 @@
                             note: eventData.notes,
                             colore: eventData.color,
                             user_id: userId
-                        });
+                        })
+                        .select('id')
+                        .single();
+
+                    if (error) {
+                        console.error('Errore inserimento:', error);
+                        alert('Errore nel salvataggio');
+                        return;
+                    }
+                    eventData.id = data.id;
+                } else {
+                    eventData.id = Date.now();
                 }
+                events.push(eventData);
             }
 
             saveEvents();
@@ -483,8 +498,6 @@
                     sessionStorage.setItem('loggedIn', 'true');
                     sessionStorage.setItem('userId', session.user.id);
                     sessionStorage.setItem('email', session.user.email);
-                    await loadFromDB();
-                    renderCalendar();
                 } else {
                     sessionStorage.removeItem('loggedIn');
                     sessionStorage.removeItem('userId');
@@ -561,6 +574,7 @@
         });
 
         setInterval(async () => {
+            if (document.hidden) return;
             if (isLoggedIn()) {
                 await loadFromDB();
                 saveEvents();

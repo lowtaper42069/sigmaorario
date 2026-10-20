@@ -62,7 +62,6 @@
 :root {
     --cal-bg: #0d1117;
     --cal-header-bg: #12171e;
-    --cal-day-bg: #12171e;
     --cal-border: #282e36;
     --cal-border-light: #353c45;
     --cal-text: #c9d1d9;
@@ -125,10 +124,6 @@ header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin
     letter-spacing: 0.05em;
     color: var(--cal-text-muted);
 }
-/* Tooltip */
-.btn[title] {
-    position: relative;
-}
 footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; color: var(--cal-text-muted); font-size: 0.8rem; }
 .disclaimer { font-size: 0.7rem; margin-bottom: 0.5rem; opacity: 0.8; }
 .disclaimer a { color: var(--accent-color); text-decoration: underline; }
@@ -179,6 +174,8 @@ footer a:hover { color: var(--accent-color); }
     border: 1px solid var(--cal-border);
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    transform-origin: top right;
+    animation: menu-in 170ms ease;
 }
 .theme-menu[hidden] { display: none; }
 .pick-option {
@@ -345,7 +342,6 @@ html.vt-radial::view-transition-new(root) { animation: theme-wipe 550ms cubic-be
     from { opacity: 0; transform: scale(0.96); }
     to   { opacity: 1; transform: none; }
 }
-.theme-menu { transform-origin: top right; animation: menu-in 170ms ease; }
 
 /* Selettore tema: l'icona gira quando si apre il menu */
 @keyframes theme-spin { to { transform: rotate(360deg); } }
