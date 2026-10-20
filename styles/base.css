@@ -259,11 +259,11 @@ footer a:hover { color: var(--accent-color); }
     .container { padding: 0.75rem; }
     header { position: relative; margin-bottom: 1rem; padding-bottom: 1rem; justify-content: center; gap: 0.6rem; }
     header h1 { font-size: 1.25rem; }
-    /* App bar (home): titolo a sinistra, impostazioni a destra, nav sotto */
+    /* App bar (home): titolo + nav affiancati a sinistra, impostazioni a destra */
     .app-bar { justify-content: space-between; }
     .app-bar h1 { order: 1; }
-    .app-bar .controls-toggle { order: 2; }
-    .app-bar .main-nav { order: 3; margin-left: auto; margin-right: auto; }
+    .app-bar .main-nav { order: 2; margin-left: 0.25rem; margin-right: 0; }
+    .app-bar .controls-toggle { order: 3; margin-left: auto; }
 
     /* Pannello impostazioni: sezione laterale che scorre da destra */
     .controls-toggle { display: inline-flex; }
@@ -290,9 +290,11 @@ footer a:hover { color: var(--accent-color); }
         overflow-x: hidden;   /* solo verticale */
         background: var(--cal-bg);
         border-left: 1px solid var(--cal-border);
-        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4);
         transform: translateX(100%);
     }
+    /* Ombra solo col pannello aperto: da chiuso (fuori viewport) non deve
+       sbucare come una fascia scura sul bordo destro dello schermo */
+    body.controls-open .controls-menu { box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4); }
     body.controls-open .controls-menu { transform: none; animation: drawer-in 160ms ease; }
     body.controls-closing .controls-menu { animation: drawer-out 150ms ease; }
     body.controls-closing .controls-backdrop { animation: backdrop-out 150ms ease; }
