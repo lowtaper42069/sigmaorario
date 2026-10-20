@@ -1,0 +1,8 @@
+# Netlify: js/supabase.js non è versionato (vedi .gitignore).
+# Viene generato al deploy da queste variabili d'ambiente, da impostare in
+# Netlify → Site configuration → Environment variables:
+#   SUPABASE_URL
+#   SUPABASE_ANON_KEY
+[build]
+  command = "node scripts/gen-supabase.mjs"
+  publish = "."

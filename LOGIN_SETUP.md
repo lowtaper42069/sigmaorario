@@ -4,9 +4,18 @@ L'autenticazione usa **Supabase** (email + password), non più un backend PHP lo
 
 ## Come funziona
 
-- `js/supabase.js` contiene `SUPABASE_URL` e `SUPABASE_ANON_KEY`.
-- La **anon key è pubblica per design**: può stare nel repo, i permessi reali sono
-  decisi dalle Row Level Security policy del progetto Supabase.
+- `js/supabase.js` contiene `SUPABASE_URL` e `SUPABASE_ANON_KEY`. **Non è versionato**
+  (vedi `.gitignore`): viene generato da `scripts/gen-supabase.mjs`.
+- Su **Netlify** il file è generato al build dalle env vars `SUPABASE_URL` e
+  `SUPABASE_ANON_KEY` (Site configuration → Environment variables), come da `netlify.toml`.
+- In **locale** va generato una volta:
+
+  ```bash
+  SUPABASE_URL=... SUPABASE_ANON_KEY=... node scripts/gen-supabase.mjs
+  ```
+
+- La **anon key è pubblica per design**: i permessi reali sono decisi dalle Row Level
+  Security policy del progetto Supabase.
 - `login.html` fa `supabaseClient.auth.signInWithPassword({ email, password })` e,
   in caso di successo, salva la sessione in `sessionStorage` e reindirizza a
   `calendario.html`.
@@ -18,8 +27,6 @@ Gli utenti si creano dalla dashboard Supabase del progetto:
 
 1. **Authentication → Users → Add user**
 2. Imposta email e password, poi conferma.
-
-Non serve nessun file di configurazione locale.
 
 ## Sicurezza
 
